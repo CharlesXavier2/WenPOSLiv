@@ -125,13 +125,8 @@ const styless = StyleSheet.create({
         marginBottom: 20,
         marginLeft: 5,
         marginRight: 5
-
-
     },
     cardViewRow: {
-       
-        
-        
         flexDirection: 'row',
         
         alignItems:'flex-start',
@@ -147,7 +142,7 @@ const styless = StyleSheet.create({
     },
     hairline: {
         backgroundColor: '#000',
-        height: .5,
+        height: 2,
       
       },
 
