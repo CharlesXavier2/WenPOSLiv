@@ -6,7 +6,6 @@ export default styles = StyleSheet.create({
         backgroundColor:'#313131',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
     },
     heading: {
         fontSize: 18,
@@ -15,6 +14,7 @@ export default styles = StyleSheet.create({
         
     },
     menuItem:{
+        
         padding: 10,
         borderWidth: 0.5,
         borderColor: '#d6d7da'
