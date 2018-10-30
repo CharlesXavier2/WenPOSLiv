@@ -14,7 +14,7 @@ import {
     View,
     Image,
     FlatList,
-    
+    Button,
     AsyncStorage,
 
 
@@ -155,8 +155,19 @@ export default class DayPage extends Component {
 
                                 }}
                             //    onPress={this.navigateToScreen('SaleDetails')}
-                            onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-
+                            // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
+                            //     type: "Navigate",
+                            //     routeName: "Main",
+                            //     params: {param: 'param'},
+                            // })}
+                          
+                            onPress={() => {
+                                /* 1. Navigate to the Details route with params */
+                                this.props.navigation.navigate('SaleDetails', {
+                                  itemId: 86,
+                                  otherParam: 'anything you want here',
+                                });
+                              }}
                                 >
                                     {
                                         item.name
@@ -257,7 +268,10 @@ export default class DayPage extends Component {
   
               <View style={styless.MainContainer}>
   
-  
+  {/* <View style={{ flex: 1,  }}>
+        
+        
+      </View> */}
                   <CardView
                       cardElevation={2}
                       cardMaxElevation={2}
@@ -284,8 +298,16 @@ export default class DayPage extends Component {
                                 //   onPress={this.login}
                                 // onPress={this.navigateToScreen('SaleDetails')}
                                 // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-                                onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-
+                                // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                                onPress={() => {
+                                    /* 1. Navigate to the Details route with params */
+                                    this.props.navigation.navigate('SaleDetails', {
+                                      itemId: item.name,
+                                      otherParam:  
+                                        this.totalSaleFormat(val)
+                                   ,
+                                    });
+                                  }}
 
                                   >
                                       {
@@ -293,6 +315,12 @@ export default class DayPage extends Component {
                                       }
                                   </Text>
   
+  {/* <Button
+          title="Go to Details"
+         
+        /> */}
+
+
   
                                    
                                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
@@ -557,6 +585,7 @@ export default class DayPage extends Component {
 
 
                     </View>
+                  
 
 
                     <FlatList

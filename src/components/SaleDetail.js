@@ -27,7 +27,7 @@ export default class SaleDetails extends Component {
     //   })
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Welcome',
+            title: 'National',
         }
     };
 
@@ -187,59 +187,67 @@ export default class SaleDetails extends Component {
 
 
     render() {
+      
+
+/* 2. Get the param, provide a fallback value if not available */
+const { navigation } = this.props;
+    const itemId = navigation.getParam('itemId', 'Undefined');
+    const otherParam = navigation.getParam('otherParam', '0 sales');
+
+
+
+
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
             return (
                 <View style={styles.container}>
                     <View style={styles.subheader}>
 
-                        <Text style={{
-                            fontSize: 18,
-                            color: '#ffffff',
-                            paddingLeft: 20,
+                        
 
-                            //justifyContent: 'center',
-                            //textAlignVertical: "center",
-                            // alignItems: 'center',
+                        
+                       
+        {/* <Text>{JSON.stringify(itemId)}</Text> */}
+        <Text style={{
+                                      fontSize: 18,
+  
+                                      color: '#ffffff',
+                                    marginLeft: 15,
+  
+                                    //   justifyContent: 'center',
+                                      // textAlignVertical: "center",
+                                      justifyContent: 'flex-start',
+  
+                                  }}
+        >{itemId}</Text>
+        <Text style={{
+                                      fontSize: 14,
+  
+                                      color: '#ffffff',
+                                      marginLeft: 10,
+                                      justifyContent: 'center',
+                                      // textAlignVertical: "center",
+                                      alignItems: 'center',
+  
+                                  }}
+        >Total Sale: {otherParam}</Text>
 
-                        }}>National</Text>
-
-                        <Image
-                            source={require('../images/saledown.png')}
-                            style={styless.ImageIconStyle} />
-                        <Text style={{
-                            fontSize: 18,
-                            //width: 150,
-                            color: '#ffffff',
-
-
-                            //   justifyContent: 'center',
-                            //textAlignVertical: "center",
-                               alignItems: 'center',
-
-                        }}>Total Sale :
-                                  {
-                                // this.totalSaleFormat(val)
-                            }
-                        </Text>
-                        <Image
+         <Image
                                   source={require('../images/line_graph.png')}
                                   style={{
+                                    alignItems:'flex-end',
                                       width: 40,
                                       height: 40,
                                       padding: 10,
                                       margin: 5,
-                                    //   backgroundColor: '#313131',
-                                      marginLeft: 5,
+                                      marginLeft: 30,
                                       resizeMode: 'stretch',
   
                                   }} />
+        
 
 
 
-
-
-
-                    </View>
+</View >
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
@@ -265,7 +273,9 @@ export default class SaleDetails extends Component {
                     />
                     <View style={styles.subheader}>
 
-                        <Text >hi...Raj</Text>
+                     
+                     <Text>{itemId}</Text>
+        <Text>Total Sale: {otherParam}</Text>
 
                     </View>
                     <FlatList
