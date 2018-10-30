@@ -13,7 +13,7 @@ import {
   Animated,
   Keyboard
 } from 'react-native';
-import Style from './style';
+import Style from '../styles/style';
 import Moment from 'moment';
 
 const FORMATS = {
@@ -168,17 +168,11 @@ class DatePicker extends Component {
   }
 
   getTitleElement() {
-    const {date, placeholder, customStyles, allowFontScaling} = this.props;
+    const {date,  customStyles, allowFontScaling} = this.props;
 
-    if (!date && placeholder) {
-      return (
-        <Text allowFontScaling={allowFontScaling} style={[Style.placeholderText, customStyles.placeholderText]}>
-          {placeholder}
-        </Text>
-      );
-    }
+   
     return (
-      <Text allowFontScaling={allowFontScaling} style={[Style.dateText, customStyles.dateText]}>
+      <Text allowFontScaling={allowFontScaling} style={[Style.dateText, customStyles.dateText,width]}>
         {this.getDateStr()}
       </Text>
     );
@@ -310,9 +304,9 @@ class DatePicker extends Component {
     } = this.props;
 
     if (showIcon) {
-      if (iconComponent) {
-        return iconComponent;
-      }
+      // if (iconComponent) {
+      //   return iconComponent;
+      // }
       return (
         <Image
           style={[Style.dateIcon, customStyles.dateIcon]}
@@ -363,7 +357,7 @@ class DatePicker extends Component {
               <View style={dateInputStyle}>
                 {this.getTitleElement()}
               </View>
-            :
+           :
               <View/>
           }
           {this._renderIcon()}
@@ -450,15 +444,16 @@ DatePicker.defaultProps = {
   duration: 300,
   confirmBtnText: '确定',
   cancelBtnText: '取消',
-  iconSource: require('./date_icon.png'),
+  iconSource: require('../images/date_icon.png'),
+
   customStyles: {},
 
   // whether or not show the icon
   showIcon: true,
   disabled: false,
   allowFontScaling: true,
-  hideText: false,
-  placeholder: '',
+  hideText: true,
+  //placeholder: '',
   TouchableComponent: TouchableHighlight,
   modalOnResponderTerminationRequest: e => true
 };
@@ -484,7 +479,7 @@ DatePicker.propTypes = {
   onOpenModal: PropTypes.func,
   onCloseModal: PropTypes.func,
   onPressMask: PropTypes.func,
-  placeholder: PropTypes.string,
+  //placeholder: PropTypes.string,
   modalOnResponderTerminationRequest: PropTypes.func,
   is24Hour: PropTypes.bool,
   getDateStr: PropTypes.func,

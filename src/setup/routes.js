@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createDrawerNavigator, createMaterialTopTabNavigator,} from 'react-navigation';
+import { createStackNavigator, createDrawerNavigator, createMaterialTopTabNavigator,StackNavigator,HeaderBackButton} from 'react-navigation';
 import { DrawerActions } from 'react-navigation';
-import {View,Text,StyleSheet,Platform,TouchableOpacity,Image,StatusBar} from 'react-native';
+import {View,Text,StyleSheet,Platform,TouchableOpacity,Image,
+        AsyncStorage,
+    StatusBar} from 'react-native';
 import DayPage from '../Tab/DayPage';
 import WeekPage from '../Tab/WeekPage';
 import MonthPage from '../Tab/MonthPage';
 import DrawerScreen from '../components/DrawerScreen';
 import LoginPage from '../components/LoginPage';
 import YearPage from '../Tab/YearPage';
+import DatePicker from '../utils/datepicker.js';
+import SaleDetails from '../components/SaleDetail';
 
-const Tabs = createMaterialTopTabNavigator({
+//import DatePicker from '../components/DateSelector';
+
+export const Tabs = createMaterialTopTabNavigator({
     Day: DayPage,
      Week: WeekPage,
      Month: MonthPage,
-    Year: YearPage
+     Year: YearPage
 },{
     tabBarOptions: {
 
@@ -93,7 +99,7 @@ const Tabs = createMaterialTopTabNavigator({
         
 });
 
-const DrawerNavigator = createDrawerNavigator({
+export const DrawerNavigator = createDrawerNavigator({
     DayPage:{
         screen: Tabs
     }
@@ -103,25 +109,109 @@ const DrawerNavigator = createDrawerNavigator({
     drawerWidth: 300
 });
 
-const MenuImage = ({navigation}) => {
+export const MenuImage = ({navigation}) => {
     if(!navigation.state.isDrawerOpen){
         return <Image source={require('../images/burgermenu.png')}/>
     }else{
-        return <Image source={require('../images/left-arrow.png')}/>
+        return <Image source={require('../images/left-arrow.png')}
+        style={{
+            width:30,
+            height: 30,
+           padding: 10,
+           margin: 5,
+           backgroundColor:'#313131',
+          //marginLeft:15,
+           resizeMode: 'stretch',
+       
+       }}
+        />
     }
 }
-const StackNavigator = createStackNavigator({
+
+export const CustomHeader = ({ title, subtitle }) => (
+    <View >
+      <Text style={{fontSize:16,color: '#000'}}>{title}</Text>
+      <Text style={{fontSize:16,color: '#000'}}>{subtitle}</Text>
+    </View>
+  );
+  
+
+//   export const SaleDetails = StackNavigator({
+//     SaleDetails: {
+//       screen: SaleDetails,
+//       navigationOptions: {
+//         title: "Details"
+//       }
+//     },
+//   });
+  
+//   export const RootNavigator = (signedIn = false) => {
+//     return StackNavigator(
+//       {
+//         SignedIn: {
+//           screen: SignedIn,
+//           navigationOptions: {
+//             gesturesEnabled: false
+//           }
+//         },
+//         SignedOut: {
+//           screen: SignedOut,
+//           navigationOptions: {
+//             gesturesEnabled: false
+//           }
+//         }
+//       }, {
+//         headerMode: "none",
+//         mode: "modal",
+//         initialRouteName: signedIn ? "SignedIn" : "SignedOut"
+//       }
+//     );
+//   };
+  const RootNavigator = createStackNavigator({
+
     
     //important: key and screen name (i.e. DrawerNavigator) should be same while using the drawer navigator inside stack navigator.
     LoginPage:{screen: LoginPage},
     DrawerNavigator:{screen: DrawerNavigator},
-  },{
-    navigationOptions: ({ navigation }) => ({
+    DatePicker: {screen: DatePicker},
+    SaleDetails:
+    { 
+        screen: SaleDetails, 
+        navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+          //title: 'National',
+          headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+        })
+      },
+  },
+  {
+    navigationOptions: ({ navigation ,title,subtitle}) => {
+        const { navigate } = navigation
+        return {
+            
         title: 'McD',  // Title to appear in status bar
-        headerRight:
-         <TouchableOpacity  onPress={() => {this.props.navigation.navigate('DayPage')} }>
-    <Image source={require('../images/bill.png')}/>
-    </TouchableOpacity>,
+       // headerTitle: <CustomHeader title='McDa' 
+       // subtitle={}/>,
+    // headerRight: (
+    //     <TouchableOpacity onPress={()=>navigate('DatePicker')} >
+       
+    //             <Image source={require('../images/date_icon.png')} style={{ height: 30, resizeMode: 'contain'}}  />
+    //         </TouchableOpacity>
+    // //     <DatePicker
+         
+    // //    // date={this.state.date}
+    // //     mode="date"
+    // //     placeholder=""
+    // //     format="YYYY-MM-DD"
+    // //     minDate="2016-05-01"
+    // //     maxDate="2016-06-01"
+    // //     confirmBtnText="Confirm"
+    // //     cancelBtnText="Cancel"
+    // //     iconSource={require('../images/date_icon.png')}
+    // //    // selected={1} 
+    // //    // onDateChange={() => params.Tracking()}
+    // //    // onDateChange={(date) => {this.setState({date: date});}}
+    // //   />
+    //   ),
            
         headerLeft: 
         <TouchableOpacity  onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())} }>
@@ -139,9 +229,15 @@ const StackNavigator = createStackNavigator({
           
           
         },
+    };
 
-    }),
+    },
     initialRouteName: 'LoginPage',
+    
 });
 
-export default StackNavigator;
+
+ 
+export default RootNavigator;
+
+

@@ -7,6 +7,15 @@ export default styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    subheader: {
+        height: 60,
+        flexDirection: 'row',
+        width: '90%',
+        marginTop: 10,
+        backgroundColor:'#FAC209',
+        //  justifyContent: 'center',
+           alignItems: 'center',
+    },
     heading: {
         fontSize: 18,
         textAlign: 'center',
