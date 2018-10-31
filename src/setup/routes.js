@@ -174,6 +174,7 @@ export const CustomHeader = ({ title, subtitle }) => (
     LoginPage:{screen: LoginPage},
     DrawerNavigator:{screen: DrawerNavigator},
     DatePicker: {screen: DatePicker},
+    // DayPage: {screen: DayPage},
     SaleDetails:
     { 
         screen: SaleDetails, 
@@ -233,7 +234,7 @@ export const CustomHeader = ({ title, subtitle }) => (
 
     },
     initialRouteName: 'LoginPage',
-    
+
 });
 
 

@@ -16,6 +16,8 @@ import {
     FlatList,
     Button,
     AsyncStorage,
+    BackHandler,
+    TouchableOpacity,
 
 
 } from 'react-native';
@@ -30,6 +32,8 @@ import SaleDetails from '../components/SaleDetail';
 
 
 var dateFormat = require('dateformat');
+var parentVal =0;
+var tabPositionVal=0;
 //var dateValue='';
 export default class DayPage extends Component {
 
@@ -49,16 +53,15 @@ export default class DayPage extends Component {
             dataSource: [],
             progress: 0,
             indeterminate: true,
-
-
             date: '',
-
-
-
-
-
-
+            parent :0,
+            tabPosition:0,
+            clickId:0,
+            regionId:0,
+            cityId:0,
+            storeId:0, 
         }
+        this.onBackPress = this.onBackPress.bind(this);
 
 
 
@@ -71,6 +74,96 @@ export default class DayPage extends Component {
         AsyncStorage.setItem("date_key", date);
 
     };
+
+    setCurrentScreen = (id) => {
+        //0 for region 1 for city 2 for store
+        console.log('setCurrentScreen before parent : '+this.state.parent) 
+        if(this.state.parent>=2)
+        { 
+            console.log('Already in store ') 
+            return;
+         }
+        var parent = this.state.parent + 1;
+         
+       var clickId=id;
+    //    var pageFlow = this.state.pageFlow + clickId;
+        // this.setState({ parent });
+        this.setState({
+            parent
+        });
+        this.setState({
+            clickId
+        });
+
+        console.log('setCurrentScreen after parent local : '+parent)
+        // this.setState({ clickId });
+        console.log('setCurrentScreen after parent local clickid : '+clickId)
+        AsyncStorage.setItem("parent_key", parent);
+        
+        console.log('setCurrentScreen after parent : '+this.state.parent)
+        console.log('setCurrentScreen after parent click ID : '+this.state.clickId)
+        this.pageStackComponentDidMount(clickId,parent);
+        
+    };
+    setBackStackScreen = () => {
+        var bodyData="",url="";
+        //0 for region 1 for city 2 for store
+        console.log('before parent : '+this.state.parent)
+        var parent = this.state.parent -1;
+        console.log('before parent : '+parent)
+
+        var id=0;
+
+      // var clickId=id;
+        this.setState({ parent });
+        switch(this.state.parent) {
+            case 0:
+            // Region level
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+            }),
+            url='getRegionSales'
+
+            
+
+            break;
+            case 1:
+           
+            // Cities level
+            id=this.state.regionId;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                region_id:id,
+            }),
+            url='getCitySales'
+            console.log('setBackStackScreenswitchCities'+id)
+
+            
+            break;
+            case 2:
+            // Store level
+            id=this.state.cityId;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                city_id:id,
+            }),
+            url='getStoreSales'
+            break;
+       }
+       console.log('Action ID : '+id)
+       console.log('URL : '+url)
+       AsyncStorage.getItem("parent_key").then((value) => {
+        console.log(" Getter date : " + value);
+        screenPosition = value;
+        this.callApi(url,bodyData)
+    }).done();
+    //   this.pageStackComponentDidMount(id);
+        
+    };
+
 
 
     clickButton() {
@@ -161,13 +254,18 @@ export default class DayPage extends Component {
                             //     params: {param: 'param'},
                             // })}
                           
-                            onPress={() => {
+                            onPress={() => { 
+                                this.setCurrentScreen(item.id); 
+                        
+                            }}
                                 /* 1. Navigate to the Details route with params */
-                                this.props.navigation.navigate('SaleDetails', {
-                                  itemId: 86,
-                                  otherParam: 'anything you want here',
-                                });
-                              }}
+                                // this.props.navigation.navigate('SaleDetails', {
+                                //   itemId: 86,
+                                //   otherParam: 'anything you want here',
+                                // });
+
+                                
+                             
                                 >
                                     {
                                         item.name
@@ -206,20 +304,29 @@ export default class DayPage extends Component {
 
                                   
                             </View>
+                           
 
-
-                            <Image
-                                source={require('../images/line_graph.png')}
-                                style={{
-                                    width: 40,
-                                    height: 40,
-                                    padding: 10,
-                                    margin: 5,
-                                    backgroundColor: '#313131',
-                                    marginLeft: 15,
-                                    resizeMode: 'stretch',
-
-                                }} />
+                            <TouchableOpacity onPress={() => {
+                                    /* 1. Navigate to the Details route with params */
+                                    this.props.navigation.navigate('SaleDetails', {
+                                      itemId: item.name,
+                                      otherParam: this.totalSaleFormat(val),
+                                    });
+                                  }} >
+                                  <Image
+                                  source={require('../images/nextButton.png')}
+                                  style={{
+                                      width: 30,
+                                      height: 30,
+                                      padding: 10,
+                                      margin: 5,
+                                      marginLeft: 15,
+                                      resizeMode: 'stretch',
+  
+                                  }}/> 
+                                  </TouchableOpacity>
+                                  
+                                
 
 
                         </View>
@@ -300,13 +407,29 @@ export default class DayPage extends Component {
                                 // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
                                 // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
                                 onPress={() => {
+                                    if(item.id==0||item.name=='National'){ 
+                                        return;
+                                    }else{ 
+                                        this.setCurrentScreen(item.id); 
+                                    }
+                                    
                                     /* 1. Navigate to the Details route with params */
-                                    this.props.navigation.navigate('SaleDetails', {
-                                      itemId: item.name,
-                                      otherParam:  
-                                        this.totalSaleFormat(val)
-                                   ,
-                                    });
+                                //     this.props.navigation.navigate('SaleDetails', {
+                                //       itemId: item.name,
+                                //       otherParam:  
+                                //         this.totalSaleFormat(val)
+                                //    ,
+                                //     });
+
+
+
+
+                                // this.props.navigation.navigate('SaleDetail', {
+                                //     parent: 1+parentVal,
+                                //     tabPosition: tabPositionVal,
+                                //   });
+
+
                                   }}
 
                                   >
@@ -315,10 +438,7 @@ export default class DayPage extends Component {
                                       }
                                   </Text>
   
-  {/* <Button
-          title="Go to Details"
-         
-        /> */}
+ 
 
 
   
@@ -348,26 +468,30 @@ export default class DayPage extends Component {
   
   
                                   </View>
-                                  
-  
                                     
                               </View>
-  
-  
-                              <Image
-                                  source={require('../images/line_graph.png')}
+                              <TouchableOpacity onPress={() => {
+                                    /* 1. Navigate to the Details route with params */
+                                    this.props.navigation.navigate('SaleDetails', {
+                                      itemId: item.name,
+                                      otherParam: this.totalSaleFormat(val),
+                                    });
+                                  }} >
+                                 <Image
+                                  source={require('../images/nextButton.png')}
                                   style={{
-                                      width: 40,
-                                      height: 40,
+                                      width: 30,
+                                      height: 30,
                                       padding: 10,
                                       margin: 5,
-                                      backgroundColor: '#313131',
                                       marginLeft: 15,
                                       resizeMode: 'stretch',
   
-                                  }} />
+                                  }}/> 
+                                  </TouchableOpacity>
   
   
+                       
                           </View>
   
   
@@ -412,22 +536,25 @@ export default class DayPage extends Component {
 
     }
 
-    componentWillAppear() {
-        if (this.instance) {
-          if (!this.instance.componentWillAppear) {
-            console.warn('You called connectFocus with a component that failed to implement componentWillAppear', this.instance);
-          } else {
-            this.instance.componentWillAppear();
-          }
-        }
-      }
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
-      
-
-    componentWillMount() {
-        this.componentWillAppear();
       }
     componentDidMount() {
+         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        // const { navigation } = this.props;
+        // const parent = navigation.getParam('parent', '0');
+        // const tabPosition = navigation.getParam('tabPosition', '0');
+        //  parentVal =parent,
+        //  tabPositionVal=tabPosition,
+    
+        //  this.setState({ parent: parentVal, });
+        //  this.setState({ tabPosition: tabPositionVal, });
+    
+        // console.log('Parent : '+parent)
+        // console.log('tabPosition : '+tabPosition)
+
+
         var urlPanDate = ''
         this.getDate();
         AsyncStorage.getItem("date_key").then((value) => {
@@ -477,6 +604,10 @@ export default class DayPage extends Component {
 
     }
 
+
+
+    
+//for date
     customComponentDidMount() {
         var urlPanDate = ''
         // this.getDate();
@@ -521,10 +652,119 @@ export default class DayPage extends Component {
         }).done();
     }
 
+    //for page refersh
+
+    pageStackComponentDidMount(id,parent) {
+        var bodyData="",url="";
+        switch(parent) {
+            case 0:
+            // Region level
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+            }),
+            url='getRegionSales'
+
+            break;
+            case 1:
+            this.state.regionId=id;
+            
+            // Cities level
+
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                region_id:id,
+            }),
+            url='getCitySales'
+
+            
+            break;
+            case 2:
+            // Store level
+            this.state.cityId=id;
+            // this.state.storeId=id;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                city_id:id,
+            }),
+            url='getStoreSales'
+
+            break;
+       }
+        var screenPosition = ''
+        // this.getDate();
+        AsyncStorage.getItem("parent_key").then((value) => {
+            console.log(" Getter date : " + value);
+            screenPosition = value;
+            this.callApi(url,bodyData)
+        }).done();
+      
+    }
+
+
+
+    callApi = (url,bodyData) => {
+       
+        const urlPan ='http://115.112.181.53:3000/api/'+url;
+            console.log("  url " + urlPan)
+
+
+            fetch(urlPan,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: bodyData,
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    this.setState({
+                        dataSource: responseJson.data
+                    })
+
+                    if (responseJson != null) {
+
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        
+    };
+
+    // for back stack navigation
+    onBackPress = () => {
+
+        console.log('onBackPress function')
+        if(this.state.parent==0){
+            return;
+                }
+     // works best when the goBack is async
+     else{
+        console.log('onBackPress function to calling setBackStackScreen ')
+    this.setBackStackScreen();
+    
+     }
+        return true;
+      }
+    
+
+
 
     render() {
         
-        const { navigate } = this.props.navigation;
+        // const { navigate } = this.props.navigation;
+
+      
+
+    // console.log('Parent : '+parent)
         /* 2. Read the params from the navigation state */
         // const { params } = this.props.navigation.state;
         //const itemId = params ? params.itemId : null;

@@ -12,18 +12,26 @@ import {
     View,
     Image,
     FlatList,
+    Button,
     AsyncStorage,
+    BackHandler,
+    TouchableOpacity,
 
 
 } from 'react-native';
 import CardView from 'react-native-cardview';
 import styles from '../styles';
+import {StackNavigator} from 'react-navigation';
 import DrawerScreen from '../components/DrawerScreen';
 import * as Progress from 'react-native-progress';
 import DatePicker from '../utils/datepicker.js';
 import Moment from 'moment';
+import SaleDetails from '../components/SaleDetail';
+
 
 var dateFormat = require('dateformat');
+var parentVal =0;
+var tabPositionVal=0;
 export default class MonthPage extends Component {
     constructor(props) {
         super(props)
@@ -31,28 +39,116 @@ export default class MonthPage extends Component {
             dataSource: [],
             progress: 0,
             indeterminate: true,
-           
-            
             date: '',
-           
-
-
-
-
-
+            parent :0,
+            tabPosition:0,
+            clickId:0,
+            regionId:0,
+            cityId:0,
+            storeId:0, 
         }
+        this.onBackPress = this.onBackPress.bind(this);
 
-        
+
 
     }
+
     getDate = () => {
         var date = new Date().toDateString();
-        date=dateFormat(date, "yyyy-mm-dd");
+        date = dateFormat(date, "yyyy-mm-dd");
         this.setState({ date });
-       AsyncStorage.setItem("date_key",date);
-        
-      };
+        AsyncStorage.setItem("date_key", date);
 
+    };
+
+    setCurrentScreen = (id) => {
+        //0 for region 1 for city 2 for store
+        console.log('setCurrentScreen before parent : '+this.state.parent) 
+        if(this.state.parent>=2)
+        { 
+            console.log('Already in store ') 
+            return;
+         }
+        var parent = this.state.parent + 1;
+         
+       var clickId=id;
+    //    var pageFlow = this.state.pageFlow + clickId;
+        // this.setState({ parent });
+        this.setState({
+            parent
+        });
+        this.setState({
+            clickId
+        });
+
+        console.log('setCurrentScreen after parent local : '+parent)
+        // this.setState({ clickId });
+        console.log('setCurrentScreen after parent local clickid : '+clickId)
+        AsyncStorage.setItem("parent_key", parent);
+        
+        console.log('setCurrentScreen after parent : '+this.state.parent)
+        console.log('setCurrentScreen after parent click ID : '+this.state.clickId)
+        this.pageStackComponentDidMount(clickId,parent);
+        
+    };
+    setBackStackScreen = () => {
+        var bodyData="",url="";
+        //0 for region 1 for city 2 for store
+        console.log('before parent : '+this.state.parent)
+        var parent = this.state.parent -1;
+        console.log('before parent : '+parent)
+
+        var id=0;
+
+      // var clickId=id;
+        this.setState({ parent });
+        switch(this.state.parent) {
+            case 0:
+            // Region level
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'month',
+            }),
+            url='getRegionSales'
+
+            
+
+            break;
+            case 1:
+           
+            // Cities level
+            id=this.state.regionId;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'month',
+                region_id:id,
+            }),
+            url='getCitySales'
+            console.log('setBackStackScreenswitchCities'+id)
+
+            
+            break;
+            case 2:
+            // Store level
+            id=this.state.cityId;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'month',
+                city_id:id,
+            }),
+            url='getStoreSales'
+            break;
+       }
+       console.log('Action ID : '+id)
+       console.log('URL : '+url)
+       AsyncStorage.getItem("parent_key").then((value) => {
+        console.log(" Getter date : " + value);
+        screenPosition = value;
+        this.callApi(url,bodyData)
+    }).done();
+    //   this.pageStackComponentDidMount(id);
+        
+    };
     
     clickButton() {
         console.log('click button')
@@ -80,247 +176,583 @@ dateFind(){
     
 
 
-    renderItem = ({ item }) => {
-        var rounfFranchise = '0.00';
-        if (item != null) {
-            this.setState({ indeterminate: false });
+ totalSaleFormat = (val) => {
+    // try {
+     if (val > 999999) {
+         val = val / 1000000;
+         op = val.toFixed(2);
+         return (op + " mn");
+     } else {
+         val = val / 1000;
+         op = val.toFixed(2);
+        // op = getTwoDecimalFormat(val);
+         return (op + " K");
+     }
+ // } catch (Exception e) {
+ //     return (0 + " K");
+ // } 
+ }
+
+ renderItem = ({ item }) => {
+     var val =item.current_sale;
+    
+    
+     
+     var rounfFranchise = '0.00';
+     if (item != null) {
+         this.setState({ indeterminate: false });
+     }
+
+     if (item.current_sale > item.last_sale){
+       return (
 
 
-        }
+         <View style={styless.MainContainer}>
+
+
+             <CardView
+                 cardElevation={2}
+                 cardMaxElevation={2}
+                 cornerRadius={1}
+                 style={styless.cardViewStyle}
+             >
+                 {
+                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+                         <View style={styless.cardViewRow}>
+
+
+                             <Text style={{
+                                 fontSize: 22,
+
+                                 color: '#ffffff',
+
+
+                                 justifyContent: 'center',
+                                 // textAlignVertical: "center",
+                                 alignItems: 'center',
+
+                             }}
+                         //    onPress={this.navigateToScreen('SaleDetails')}
+                         // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
+                         //     type: "Navigate",
+                         //     routeName: "Main",
+                         //     params: {param: 'param'},
+                         // })}
+                       
+                         onPress={() => { 
+                             this.setCurrentScreen(item.id); 
+                     
+                         }}
+                             /* 1. Navigate to the Details route with params */
+                             // this.props.navigation.navigate('SaleDetails', {
+                             //   itemId: 86,
+                             //   otherParam: 'anything you want here',
+                             // });
+
+                             
+                          
+                             >
+                                 {
+                                     item.name
+                                 }
+                             </Text>
+
+
+                              
+                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
 
 
-        return (
-
-            <View style={styless.MainContainer}>
-
-                <CardView
-                    cardElevation={2}
-                    cardMaxElevation={2}
-                    cornerRadius={5}
-                    style={styless.cardViewStyle}>
-                    {
-
-                        <View style={styless.cardViewRow}>
-                            <Text style={styless.cardViewHeader}>
-                            </Text>
-
-                            <Text style={{
-                                fontSize: 10,
-                                width: 75,
-                                color: '#ffffff',
-                                paddingLeft: 30,
-
-                                backgroundColor: '#FAC209',
-                                //justifyContent: 'center',
-                                textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}>
-                                {
-                                    item.name
-                                }
-                            </Text>
-                            <Text style={styless.cardViewHeader}>
-                                Company
-                        </Text><Text style={styless.cardViewHeader}>
-                                Franchise
-                        </Text>
+                                 <Image
+                                     source={require('../images/saleup.png')}
+                                     style={styless.ImageIconStyle} />
+                                 <Text style={{
+                                     fontSize: 16,
+                                     //width: 150,
+                                     color: '#ffffff',
 
 
-                        </View>
-                    }
+                                     justifyContent: 'center',
+                                     //textAlignVertical: "center",
+                                     alignItems: 'center',
+
+                                 }}>Total Sale :
+                             {
+                                         //item.current_sale.toFixed(2)
+                                         this.totalSaleFormat(val)
+                                     }
+                                 </Text>
+
+
+                             </View>
+                             
+
+                               
+                         </View>
+                        
+
+                         <TouchableOpacity onPress={() => {
+                                 /* 1. Navigate to the Details route with params */
+                                 this.props.navigation.navigate('SaleDetails', {
+                                   itemId: item.name,
+                                   otherParam: this.totalSaleFormat(val),
+                                 });
+                               }} >
+                               <Image
+                               source={require('../images/nextButton.png')}
+                               style={{
+                                   width: 30,
+                                   height: 30,
+                                   padding: 10,
+                                   margin: 5,
+                                   marginLeft: 15,
+                                   resizeMode: 'stretch',
+
+                               }}/> 
+                               </TouchableOpacity>
+                               
+                             
+
+
+                     </View>
+
+
+                 }
+
+
+                 {/* {item.sale_data.map((data) =>
+
+
+                     <View style={styless.cardViewRow}>
+                         <Text style={styless.cardViewText}>
+                             {
+                                 data[0].name
+                             }
+                         </Text>
+                         <Text style={styless.dataRow}>
+
+                             {
+
+                                 data.total.toFixed(2)
+                             }
+                         </Text>
+                         <Text style={styless.dataRow}>
+                             {
+                                 data.self.toFixed(2)
+                             }
+                         </Text>
+
+                         <Text style={styless.dataRow}>
+                             {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
+                         </Text>
+
+                     </View>
+
+                 )} */}
+                 <View style={styless.hairline} />
+             </CardView>
+         </View>
+     ) }
+     else
+     {
+         return (
+
+
+           <View style={styless.MainContainer}>
+
+{/* <View style={{ flex: 1,  }}>
+     
+     
+   </View> */}
+               <CardView
+                   cardElevation={2}
+                   cardMaxElevation={2}
+                   cornerRadius={1}
+                   style={styless.cardViewStyle}
+               >
+                   {
+                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+                           <View style={styless.cardViewRow}>
+
+
+                               <Text style={{
+                                   fontSize: 22,
+
+                                   color: '#ffffff',
+
+
+                                   justifyContent: 'center',
+                                   // textAlignVertical: "center",
+                                   alignItems: 'center',
+
+                               }}
+                             //   onPress={this.login}
+                             // onPress={this.navigateToScreen('SaleDetails')}
+                             // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                             // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                             onPress={() => {
+                                 if(item.id==0||item.name=='National'){ 
+                                     return;
+                                 }else{ 
+                                     this.setCurrentScreen(item.id); 
+                                 }
+                                 
+                                 /* 1. Navigate to the Details route with params */
+                             //     this.props.navigation.navigate('SaleDetails', {
+                             //       itemId: item.name,
+                             //       otherParam:  
+                             //         this.totalSaleFormat(val)
+                             //    ,
+                             //     });
 
 
 
-                    {item.sale_data.map((data) =>
+
+                             // this.props.navigation.navigate('SaleDetail', {
+                             //     parent: 1+parentVal,
+                             //     tabPosition: tabPositionVal,
+                             //   });
 
 
-                        <View style={styless.cardViewRow}>
-                            <Text style={styless.cardViewText}>
-                                {
-                                    data.name
-                                }
-                            </Text>
-                            <Text style={styless.dataRow}>
+                               }}
 
-                                {
-
-                                    data.total.toFixed(2)
-                                }
-                            </Text>
-                            <Text style={styless.dataRow}>
-                                {
-                                    data.self.toFixed(2)
-                                }
-                            </Text>
-
-                            <Text style={styless.dataRow}>
-                                {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
-                            </Text>
-
-                        </View>
-
-                    )}
-                    <View style={styless.hairline} />
-                </CardView>
-            </View>
-        )
-
-    }
-
-//   componentDidMount() {
-//     const urlPan = 'http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=month&date=2018-10-13&is_delivery=0 '
-//     fetch(urlPan)
-//             .then((response) => response.json())
-//             .then((responseJson) => {
-//                 // this.setState.dataSource.push( responseJson.sale_info );
-//                 this.setState({
-//                     dataSource: responseJson.sale_info
-//                 })
-
-//                 if (responseJson != null) {
-
-//                 }
-
-//             })
-//             .catch((error) => {
-//                 console.log(error)
-//             })
-//         const urlResion = 'http://bkliveapp.bklive.in:3600/v2/get_all_region_sale?filter_type=month&date=2018-10-17&hour=11&minute=35&is_delivery=0 '
-//         fetch(urlResion)
-//             .then((response) => response.json())
-//             .then((responseJson) => {
-
-//                 // this.setState.dataSource.push( responseJson.sale_info );
-//                 // this.setState({
-//                 // dataSource.push( responseJson.sale_info )
-//                 // })
-
-//                 // this.setState({dataSource: this.state.dataSource.push.apply(this.state.dataSource, responseJson.sale_info)})
-
-//                 var joined = this.state.dataSource.concat(responseJson.sale_info);
-//                 this.setState({ dataSource: joined })
+                               >
+                                   {
+                                       item.name
+                                   }
+                               </Text>
 
 
-//             })
-//             .catch((error) => {
-//                 console.log(error)
-//             })
-//     }
-
-componentDidMount() {
-    var urlPanDate =''
-    this.getDate();
-     AsyncStorage.getItem("date_key").then((value) => {
-        console.log( " Getter date"+ value);
-        urlPanDate=value;
-       // 'http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=month&date=2018-10-13&is_delivery=0 '
-        const urlPan = 'http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=month&is_delivery=0&date=' + value
-        console.log( "  url "+ urlPan)
-        fetch(urlPan)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            // this.setState.dataSource.push( responseJson.sale_info );
-            this.setState({
-                dataSource: responseJson.sale_info
-            })
-
-            if (responseJson != null) {
-
-            }
-
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-                    // 'http://bkliveapp.bklive.in:3600/v2/get_all_region_sale?filter_type=month&date=2018-10-17&hour=11&minute=35&is_delivery=0 '
-    const urlResion = 'http://bkliveapp.bklive.in:3600/v2/get_all_region_sale?filter_type=month&hour=13&minute=57&is_delivery=0&date='+value
-    fetch(urlResion)
-        .then((response) => response.json())
-        .then((responseJson) => {
-
-            // this.setState.dataSource.push( responseJson.sale_info );
-            // this.setState({
-            // dataSource.push( responseJson.sale_info )
-            // })
-
-            // this.setState({dataSource: this.state.dataSource.push.apply(this.state.dataSource, responseJson.sale_info)})
-
-            var joined = this.state.dataSource.concat(responseJson.sale_info);
-            this.setState({ dataSource: joined })
 
 
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-     }).done();
-   
+
+                                
+                               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+
+
+                                   <Image
+                                       source={require('../images/saledown.png')}
+                                       style={styless.ImageIconStyle} />
+                                   <Text style={{
+                                       fontSize: 16,
+                                       //width: 150,
+                                       color: '#ffffff',
+
+
+                                       justifyContent: 'center',
+                                       //textAlignVertical: "center",
+                                       alignItems: 'center',
+
+                                   }}>Total Sale :
+                               {
+                                            this.totalSaleFormat(val)
+                                       }
+                                   </Text>
+
+
+                               </View>
+                                 
+                           </View>
+                           <TouchableOpacity onPress={() => {
+                                 /* 1. Navigate to the Details route with params */
+                                 this.props.navigation.navigate('SaleDetails', {
+                                   itemId: item.name,
+                                   otherParam: this.totalSaleFormat(val),
+                                 });
+                               }} >
+                              <Image
+                               source={require('../images/nextButton.png')}
+                               style={{
+                                   width: 30,
+                                   height: 30,
+                                   padding: 10,
+                                   margin: 5,
+                                   marginLeft: 15,
+                                   resizeMode: 'stretch',
+
+                               }}/> 
+                               </TouchableOpacity>
+
+
+                    
+                       </View>
+
+
+                   }
+
+
+                   {/* {item.sale_data.map((data) =>
+
+
+                       <View style={styless.cardViewRow}>
+                           <Text style={styless.cardViewText}>
+                               {
+                                   data[0].name
+                               }
+                           </Text>
+                           <Text style={styless.dataRow}>
+
+                               {
+
+                                   data.total.toFixed(2)
+                               }
+                           </Text>
+                           <Text style={styless.dataRow}>
+                               {
+                                   data.self.toFixed(2)
+                               }
+                           </Text>
+
+                           <Text style={styless.dataRow}>
+                               {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
+                           </Text>
+
+                       </View>
+
+                   )} */}
+                   <View style={styless.hairline} />
+               </CardView>
+           </View>
+       ) }
+
      
 
+ }
 
-    
-}
+ componentWillUnmount() {
+     BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
-customComponentDidMount() {
-    var urlPanDate =''
-    // this.getDate();
+   }
+ componentDidMount() {
+      BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+     // const { navigation } = this.props;
+     // const parent = navigation.getParam('parent', '0');
+     // const tabPosition = navigation.getParam('tabPosition', '0');
+     //  parentVal =parent,
+     //  tabPositionVal=tabPosition,
+ 
+     //  this.setState({ parent: parentVal, });
+     //  this.setState({ tabPosition: tabPositionVal, });
+ 
+     // console.log('Parent : '+parent)
+     // console.log('tabPosition : '+tabPosition)
+
+
+     var urlPanDate = ''
+     this.getDate();
      AsyncStorage.getItem("date_key").then((value) => {
-        console.log( " Getter date"+ value);
-        urlPanDate=value;
-        const urlPan = 'http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=month&is_delivery=0&date=' + value
-        console.log( "  url "+ urlPan)
-        fetch(urlPan)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            // this.setState.dataSource.push( responseJson.sale_info );
-            this.setState({
-                dataSource: responseJson.sale_info
+         console.log(" Getter date" + value);
+         urlPanDate = value;
+         const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+         console.log("  url " + urlPan)
+         fetch(urlPan,{
+             method: 'POST',
+             headers: {
+                 'Accept': 'application/json',
+                 'Content-Type': 'application/json'
+             },
+             body: JSON.stringify({
+             
+                 date:this.state.date,
+                 filter_type:'month',
+              
+             })
+         })
+             .then((response) => response.json())
+
+             .then((responseJson) => {
+                 // this.setState.dataSource.push( responseJson.sale_info );
+                 this.setState({
+                     dataSource: responseJson.data
+                 })
+
+                 if (responseJson != null) {
+
+                 }
+
+             })
+             .catch((error) => {
+                 console.log(error)
+             })
+
+
+             .catch((error) => {
+                 console.log(error)
+             })
+     }).done();
+
+
+
+
+
+ }
+
+//for date
+customComponentDidMount() {
+    var urlPanDate = ''
+    // this.getDate();
+    AsyncStorage.getItem("date_key").then((value) => {
+        console.log(" Getter date" + value);
+        urlPanDate = value;
+        const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+        console.log("  url " + urlPan)
+        fetch(urlPan,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            
+                date:this.state.date,
+                filter_type:'month',
+             
+            })
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                // this.setState.dataSource.push( responseJson.sale_info );
+                this.setState({
+                    dataSource: responseJson.data
+                })
+
+                if (responseJson != null) {
+
+                }
+
+            })
+            .catch((error) => {
+                console.log(error)
             })
 
-            if (responseJson != null) {
 
-            }
+            .catch((error) => {
+                console.log(error)
+            })
+    }).done();
+}
 
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-        const urlResion = 'http://bkliveapp.bklive.in:3600/v2/get_all_region_sale?filter_type=month&hour=13&minute=57&is_delivery=0&date='+value
-        fetch(urlResion)
-        .then((response) => response.json())
-        .then((responseJson) => {
+//for page refersh
 
-            // this.setState.dataSource.push( responseJson.sale_info );
-            // this.setState({
-            // dataSource.push( responseJson.sale_info )
-            // })
+pageStackComponentDidMount(id,parent) {
+    var bodyData="",url="";
+    switch(parent) {
+        case 0:
+        // Region level
+        bodyData=JSON.stringify({
+            date:this.state.date,
+            filter_type:'month',
+        }),
+        url='getRegionSales'
 
-            // this.setState({dataSource: this.state.dataSource.push.apply(this.state.dataSource, responseJson.sale_info)})
+        break;
+        case 1:
+        this.state.regionId=id;
+        
+        // Cities level
 
-            var joined = this.state.dataSource.concat(responseJson.sale_info);
-            this.setState({ dataSource: joined })
+        bodyData=JSON.stringify({
+            date:this.state.date,
+            filter_type:'month',
+            region_id:id,
+        }),
+        url='getCitySales'
 
+        
+        break;
+        case 2:
+        // Store level
+        this.state.cityId=id;
+        // this.state.storeId=id;
+        bodyData=JSON.stringify({
+            date:this.state.date,
+            filter_type:'month',
+            city_id:id,
+        }),
+        url='getStoreSales'
 
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-     }).done();
+        break;
+   }
+    var screenPosition = ''
+    // this.getDate();
+    AsyncStorage.getItem("parent_key").then((value) => {
+        console.log(" Getter date : " + value);
+        screenPosition = value;
+        this.callApi(url,bodyData)
+    }).done();
+  
 }
 
 
-render() {
 
+callApi = (url,bodyData) => {
+   
+    const urlPan ='http://115.112.181.53:3000/api/'+url;
+        console.log("  url " + urlPan)
+
+
+        fetch(urlPan,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: bodyData,
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                // this.setState.dataSource.push( responseJson.sale_info );
+                this.setState({
+                    dataSource: responseJson.data
+                })
+
+                if (responseJson != null) {
+
+                }
+
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     
+};
+
+// for back stack navigation
+onBackPress = () => {
+
+    console.log('onBackPress function')
+    if(this.state.parent==0){
+        return;
+            }
+ // works best when the goBack is async
+ else{
+    console.log('onBackPress function to calling setBackStackScreen ')
+this.setBackStackScreen();
+
+ }
+    return true;
+  }
+
+
+  render() {
+        
+    // const { navigate } = this.props.navigation;
+
+  
+
+// console.log('Parent : '+parent)
     /* 2. Read the params from the navigation state */
     // const { params } = this.props.navigation.state;
     //const itemId = params ? params.itemId : null;
     // const filterType = params ? params.filterType : null;
     if (this.state.dataSource != null && this.state.dataSource.length > 0) {
         return (
-            <View style={styless.MainContainer}>
+            <View style={{ backgroundColor: '#000000', flex: 1, }}>
 
                 <View style={styless.categries}>
                     <DatePicker
@@ -335,30 +767,33 @@ render() {
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         iconSource={require('../images/date_icon.png')}
-                        onDateChange={(date) => { this.setState({ date: date });
-                        AsyncStorage.setItem("date_key",this.state.date);
-                        this.customComponentDidMount(); }}
+                        onDateChange={(date) => {
+                            this.setState({ date: date });
+                            AsyncStorage.setItem("date_key", this.state.date);
+                            this.customComponentDidMount();
+                        }}
 
                     />
                     <Text style={styless.instructions}>{this.state.date}</Text>
                     {/* <Text style={{
-                        fontSize: 16,
+                        fontSize: 12,
 
                         color: '#ffffff',
                         // paddingLeft: 40,
 
-
+                        marginLeft: 40,
                         //justifyContent: 'center',
                         textAlignVertical: "center",
                         alignItems: 'center',
 
-                    }}>Net Sales</Text> */}
+                    }}>Net Sales</Text>  */}
+
                     <Image
                         source={require('../images/select_people.png')}
                         style={{
                             padding: 10,
                             margin: 5,
-                            marginLeft: 110,
+                            marginLeft: 150,
                             resizeMode: 'stretch',
 
                         }}
@@ -369,15 +804,21 @@ render() {
                         style={styless.ImageIconStyle}
                     />
 
+
                 </View>
+              
+
+
                 <FlatList
                     data={this.state.dataSource}
                     renderItem={
                         this.renderItem
                     }
                 />
-
             </View>
+
+
+
         );
     }
     else {
@@ -399,7 +840,7 @@ render() {
                     <DatePicker
 
                         date={this.state.date}
-                       // placeholder="placeholder"
+                        // placeholder="placeholder"
 
                         mode="date"
                         format="YYYY-MM-DD"
@@ -408,28 +849,30 @@ render() {
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         iconSource={require('../images/date_icon.png')}
-                        onDateChange={(date) => { this.setState({ date: date });
-                        AsyncStorage.setItem("date_key",this.state.date);
-                        this.customComponentDidMount(); }}                        />
+                        onDateChange={(date) => {
+                            this.setState({ date: date });
+                            AsyncStorage.setItem("date_key", this.state.date);
+                            this.customComponentDidMount();
+                        }} />
                     <Text style={styless.instructions}>{this.state.date}</Text>
                     {/* <Text style={{
-                        fontSize: 16,
+                        fontSize: 12,
 
                         color: '#ffffff',
-                        paddingLeft: 40,
+                        // paddingLeft: 40,
 
 
                         //justifyContent: 'center',
                         textAlignVertical: "center",
                         alignItems: 'center',
 
-                    }}>Net Sales</Text> */}
+                    }}>Net Sales</Text>  */}
                     <Image
                         source={require('../images/select_people.png')}
                         style={{
                             padding: 10,
                             margin: 5,
-                            marginLeft: 130,
+                            marginLeft: 150,
                             resizeMode: 'stretch',
 
                         }}
@@ -441,12 +884,15 @@ render() {
                     />
 
                 </View>
+
+
                 <FlatList
                     data={this.state.dataSource}
                     renderItem={
                         this.renderItem
                     }
                 />
+
             </View>
         );
     }
@@ -455,119 +901,131 @@ render() {
 
 const styless = StyleSheet.create({
 
-MainContainer: {
+    MainContainer: {
 
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#313131',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-
-
-},
-categries: {
-
-    width: '100%',
-    height: 40,
-    marginTop: 10,
-    justifyContent: 'flex-start',
-    flexDirection: 'row',
-},
-ImageIconStyle: {
-    padding: 10,
-    margin: 5,
-    marginLeft: 20,
-    resizeMode: 'stretch',
-
-},
-
-cardViewStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 300,
-    height: 250,
-    backgroundColor: '#000',
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 5,
-    marginRight: 5
-},
-cardViewRow: {
-    flexDirection: 'row',
-    marginBottom: 1,
-    height: 22.7,
+        flex: 1,
+        height: '100%',
+        width: '100%',
+        backgroundColor: '#000000',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // flexDirection: 'column',
 
 
+    },
+    categries: {
+
+        // width: '100%',
+        height: 40,
+        marginTop: 10,
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
+    },
+    ImageIconStyle: {
+        padding: 10,
+        margin: 5,
+
+        resizeMode: 'stretch',
+
+    },
+
+    cardViewStyle: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '90%',
+        height: 100,
+        backgroundColor: '#313131',
+        marginTop: 10,
+        //    // marginBottom: 10,
+        //     marginLeft: 10,
+        //     marginRight: 10
+    },
+    cardViewRow: {
+        flexDirection: 'column',
+        height: 22.7,
+        //backgroundColor: '#fff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // textAlignVertical: "center"
 
 
-},
-cardViewText: {
-    flex: 1,
-    fontSize: 10,
-    width: 80,
-    paddingLeft: 35,
-    backgroundColor: 'red',
-    color: '#ffffff',
-    //justifyContent: 'center',
-    alignItems: 'center',
-    textAlignVertical: "center"
 
 
-},
-cardViewHeader: {
-    fontSize: 10,
-    width: 75,
 
-    color: '#ffffff',
+    },
+    cardViewText: {
+        flex: 1,
+        fontSize: 10,
+        width: 80,
+        paddingLeft: 35,
+        backgroundColor: 'red',
+        color: '#ffffff',
+        //justifyContent: 'center',
+        alignItems: 'center',
+        textAlignVertical: "center"
 
-    paddingLeft: 20,
-    backgroundColor: '#FAC209',
-    //justifyContent: 'center',
-    textAlignVertical: "center",
-    alignItems: 'center',
 
-},
-dataRow:
+    },
+    cardViewHeader: {
+        fontSize: 10,
+        width: 75,
 
-{
-    fontSize: 10,
-    marginLeft: 5,
-    marginRight: 5,
-    width: 60,
-    justifyContent: 'center',
-    color: '#ffffff',
-    alignItems: 'flex-end'
+        color: '#ffffff',
 
-},
-hairline: {
-    backgroundColor: '#000',
-    height: 2,
+        paddingLeft: 20,
+        backgroundColor: '#FAC209',
+        //justifyContent: 'center',
+        textAlignVertical: "center",
+        alignItems: 'center',
 
-},
-welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-},
-circles: {
-    flexDirection: 'row',
-    alignItems: 'center',
-},
-progress: {
-    margin: 10,
-},
-instructions: {
-    //justifyContent: 'center',
-    textAlignVertical: "center",
-    fontSize:12,
-    textAlign: 'center',
-    color: '#fff',
-    marginBottom: 5
-},
+    },
+    dataRow:
+
+    {
+        fontSize: 10,
+        marginLeft: 5,
+        marginRight: 5,
+        width: 60,
+        justifyContent: 'center',
+        color: '#ffffff',
+        alignItems: 'flex-end'
+
+    },
+    hairline: {
+        backgroundColor: '#000',
+        height: 2,
+
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    circles: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    progress: {
+        margin: 10,
+    },
+    instructions: {
+        //justifyContent: 'center',
+        textAlignVertical: "center",
+        fontSize: 12,
+        textAlign: 'center',
+        color: '#fff',
+        marginBottom: 5
+    },
 
 
 
 
 });
+
+// const navigateToScreen =StackNavigator({
+//    // DayPage: {screen: DayPage}, 
+//     SaleDetails: {screen: SaleDetails}, 
+// } , 
+// //initialRouteName: 'DayPage',
+
+// );

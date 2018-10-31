@@ -27,7 +27,7 @@ export default class SaleDetails extends Component {
     //   })
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'National',
+            title: 'Resion',
         }
     };
 
@@ -57,112 +57,111 @@ export default class SaleDetails extends Component {
 
 
 
-    renderItem = ({ item }) => {
-        var rounfFranchise = '0.00';
-        if (item != null) {
-            this.setState({ indeterminate: false });
+    // renderItem = ({ item }) => {
+    //     var rounfFranchise = '0.00';
+    //     if (item != null) {
+    //         this.setState({ indeterminate: false });
 
 
-        }
-
-
-
-        return (
-
-            <View style={styless.MainContainer}>
-                <CardView
-                    cardElevation={2}
-                    cardMaxElevation={2}
-                    cornerRadius={5}
-                    style={styless.cardViewStyle}>
-                    {
-
-                        <View style={styless.cardViewRow}>
-                            <Text style={styless.cardViewHeader}>
-                            </Text>
-
-                            <Text style={{
-                                fontSize: 10,
-                                width: 75,
-                                color: '#ffffff',
-                                paddingLeft: 30,
-
-                                backgroundColor: '#FAC209',
-                                //justifyContent: 'center',
-                                textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}>
-                                {
-                                    item.name
-                                }
-                            </Text>
-                            <Text style={styless.cardViewHeader}>
-                                Company
-                    </Text><Text style={styless.cardViewHeader}>
-                                Franchise
-                    </Text>
-
-
-                        </View>
-                    }
+    //     }
 
 
 
-                    {item.sale_data.map((data) =>
+    //     return (
+
+    //         <View style={styless.MainContainer}>
+    //             <CardView
+    //                 cardElevation={2}
+    //                 cardMaxElevation={2}
+    //                 cornerRadius={5}
+    //                 style={styless.cardViewStyle}>
+    //                 {
+
+    //                     <View style={styless.cardViewRow}>
+    //                         <Text style={styless.cardViewHeader}>
+    //                         </Text>
+
+    //                         <Text style={{
+    //                             fontSize: 10,
+    //                             width: 75,
+    //                             color: '#ffffff',
+    //                             paddingLeft: 30,
+
+    //                             backgroundColor: '#FAC209',
+    //                             //justifyContent: 'center',
+    //                             textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}>
+    //                             {
+    //                                 item.name
+    //                             }
+    //                         </Text>
+    //                         <Text style={styless.cardViewHeader}>
+    //                             Company
+    //                 </Text><Text style={styless.cardViewHeader}>
+    //                             Franchise
+    //                 </Text>
 
 
-                        <View style={styless.cardViewRow}>
-                            <Text style={styless.cardViewText}>
-                                {
-                                    data.name
-                                }
-                            </Text>
-                            <Text style={styless.dataRow}>
+    //                     </View>
+    //                 }
 
-                                {
 
-                                    data.total.toFixed(2)
-                                }
-                            </Text>
-                            <Text style={styless.dataRow}>
-                                {
-                                    data.self.toFixed(2)
-                                }
-                            </Text>
 
-                            <Text style={styless.dataRow}>
-                                {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
-                            </Text>
+    //                 {item.sale_data.map((data) =>
 
-                        </View>
 
-                    )}
-                    <View style={styless.hairline} />
-                </CardView>
-            </View>
-        )
+    //                     <View style={styless.cardViewRow}>
+    //                         <Text style={styless.cardViewText}>
+    //                             {
+    //                                 data.name
+    //                             }
+    //                         </Text>
+    //                         <Text style={styless.dataRow}>
 
-    }
+    //                             {
+
+    //                                 data.total.toFixed(2)
+    //                             }
+    //                         </Text>
+    //                         <Text style={styless.dataRow}>
+    //                             {
+    //                                 data.self.toFixed(2)
+    //                             }
+    //                         </Text>
+
+    //                         <Text style={styless.dataRow}>
+    //                             {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
+    //                         </Text>
+
+    //                     </View>
+
+    //                 )}
+    //                 <View style={styless.hairline} />
+    //             </CardView>
+    //         </View>
+    //     )
+
+    // }
 
     componentDidMount() {
-        const urlPan = 'http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0'
-        fetch(urlPan)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                // this.setState.dataSource.push( responseJson.sale_info );
-                this.setState({
-                    dataSource: responseJson.sale_info
-                })
+        // const urlPan = 'http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0'
+        // fetch(urlPan)
+        //     .then((response) => response.json())
+        //     .then((responseJson) => {
+        //         // this.setState.dataSource.push( responseJson.sale_info );
+        //         this.setState({
+        //             dataSource: responseJson.sale_info
+        //         })
+        //         if (responseJson != null) {
 
-                if (responseJson != null) {
+        //         }
 
-                }
-
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //     })
         // const urlResion = 'http://bkliveapp.bklive.in:3600/v2/get_all_region_sale?filter_type=day&date=2018-10-13&is_delivery=0'
         // fetch(urlResion)
         //     .then((response) => response.json())
@@ -187,67 +186,62 @@ export default class SaleDetails extends Component {
 
 
     render() {
-      
-
-/* 2. Get the param, provide a fallback value if not available */
-const { navigation } = this.props;
-    const itemId = navigation.getParam('itemId', 'Undefined');
-    const otherParam = navigation.getParam('otherParam', '0 sales');
 
 
+        /* 2. Get the param, provide a fallback value if not available */
+        const { navigation } = this.props;
+        const itemId = navigation.getParam('itemId', 'Undefined');
+        const otherParam = navigation.getParam('otherParam', '0 sales');
 
 
-        if (this.state.dataSource != null && this.state.dataSource.length > 0) {
+
+
+       // if (this.state.dataSource != null && this.state.dataSource.length > 0) {
             return (
                 <View style={styles.container}>
                     <View style={styles.subheader}>
 
-                        
+                        {/* <Text>{JSON.stringify(itemId)}</Text> */}
+                        <Text style={{
+                            fontSize: 18,
 
-                        
-                       
-        {/* <Text>{JSON.stringify(itemId)}</Text> */}
-        <Text style={{
-                                      fontSize: 18,
-  
-                                      color: '#ffffff',
-                                    marginLeft: 15,
-  
-                                    //   justifyContent: 'center',
-                                      // textAlignVertical: "center",
-                                      justifyContent: 'flex-start',
-  
-                                  }}
-        >{itemId}</Text>
-        <Text style={{
-                                      fontSize: 14,
-  
-                                      color: '#ffffff',
-                                      marginLeft: 10,
-                                      justifyContent: 'center',
-                                      // textAlignVertical: "center",
-                                      alignItems: 'center',
-  
-                                  }}
-        >Total Sale: {otherParam}</Text>
+                            color: '#ffffff',
+                            marginLeft: 30,
 
-         <Image
-                                  source={require('../images/line_graph.png')}
-                                  style={{
-                                    alignItems:'flex-end',
-                                      width: 40,
-                                      height: 40,
-                                      padding: 10,
-                                      margin: 5,
-                                      marginLeft: 30,
-                                      resizeMode: 'stretch',
-  
-                                  }} />
-        
+                            //   justifyContent: 'center',
+                            // textAlignVertical: "center",
+                            justifyContent: 'flex-start',
+
+                        }}
+                        >{itemId}</Text>
+                        <Text style={{
+                            fontSize: 18,
+
+                            color: '#ffffff',
+                            marginLeft: 10,
+                            justifyContent: 'flex-end',
+                            // textAlignVertical: "center",
+                            alignItems: 'center',
+
+                        }}
+                        >Total Sale: {otherParam}</Text>
+                        {/* <Image
+                            source={require('../images/line_graph.png')}
+                            style={{
+                                alignItems: 'flex-end',
+                                width: 40,
+                                height: 40,
+                                padding: 10,
+                                margin: 5,
+                                marginLeft: 30,
+                                resizeMode: 'stretch',
+
+                            }} /> */}
 
 
 
-</View >
+
+                    </View >
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
@@ -256,37 +250,73 @@ const { navigation } = this.props;
                     />
                 </View >
             );
-        }
-        else {
-            return (
-                <View style={styles.container}>
+        //}
+//         else {
+//             return (
+//                 <View style={styles.container}>
 
-                    <Progress.Bar
-                        style={styles.progress}
-                        progress={this.state.progress}
-                        indeterminate={this.state.indeterminate}
-                        width={380}
-                        borderColor={'#FAC209'}
-                        borderRadius={0}
-                        color={'rgb(250, 194, 9)'}
-                        marginTop={1}
-                    />
-                    <View style={styles.subheader}>
+//                     <Progress.Bar
+//                         style={styles.progress}
+//                         progress={this.state.progress}
+//                         indeterminate={this.state.indeterminate}
+//                         width={380}
+//                         borderColor={'#FAC209'}
+//                         borderRadius={0}
+//                         color={'rgb(250, 194, 9)'}
+//                         marginTop={1}
+//                     />
+//                    <View style={styles.subheader}>
 
-                     
-                     <Text>{itemId}</Text>
-        <Text>Total Sale: {otherParam}</Text>
+// {/* <Text>{JSON.stringify(itemId)}</Text> */}
+// <Text style={{
+//     fontSize: 18,
 
-                    </View>
-                    <FlatList
-                        data={this.state.dataSource}
-                        renderItem={
-                            this.renderItem
-                        }
-                    />
-                </View>
-            );
-        }
+//     color: '#ffffff',
+//     marginLeft: 15,
+
+//     //   justifyContent: 'center',
+//     // textAlignVertical: "center",
+//     justifyContent: 'flex-start',
+
+// }}
+// >{itemId}</Text>
+// <Text style={{
+//     fontSize: 14,
+
+//     color: '#ffffff',
+//     marginLeft: 10,
+//     justifyContent: 'center',
+//     // textAlignVertical: "center",
+//     alignItems: 'center',
+
+// }}
+// >Total Sale: {otherParam}</Text>
+// <Image
+//     source={require('../images/line_graph.png')}
+//     style={{
+//         alignItems: 'flex-end',
+//         width: 40,
+//         height: 40,
+//         padding: 10,
+//         margin: 5,
+//         marginLeft: 30,
+//         resizeMode: 'stretch',
+
+//     }} />
+
+
+
+
+// </View >
+//                     <FlatList
+//                         data={this.state.dataSource}
+//                         renderItem={
+//                             this.renderItem
+//                         }
+//                     />
+//                 </View>
+//             );
+//         }
     }
 }
 

@@ -71,8 +71,8 @@ export default class LoginPage extends Component{
                    
                       <TouchableOpacity style={styles.buttonContainer}>
                       <Text style={styles.buttontext}
-                      //onPress={this.login}
-                      onPress= {this.props.navigation.navigate('DayPage')}
+                      onPress={this.login}
+                      //onPress= {this.props.navigation.navigate('DayPage')}
                     >Login</Text>
 
                       </TouchableOpacity>
@@ -85,35 +85,42 @@ export default class LoginPage extends Component{
         );
     }
     login = () => {
-       fetch('http://bkliveapp.bklive.in:4500/v2/login',{
-           method: 'POST',
-           headers: {
-               'Accept': 'application/json',
-               'Content-Type': 'application/json'
-           },
-           body: JSON.stringify({
-           
-            email:this.state.username,
-            password:this.state.password,
-            
-           })
-       })
-       .then((response) => response.json())
-       .then((responseJson) => {
-           if(responseJson.status==true)
-           {
+
+        if(this.state.username=='admin@mcdliv.in'&&this.state.password=='mcdliv' )
+        {
             this.props.navigation.navigate('DayPage')
-               //console.warn(responseJson);
+        }else {
+            alert('Please check Email or Password');
+        }
+    //    fetch('http://bkliveapp.bklive.in:4500/v2/login',{
+    //        method: 'POST',
+    //        headers: {
+    //            'Accept': 'application/json',
+    //            'Content-Type': 'application/json'
+    //        },
+    //        body: JSON.stringify({
+           
+    //         email:this.state.username,
+    //         password:this.state.password,
+            
+    //        })
+    //    })
+    //    .then((response) => response.json())
+    //    .then((responseJson) => {
+    //        if(responseJson.status==true)
+    //        {
+    //         this.props.navigation.navigate('DayPage')
+    //            //console.warn(responseJson);
                
             
-            }else{
-                alert(responseJson.message);
-            }
+    //         }else{
+    //             alert(responseJson.message);
+    //         }
         
-           })
-           .catch((error) => {
-             console.error(error);
-           });
+    //        })
+    //        .catch((error) => {
+    //          console.error(error);
+    //        });
     }
 
 }
