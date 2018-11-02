@@ -693,11 +693,11 @@ export default class DayPage extends Component {
 
             break;
        }
-        var screenPosition = ''
+        // var screenPosition = ''
         // this.getDate();
         AsyncStorage.getItem("parent_key").then((value) => {
             console.log(" Getter date : " + value);
-            screenPosition = value;
+            // screenPosition = value;
             this.callApi(url,bodyData)
         }).done();
       

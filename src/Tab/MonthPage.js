@@ -300,7 +300,7 @@ dateFind(){
                                  });
                                }} >
                                <Image
-                               source={require('../images/nextButton.png')}
+                                source={require('../images/nextButton.png')}
                                style={{
                                    width: 30,
                                    height: 30,

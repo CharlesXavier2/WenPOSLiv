@@ -189,7 +189,7 @@ export const CustomHeader = ({ title, subtitle }) => (
         const { navigate } = navigation
         return {
             
-        title: 'McD',  // Title to appear in status bar
+        title: 'McDLiv',  // Title to appear in status bar
        // headerTitle: <CustomHeader title='McDa' 
        // subtitle={}/>,
     // headerRight: (

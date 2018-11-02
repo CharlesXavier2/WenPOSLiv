@@ -27,7 +27,7 @@ export default class SaleDetails extends Component {
     //   })
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Resion',
+            title: 'Details',
         }
     };
 
