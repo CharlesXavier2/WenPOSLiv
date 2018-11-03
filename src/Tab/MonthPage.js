@@ -30,11 +30,12 @@ import SaleDetails from '../components/SaleDetail';
 
 
 var dateFormat = require('dateformat');
-var parentVal =0;
-var tabPositionVal=0;
 export default class MonthPage extends Component {
     constructor(props) {
         super(props)
+        props.navigation.setParams({
+            onTabFocus: this.callCurrentApi
+          });
         this.state = {
             dataSource: [],
             progress: 0,
@@ -53,12 +54,50 @@ export default class MonthPage extends Component {
 
     }
 
-    getDate = () => {
-        var date = new Date().toDateString();
-        date = dateFormat(date, "yyyy-mm-dd");
-        this.setState({ date });
-        AsyncStorage.setItem("date_key", date);
+    static navigationOptions = ({ navigation }) => ({
+        // tabBarOnPress: e => {
+        // //   Alert.alert("Test", "Tab selected"); // Here
+        // //   e.jumpToIndex(e.scene.index);
+        // console.log('Month -> tabBarOnPress ') 
+        // this.callCurrentApi()
+        // }
 
+        tabBarOnPress: ({ navigation, defaultHandler }) => {
+            // perform your logic here
+            // this is mandatory to perform the actual switch
+            // don't call this if you want to prevent focus
+           
+            navigation.state.params.onTabFocus();
+            defaultHandler();
+          }
+      });
+
+
+    componentWillFocus() {
+        // Screen will entered
+        console.log('Month -> componentWillReceiveProps entered') 
+   }
+
+   componentWillBlur() {
+        // Screen will leave
+        console.log('Month -> componentWillReceiveProps Leave') 
+   }
+   componentWillReceiveProps(nextProps) {
+    console.log('Month -> componentWillReceiveProps ') 
+   }
+
+    getDate = () => {
+        AsyncStorage.getItem("date_key").then((value) => {
+            console.log(" Getter date" + value);
+            if(value==null ||value==''){
+                var date = new Date().toDateString();
+                date = dateFormat(date, "yyyy-mm-dd");
+                this.setState({ date });
+                AsyncStorage.setItem("date_key", date);
+            }else{
+                this.setState({ date:value });
+            }
+        })
     };
 
     setCurrentScreen = (id) => {
@@ -192,6 +231,103 @@ dateFind(){
  //     return (0 + " K");
  // } 
  }
+
+ callCurrentApi = () => {
+    var urlPanDate = ''
+    this.getDate();
+    AsyncStorage.getItem("date_key").then((value) => {
+        console.log(" Getter date" + value);
+        urlPanDate = value;
+        const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+        console.log("  url " + urlPan)
+        fetch(urlPan,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            
+                date:this.state.date,
+                filter_type:'month',
+             
+            })
+        })
+            .then((response) => response.json())
+
+            .then((responseJson) => {
+                // this.setState.dataSource.push( responseJson.sale_info );
+                this.setState({
+                    dataSource: responseJson.data
+                })
+
+                if (responseJson != null) {
+
+                }
+
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+
+
+            .catch((error) => {
+                console.log(error)
+            })
+    }).done();
+
+
+
+
+
+}
+
+//for date
+customComponentDidMount() {
+   var urlPanDate = ''
+   // this.getDate();
+   AsyncStorage.getItem("date_key").then((value) => {
+       console.log(" Getter date" + value);
+       urlPanDate = value;
+       const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+       console.log("  url " + urlPan)
+       fetch(urlPan,{
+           method: 'POST',
+           headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({
+           
+               date:this.state.date,
+               filter_type:'month',
+            
+           })
+       })
+           .then((response) => response.json())
+           .then((responseJson) => {
+               // this.setState.dataSource.push( responseJson.sale_info );
+               this.setState({
+                   dataSource: responseJson.data
+               })
+
+               if (responseJson != null) {
+
+               }
+
+           })
+           .catch((error) => {
+               console.log(error)
+           })
+
+
+           .catch((error) => {
+               console.log(error)
+           })
+   }).done();
+ }
+
+
 
  renderItem = ({ item }) => {
      var val =item.current_sale;
@@ -540,99 +676,10 @@ dateFind(){
      // console.log('Parent : '+parent)
      // console.log('tabPosition : '+tabPosition)
 
-
-     var urlPanDate = ''
-     this.getDate();
-     AsyncStorage.getItem("date_key").then((value) => {
-         console.log(" Getter date" + value);
-         urlPanDate = value;
-         const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
-         console.log("  url " + urlPan)
-         fetch(urlPan,{
-             method: 'POST',
-             headers: {
-                 'Accept': 'application/json',
-                 'Content-Type': 'application/json'
-             },
-             body: JSON.stringify({
-             
-                 date:this.state.date,
-                 filter_type:'month',
-              
-             })
-         })
-             .then((response) => response.json())
-
-             .then((responseJson) => {
-                 // this.setState.dataSource.push( responseJson.sale_info );
-                 this.setState({
-                     dataSource: responseJson.data
-                 })
-
-                 if (responseJson != null) {
-
-                 }
-
-             })
-             .catch((error) => {
-                 console.log(error)
-             })
+     this.callCurrentApi();
 
 
-             .catch((error) => {
-                 console.log(error)
-             })
-     }).done();
-
-
-
-
-
- }
-
-//for date
-customComponentDidMount() {
-    var urlPanDate = ''
-    // this.getDate();
-    AsyncStorage.getItem("date_key").then((value) => {
-        console.log(" Getter date" + value);
-        urlPanDate = value;
-        const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
-        console.log("  url " + urlPan)
-        fetch(urlPan,{
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-            
-                date:this.state.date,
-                filter_type:'month',
-             
-            })
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                // this.setState.dataSource.push( responseJson.sale_info );
-                this.setState({
-                    dataSource: responseJson.data
-                })
-
-                if (responseJson != null) {
-
-                }
-
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-
-
-            .catch((error) => {
-                console.log(error)
-            })
-    }).done();
+    
 }
 
 //for page refersh

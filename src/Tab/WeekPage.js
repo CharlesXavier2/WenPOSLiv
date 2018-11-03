@@ -35,6 +35,9 @@ var tabPositionVal=0;
 export default class WeekPage extends Component{
     constructor(props) {
         super(props)
+        props.navigation.setParams({
+            onTabFocus: this.callCurrentApi
+          });
         this.state = {
             dataSource: [],
             progress: 0,
@@ -53,13 +56,40 @@ export default class WeekPage extends Component{
 
     }
 
-    getDate = () => {
-        var date = new Date().toDateString();
-        date = dateFormat(date, "yyyy-mm-dd");
-        this.setState({ date });
-        AsyncStorage.setItem("date_key", date);
 
+    static navigationOptions = ({ navigation }) => ({
+        // tabBarOnPress: e => {
+        // //   Alert.alert("Test", "Tab selected"); // Here
+        // //   e.jumpToIndex(e.scene.index);
+        // console.log('Month -> tabBarOnPress ') 
+        // this.callCurrentApi()
+        // }
+
+        tabBarOnPress: ({ navigation, defaultHandler }) => {
+            // perform your logic here
+            // this is mandatory to perform the actual switch
+            // don't call this if you want to prevent focus
+           
+            navigation.state.params.onTabFocus();
+            defaultHandler();
+          }
+      });
+
+
+      getDate = () => {
+        AsyncStorage.getItem("date_key").then((value) => {
+            console.log(" Getter date" + value);
+            if(value==null ||value==''){
+                var date = new Date().toDateString();
+                date = dateFormat(date, "yyyy-mm-dd");
+                this.setState({ date });
+                AsyncStorage.setItem("date_key", date);
+            }else{
+                this.setState({ date:value });
+            }
+        })
     };
+
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
         console.log('setCurrentScreen before parent : '+this.state.parent) 
@@ -535,57 +565,56 @@ export default class WeekPage extends Component{
    
        // console.log('Parent : '+parent)
        // console.log('tabPosition : '+tabPosition)
+this.callCurrentApi()
+      }
 
 
-       var urlPanDate = ''
-       this.getDate();
-       AsyncStorage.getItem("date_key").then((value) => {
-           console.log(" Getter date" + value);
-           urlPanDate = value;
-           const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
-           console.log("  url " + urlPan)
-           fetch(urlPan,{
-               method: 'POST',
-               headers: {
-                   'Accept': 'application/json',
-                   'Content-Type': 'application/json'
-               },
-               body: JSON.stringify({
-               
-                   date:this.state.date,
-                   filter_type:'week',
-                
-               })
-           })
-               .then((response) => response.json())
+   callCurrentApi= () =>  {
+    var urlPanDate = ''
+    this.getDate();
+    AsyncStorage.getItem("date_key").then((value) => {
+        console.log(" Getter date" + value);
+        urlPanDate = value;
+        const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+        console.log("  url " + urlPan)
+        fetch(urlPan,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            
+                date:this.state.date,
+                filter_type:'week',
+             
+            })
+        })
+            .then((response) => response.json())
 
-               .then((responseJson) => {
-                   // this.setState.dataSource.push( responseJson.sale_info );
-                   this.setState({
-                       dataSource: responseJson.data
-                   })
+            .then((responseJson) => {
+                // this.setState.dataSource.push( responseJson.sale_info );
+                this.setState({
+                    dataSource: responseJson.data
+                })
 
-                   if (responseJson != null) {
+                if (responseJson != null) {
 
-                   }
+                }
 
-               })
-               .catch((error) => {
-                   console.log(error)
-               })
-
-
-               .catch((error) => {
-                   console.log(error)
-               })
-       }).done();
+            })
+            .catch((error) => {
+                console.log(error)
+            })
 
 
-
+            .catch((error) => {
+                console.log(error)
+            })
+    }).done();
 
 
    }
-
 
    //for date
    customComponentDidMount() {
