@@ -22,8 +22,8 @@ export default class LoginPage extends Component{
     constructor(props){
        super(props);
        this.state = {
-        username:'',
-        password:'',
+        username:'admin@mcdliv.in',
+        password:'mcdliv',
         } 
     }
     render(){
@@ -47,11 +47,12 @@ export default class LoginPage extends Component{
                     <View >
                       
                     <TextInput style={styles.inputbar}
-                      
+                      Text='admin@mcdliv.in'
                     placeholder='User Id'
                     returnKeyType='next'
                     keyboardType='email-address'
                     autoCapitalize='none'
+                    value={this.state.username}
                     onChangeText={(username)=> this.setState({username})}>
                     </TextInput>
                     </View> 
@@ -61,10 +62,10 @@ export default class LoginPage extends Component{
                            secureTextEntry={true}
                            placeholder='Password'
                            autoCapitalize='none'
-
+                            Text='mcdliv'
                            returnKeyType='search'
                            onChangeText={(password)=> this.setState({password})}>
-                           
+                           value={this.state.password}
                            </TextInput>
                                                </View> 
                 

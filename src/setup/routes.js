@@ -32,6 +32,12 @@ export const Tabs = createMaterialTopTabNavigator({
         indicatorStyle: {
             backgroundColor: '#fff',
         },
+
+        tabBarOnPress: (scene, jumpToIndex) => {
+            console.log('onPress:', scene.route);
+            jumpToIndex(scene.index);
+          },
+      
     }, // navigationOptions: ({ navigation }) => ({
         //     // tabBarOnPress: (scene, jumpToIndex) => {
         //     //     console.log('onPress:', scene.route);

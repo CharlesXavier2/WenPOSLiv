@@ -36,6 +36,9 @@ var tabPositionVal=0;
 export default class YearPage extends Component {
     constructor(props) {
         super(props)
+        props.navigation.setParams({
+            onTabFocus: this.callCurrentApi
+          });
         this.state = {
             dataSource: [],
             progress: 0,
@@ -54,13 +57,52 @@ export default class YearPage extends Component {
 
     }
 
-    getDate = () => {
-        var date = new Date().toDateString();
-        date = dateFormat(date, "yyyy-mm-dd");
-        this.setState({ date });
-        AsyncStorage.setItem("date_key", date);
+    static navigationOptions = ({ navigation }) => ({
+        // tabBarOnPress: e => {
+        // //   Alert.alert("Test", "Tab selected"); // Here
+        // //   e.jumpToIndex(e.scene.index);
+        // console.log('Month -> tabBarOnPress ') 
+        // this.callCurrentApi()
+        // }
 
-    };
+        tabBarOnPress: ({ navigation, defaultHandler }) => {
+            // perform your logic here
+            // this is mandatory to perform the actual switch
+            // don't call this if you want to prevent focus
+           
+            navigation.state.params.onTabFocus();
+            defaultHandler();
+          }
+      });
+
+
+
+    componentWillFocus() {
+        // Screen will entered
+        console.log('Year -> componentWillReceiveProps entered') 
+   }
+
+   componentWillBlur() {
+        // Screen will leave
+        console.log('Year -> componentWillReceiveProps Leave') 
+   }
+   componentWillReceiveProps(nextProps) {
+    console.log('Year -> componentWillReceiveProps ') 
+   }
+
+   getDate = () => {
+    AsyncStorage.getItem("date_key").then((value) => {
+        console.log(" Getter date" + value);
+        if(value==null ||value==''){
+            var date = new Date().toDateString();
+            date = dateFormat(date, "yyyy-mm-dd");
+            this.setState({ date });
+            AsyncStorage.setItem("date_key", date);
+        }else{
+            this.setState({ date:value });
+        }
+    })
+};
 
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
@@ -534,7 +576,10 @@ componentDidMount() {
 
     // console.log('Parent : '+parent)
     // console.log('tabPosition : '+tabPosition)
+    this.callCurrentApi()
+}
 
+callCurrentApi= () =>  {
 
     var urlPanDate = ''
     this.getDate();
@@ -578,15 +623,7 @@ componentDidMount() {
                 console.log(error)
             })
     }).done();
-
-
-
-
-
 }
-
-
-
 
 //for date
 customComponentDidMount() {
