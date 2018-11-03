@@ -112,7 +112,7 @@ export default class DayPage extends Component {
         var parent = this.state.parent -1;
         console.log('before parent : '+parent)
 
-        var id=0;
+        var id='';
 
       // var clickId=id;
         this.setState({ parent });
@@ -135,7 +135,7 @@ export default class DayPage extends Component {
             bodyData=JSON.stringify({
                 date:this.state.date,
                 filter_type:'day',
-                region_id:id,
+                region_id:''+id,
             }),
             url='getCitySales'
             console.log('setBackStackScreenswitchCities'+id)
@@ -148,7 +148,7 @@ export default class DayPage extends Component {
             bodyData=JSON.stringify({
                 date:this.state.date,
                 filter_type:'day',
-                city_id:id,
+                city_id:''+id,
             }),
             url='getStoreSales'
             break;
