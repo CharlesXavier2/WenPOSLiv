@@ -22,14 +22,10 @@ var dataSource1 = []
 
 export default class SaleDetails extends Component {
 
-    // static navigationOptions = ({ navigation }) => ({
-    //     title: 'National',
-    //   })
-    static navigationOptions = ({ navigation }) => {
-        return {
-            title: 'Details',
-        }
-    };
+    
+    static navigationOptions= ({navigation}) => {
+        return {title: navigation.state.params.itemId}
+      }
 
     constructor(props) {
         super(props)

@@ -444,7 +444,7 @@ DatePicker.defaultProps = {
   duration: 300,
   confirmBtnText: '确定',
   cancelBtnText: '取消',
-  iconSource: require('../images/date_icon.png'),
+  iconSource: require('../images/calendar.png'),
 
   customStyles: {},
 

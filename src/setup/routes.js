@@ -12,14 +12,15 @@ import LoginPage from '../components/LoginPage';
 import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
+import LogoutScreen from '../components/LogoutScreen.js'
 
 //import DatePicker from '../components/DateSelector';
 
 export const Tabs = createMaterialTopTabNavigator({
     Day: DayPage,
-     Week: WeekPage,
-     Month: MonthPage,
-     Year: YearPage
+    Week: WeekPage,
+    Month: MonthPage,
+    Year: YearPage
 },{
     tabBarOptions: {
 
@@ -108,17 +109,27 @@ export const Tabs = createMaterialTopTabNavigator({
 export const DrawerNavigator = createDrawerNavigator({
     DayPage:{
         screen: Tabs
-    }
-},{
+    } ,
+   
+      
+      LogoutScreen: {
+        screen: LogoutScreen,
+      }
+   
+},
+    {
+    drawerPosition: 'rights',
     initialRouteName: 'DayPage',
     contentComponent: DrawerScreen,
     drawerWidth: 300
-});
+},
+);
 
 export const MenuImage = ({navigation}) => {
     if(!navigation.state.isDrawerOpen){
         return <Image source={require('../images/burgermenu.png')}/>
-    }else{
+    }
+    else{
         return <Image source={require('../images/left-arrow.png')}
         style={{
             width:30,
@@ -189,37 +200,49 @@ export const CustomHeader = ({ title, subtitle }) => (
           headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
         })
       },
+      
   },
   {
     navigationOptions: ({ navigation ,title,subtitle}) => {
         const { navigate } = navigation
         return {
             
-        title: 'McDLiv',  // Title to appear in status bar
+            title: 'McDLiv',  // Title to appear in status bar
        // headerTitle: <CustomHeader title='McDa' 
        // subtitle={}/>,
-    // headerRight: (
-    //     <TouchableOpacity onPress={()=>navigate('DatePicker')} >
+//    headerLeft: (
+//         <TouchableOpacity  >
        
-    //             <Image source={require('../images/date_icon.png')} style={{ height: 30, resizeMode: 'contain'}}  />
-    //         </TouchableOpacity>
-    // //     <DatePicker
+//                 <Image source={require('../images/left-arrow.png')} style={{ height: 30, resizeMode: 'contain'}}  />
+//             </TouchableOpacity>
+//     //     <DatePicker
          
-    // //    // date={this.state.date}
-    // //     mode="date"
-    // //     placeholder=""
-    // //     format="YYYY-MM-DD"
-    // //     minDate="2016-05-01"
-    // //     maxDate="2016-06-01"
-    // //     confirmBtnText="Confirm"
-    // //     cancelBtnText="Cancel"
-    // //     iconSource={require('../images/date_icon.png')}
-    // //    // selected={1} 
-    // //    // onDateChange={() => params.Tracking()}
-    // //    // onDateChange={(date) => {this.setState({date: date});}}
-    // //   />
-    //   ),
-           
+//     //    // date={this.state.date}
+//     //      mode="date"
+//     //     placeholder=""
+//     //     format="YYYY-MM-DD"
+//     //     minDate="2016-05-01"
+//     //     maxDate="2016-06-01"
+//     //     confirmBtnText="Confirm"
+//     //     cancelBtnText="Cancel"
+//     //     iconSource={require('../images/date_icon.png')}
+//     //    // selected={1} 
+//     //    // onDateChange={() => params.Tracking()}
+//     //    // onDateChange={(date) => {this.setState({date: date});}}
+//     //   />
+//       )      
+    // headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+
+// ,
+// Day:
+// { 
+//     screen: DayPage, 
+//     navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+//       //title: 'National',
+//       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+//     })
+//   },
+
         headerLeft: 
         <TouchableOpacity  onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())} }>
             <MenuImage style="styles.bar" navigation={navigation}/>

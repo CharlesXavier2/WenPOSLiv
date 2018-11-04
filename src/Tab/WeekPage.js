@@ -64,7 +64,7 @@ export default class WeekPage extends Component{
         // console.log('Month -> tabBarOnPress ') 
         // this.callCurrentApi()
         // }
-
+        // title: 'McDLiv',
         tabBarOnPress: ({ navigation, defaultHandler }) => {
             // perform your logic here
             // this is mandatory to perform the actual switch
@@ -786,7 +786,7 @@ this.setBackStackScreen();
                             maxDate="2021-06-01"
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
-                            iconSource={require('../images/date_icon.png')}
+                            iconSource={require('../images/calendar.png')}
                             onDateChange={(date) => {
                                 this.setState({ date: date });
                                 AsyncStorage.setItem("date_key", this.state.date);
@@ -867,7 +867,7 @@ this.setBackStackScreen();
                             maxDate="2021-06-01"
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
-                            iconSource={require('../images/date_icon.png')}
+                            iconSource={require('../images/calendar.png')}
                             onDateChange={(date) => {
                                 this.setState({ date: date });
                                 AsyncStorage.setItem("date_key", this.state.date);

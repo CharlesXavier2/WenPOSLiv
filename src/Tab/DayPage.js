@@ -23,7 +23,7 @@ import {
 } from 'react-native';
 import CardView from 'react-native-cardview';
 import styles from '../styles';
-import {StackNavigator} from 'react-navigation';
+import {StackNavigator,HeaderBackButton} from 'react-navigation';
 import DrawerScreen from '../components/DrawerScreen';
 import * as Progress from 'react-native-progress';
 import DatePicker from '../utils/datepicker.js';
@@ -36,7 +36,7 @@ var parentVal =0;
 var tabPositionVal=0;
 //var dateValue='';
 export default class DayPage extends Component {
-
+  
    
 //  navigateToScreen = (SaleDetails) => () => {
 //         navigateToScreen =createStackNavigator({
@@ -69,16 +69,25 @@ export default class DayPage extends Component {
 
 
     }
+    // static navigationOptions= ({navigation}) => {
+    //     return {title: navigation.state.params.itemId}
+    //   }
 
-
-    static navigationOptions = ({ navigation }) => ({
+    static navigationOptions = ({ navigation }) => (
+        {
         // tabBarOnPress: e => {
         // //   Alert.alert("Test", "Tab selected"); // Here
         // //   e.jumpToIndex(e.scene.index);
         // console.log('Month -> tabBarOnPress ') 
         // this.callCurrentApi()
         // }
-
+        // title: 'McDLiv',
+        // title: navigation.state.titleName,
+        // headerRight: <HeaderBackButton  onPress={() => { 
+        //     this.setBackStackScreen(); 
+    
+        // }} />,
+       
         tabBarOnPress: ({ navigation, defaultHandler }) => {
             // perform your logic here
             // this is mandatory to perform the actual switch
@@ -276,7 +285,8 @@ export default class DayPage extends Component {
                                     // textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }}
+                                }
+                            } 
                             //    onPress={this.navigateToScreen('SaleDetails')}
                             // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
                             //     type: "Navigate",
@@ -422,16 +432,15 @@ export default class DayPage extends Component {
   
   
                                   <Text style={{
-                                      fontSize: 22,
-  
+                                      fontSize: 18,
                                       color: '#ffffff',
   
-  
+                                    //   width: 120,
                                       justifyContent: 'center',
                                       // textAlignVertical: "center",
                                       alignItems: 'center',
   
-                                  }}
+                                  }} numberOfLines = { 1 }
                                 //   onPress={this.login}
                                 // onPress={this.navigateToScreen('SaleDetails')}
                                 // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
@@ -460,7 +469,7 @@ export default class DayPage extends Component {
                                 //   });
 
 
-                                  }}
+                                  }} 
 
                                   >
                                       {
@@ -693,17 +702,18 @@ callCurrentApi= () =>  {
 
             break;
             case 1:
-            this.state.regionId=id;
+            this.state.regionId=id.toString();
             
             // Cities level
 
             bodyData=JSON.stringify({
                 date:this.state.date,
                 filter_type:'day',
-                region_id:id,
+                region_id:id.toString(),
             }),
             url='getCitySales'
-
+            
+            
             
             break;
             case 2:
@@ -713,10 +723,10 @@ callCurrentApi= () =>  {
             bodyData=JSON.stringify({
                 date:this.state.date,
                 filter_type:'day',
-                city_id:id,
+                city_id:id.toString(),
             }),
             url='getStoreSales'
-
+            
             break;
        }
         // var screenPosition = ''
@@ -811,7 +821,7 @@ callCurrentApi= () =>  {
                             maxDate="2021-06-01"
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
-                            iconSource={require('../images/date_icon.png')}
+                            iconSource={require('../images/calendar.png')}
                             onDateChange={(date) => {
                                 this.setState({ date: date });
                                 AsyncStorage.setItem("date_key", this.state.date);
@@ -820,25 +830,14 @@ callCurrentApi= () =>  {
 
                         />
                         <Text style={styless.instructions}>{this.state.date}</Text>
-                        {/* <Text style={{
-                            fontSize: 12,
-
-                            color: '#ffffff',
-                            // paddingLeft: 40,
-
-                            marginLeft: 40,
-                            //justifyContent: 'center',
-                            textAlignVertical: "center",
-                            alignItems: 'center',
-
-                        }}>Net Sales</Text>  */}
+                        
 
                         <Image
                             source={require('../images/select_people.png')}
                             style={{
                                 padding: 10,
                                 margin: 5,
-                                marginLeft: 150,
+                                marginLeft: 120,
                                 resizeMode: 'stretch',
 
                             }}
@@ -860,6 +859,22 @@ callCurrentApi= () =>  {
                             this.renderItem
                         }
                     />
+                    <Text style={{
+                            fontSize: 12,
+                            height: 25,
+                            color: '#ffffff',
+                            // paddingLeft: 40,
+
+                            marginLeft: 40,
+                            //justifyContent: 'center',
+                            textAlignVertical: "center",
+                            alignItems: 'center',
+
+                        }} onPress={() => { 
+                            
+                                 this.setBackStackScreen(); 
+                        
+                             }}>Back</Text> 
                 </View>
 
 
@@ -893,7 +908,7 @@ callCurrentApi= () =>  {
                             maxDate="2021-06-01"
                             confirmBtnText="Confirm"
                             cancelBtnText="Cancel"
-                            iconSource={require('../images/date_icon.png')}
+                            iconSource={require('../images/calendar.png')}
                             onDateChange={(date) => {
                                 this.setState({ date: date });
                                 AsyncStorage.setItem("date_key", this.state.date);

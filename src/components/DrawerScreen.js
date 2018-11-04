@@ -21,19 +21,15 @@ class DrawerScreen extends Component {
           <View>
             <View style={styles.menuItem}>
               <Text onPress={this.navigateToScreen('DayPage')}>
-                Day
+               Sales
               </Text>
             </View>
             <View style={styles.menuItem}>
-              <Text onPress={this.navigateToScreen('WeekPage')}>
-               Week
+              <Text onPress={this.navigateToScreen('LogoutScreen')}>
+               Logout
               </Text>
             </View>
-            <View style={styles.menuItem}>
-              <Text onPress={this.navigateToScreen('MonthPage')}>
-              Month
-              </Text>
-            </View>
+           
           </View>
         </ScrollView>
       </View>

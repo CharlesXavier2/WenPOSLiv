@@ -55,6 +55,7 @@ export default class MonthPage extends Component {
     }
 
     static navigationOptions = ({ navigation }) => ({
+        // title: 'McDLiv',
         // tabBarOnPress: e => {
         // //   Alert.alert("Test", "Tab selected"); // Here
         // //   e.jumpToIndex(e.scene.index);
@@ -813,7 +814,7 @@ this.setBackStackScreen();
                         maxDate="2021-06-01"
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
-                        iconSource={require('../images/date_icon.png')}
+                        iconSource={require('../images/calendar.png')}
                         onDateChange={(date) => {
                             this.setState({ date: date });
                             AsyncStorage.setItem("date_key", this.state.date);
@@ -895,7 +896,7 @@ this.setBackStackScreen();
                         maxDate="2021-06-01"
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
-                        iconSource={require('../images/date_icon.png')}
+                        iconSource={require('../images/calendar.png')}
                         onDateChange={(date) => {
                             this.setState({ date: date });
                             AsyncStorage.setItem("date_key", this.state.date);
