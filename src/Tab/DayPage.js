@@ -7,6 +7,7 @@
  */
 
 import React, { Component } from 'react';
+const GLOBAL = require('../constant/Globals.js');
 import {
     Platform,
     StyleSheet,
@@ -18,12 +19,13 @@ import {
     AsyncStorage,
     BackHandler,
     TouchableOpacity,
+    Alert,
 
 
 } from 'react-native';
 import CardView from 'react-native-cardview';
 import styles from '../styles';
-import {StackNavigator} from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
 import DrawerScreen from '../components/DrawerScreen';
 import * as Progress from 'react-native-progress';
 import DatePicker from '../utils/datepicker.js';
@@ -32,42 +34,40 @@ import SaleDetails from '../components/SaleDetail';
 
 
 var dateFormat = require('dateformat');
-var parentVal =0;
-var tabPositionVal=0;
+var parentVal = 0;
+var tabPositionVal = 0;
 //var dateValue='';
 export default class DayPage extends Component {
 
-   
-//  navigateToScreen = (SaleDetails) => () => {
-//         navigateToScreen =createStackNavigator({
-//             SaleDetails:{screen: SaleDetails}, 
-//         });
-//         //  this.props.navigation.navigate(navigateAction);
-//         // this.props.navigation.dispatch(DrawerActions.closeDrawer())
-//       }
+
+    //  navigateToScreen = (SaleDetails) => () => {
+    //         navigateToScreen =createStackNavigator({
+    //             SaleDetails:{screen: SaleDetails}, 
+    //         });
+    //         //  this.props.navigation.navigate(navigateAction);
+    //         // this.props.navigation.dispatch(DrawerActions.closeDrawer())
+    //       }
 
 
     constructor(props) {
         super(props)
-        props.navigation.setParams({
-            onTabFocus: this.callCurrentApi
-          });
         this.state = {
             dataSource: [],
             progress: 0,
             indeterminate: true,
             date: '',
-            parent :0,
-            tabPosition:0,
-            clickId:0,
-            regionId:0,
-            cityId:0,
-            storeId:0, 
+            parent: 0,
+            tabPosition: 0,
+            clickId: "0",
+            regionId: 0,
+            cityId: 0,
+            storeId: 0,
+            isGeo: "true",
         }
         this.onBackPress = this.onBackPress.bind(this);
-
-
-
+        props.navigation.setParams({
+            onTabFocus: this.customComponentDidMount
+        });
     }
 
 
@@ -79,119 +79,249 @@ export default class DayPage extends Component {
         // this.callCurrentApi()
         // }
 
+
         tabBarOnPress: ({ navigation, defaultHandler }) => {
             // perform your logic here
             // this is mandatory to perform the actual switch
             // don't call this if you want to prevent focus
-           
+
             navigation.state.params.onTabFocus();
             defaultHandler();
-          }
-      });
+        },
 
 
+    });
 
-      getDate = () => {
+    _myHomeFunction = () => {
+        alert('Here is home tab!');
+    }
+    componentWillMount() {
+
+    }
+
+    componentWillReceiveProps(newProps) {
+        // this._myHomeFunction();
+        try {
+            // this.customComponentDidMount()
+            console.log(" componentWillReceiveProps : ")
+        } catch (error) {
+
+        }
+        // alert('Here is home tab! : '+newProps.screenProps.currentScreen);
+        // if (newProps.screenProps.route_index == 0) {
+        //   this._myHomeFunction();
+        // }
+    }
+
+    getDate = () => {
         AsyncStorage.getItem("date_key").then((value) => {
             console.log(" Getter date" + value);
-            if(value==null ||value==''){
+            if (value == null || value == '') {
                 var date = new Date().toDateString();
                 date = dateFormat(date, "yyyy-mm-dd");
                 this.setState({ date });
-                AsyncStorage.setItem("date_key", date);
-            }else{
-                this.setState({ date:value });
+                AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+            } else {
+                this.setState({ date: value });
             }
         })
     };
 
+    openDialog = () => {
+        // Works on both iOS and Android
+        Alert.alert(
+            '',
+            'Are you want to switch Geographical/People',
+            [
+                //   {text: 'Ask me later', onPress: () => {
+                //       console.log('Ask me later pressed')
+                //   }
+                // },
+                {
+                    text: 'Cancel', onPress: () => {
+                        console.log('Cancel Pressed')
+                    }, style: 'cancel'
+                },
+                {
+                    text: 'OK', onPress: () => {
+                        console.log('OK Pressed');
+
+                        AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
+
+                            if (value === null) {
+                                value = "true";
+                            }
+                            console.log(" Is_Geo_key : " + value);
+                            if (value == "true") {
+                                AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
+                                this.setState({ isGeo: false })
+
+                            } else {
+                                AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
+                                this.setState({ isGeo: true })
+
+                            }
+                            console.log("State value Is_Geo_key : " + this.state.isGeo);
+
+                            this.setState({ parent: 0 })
+                            AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
+
+                            this.customComponentDidMount()
+                        }).done();
+                    }
+
+                },
+            ],
+            { cancelable: false }
+        )
+    }
+
+
+
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
-        console.log('setCurrentScreen before parent : '+this.state.parent) 
-        if(this.state.parent>=2)
-        { 
-            console.log('Already in store ') 
+        console.log('setCurrentScreen before parent : ' + this.state.parent)
+        if (this.state.parent >= 2) {
+            console.log('Already in store ')
             return;
-         }
+        }
         var parent = this.state.parent + 1;
-         
-       var clickId=id;
-    //    var pageFlow = this.state.pageFlow + clickId;
+
+        var clickId = id;
+        //    var pageFlow = this.state.pageFlow + clickId;
         // this.setState({ parent });
         this.setState({
             parent
         });
         this.setState({
-            clickId
+            clickId: id
         });
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
+        switch (parent) {
+            case 0:
+            case '0':
+                break;
+            case 1:
+            case '1':
+                AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id)
+                break;
+            case 2:
+            case '2':
+                AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+                break;
+            case 3:
+            case '3':
+                break;
 
-        console.log('setCurrentScreen after parent local : '+parent)
-        // this.setState({ clickId });
-        console.log('setCurrentScreen after parent local clickid : '+clickId)
-        AsyncStorage.setItem("parent_key", parent);
-        
-        console.log('setCurrentScreen after parent : '+this.state.parent)
-        console.log('setCurrentScreen after parent click ID : '+this.state.clickId)
-        this.pageStackComponentDidMount(clickId,parent);
-        
+        }
+        this.pageStackComponentDidMount(clickId, parent);
+
     };
     setBackStackScreen = () => {
-        var bodyData="",url="";
+        var bodyData = "", url = "";
         //0 for region 1 for city 2 for store
-        console.log('before parent : '+this.state.parent)
-        var parent = this.state.parent -1;
-        console.log('before parent : '+parent)
-
-        var id=0;
-
-      // var clickId=id;
+        console.log('before parent : ' + this.state.parent)
+        var parent = this.state.parent - 1;
+        console.log('before parent : ' + parent)
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
         this.setState({ parent });
-        switch(this.state.parent) {
-            case 0:
-            // Region level
-            bodyData=JSON.stringify({
-                date:this.state.date,
-                filter_type:'day',
-            }),
-            url='getRegionSales'
+        this.customComponentDidMount();
+        //     var id=0;
 
-            
+        //   // var clickId=id;
+        //     this.setState({ parent });
+        //     var isGeo="true"
+        //     AsyncStorage.getItem("Is_Geo_key").then((isGeoVal) => {
+        //         if(isGeoVal==null){
+        //             isGeo="true"
+        //         }else{
+        //             isGeo=isGeoVal
+        //         }
 
-            break;
-            case 1:
-           
-            // Cities level
-            id=this.state.regionId;
-            bodyData=JSON.stringify({
-                date:this.state.date,
-                filter_type:'day',
-                region_id:id,
-            }),
-            url='getCitySales'
-            console.log('setBackStackScreenswitchCities'+id)
+        //     }).done()
+        //     console.log('isGeo : '+isGeo)
+        //     if(isGeo=="true") {
+        //     switch(this.state.parent) {
+        //         case 0:
+        //         // Region level
+        //         bodyData=JSON.stringify({
+        //             date:this.state.date,
+        //             filter_type:'day',
+        //         }),
+        //         url='getRegionSales'
 
-            
-            break;
-            case 2:
-            // Store level
-            id=this.state.cityId;
-            bodyData=JSON.stringify({
-                date:this.state.date,
-                filter_type:'day',
-                city_id:id,
-            }),
-            url='getStoreSales'
-            break;
-       }
-       console.log('Action ID : '+id)
-       console.log('URL : '+url)
-       AsyncStorage.getItem("parent_key").then((value) => {
-        console.log(" Getter date : " + value);
-        screenPosition = value;
-        this.callApi(url,bodyData)
-    }).done();
-    //   this.pageStackComponentDidMount(id);
-        
+        //         break;
+        //         case 1:
+
+        //         // Cities level
+        //         id=this.state.regionId;
+        //         bodyData=JSON.stringify({
+        //             date:this.state.date,
+        //             filter_type:'day',
+        //             region_id:id,
+        //         }),
+        //         url='getCitySales'
+        //         console.log('setBackStackScreenswitchCities'+id)
+        //         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, ""+id);
+        //         break;
+        //         case 2:
+        //         // Store level
+        //         id=this.state.cityId;
+        //         bodyData=JSON.stringify({
+        //             date:this.state.date,
+        //             filter_type:'day',
+        //             city_id:id,
+        //         }),
+        //         url='getStoreSales'
+        //         AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, ""+id);
+        //         break;
+        //    }
+        // }else{
+        //     switch(this.state.parent) {
+        //         case 0:
+        //         // Region level
+        //         bodyData=JSON.stringify({
+        //             date:this.state.date,
+        //             filter_type:'day',
+        //         }),
+        //         url='getDeputyMgnSales'
+
+        //         break;
+        //         case 1:
+
+        //         // Cities level
+        //         id=this.state.regionId;
+        //         bodyData=JSON.stringify({
+        //             date:this.state.date,
+        //             filter_type:'day',
+        //             deputy_id:id,
+        //         }),
+        //         url='getPetchMgnSales'
+        //         console.log('setBackStackScreenswitch Cities in People : '+id)
+        //         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, ""+id);
+        //         break;
+        //         case 2:
+        //         // Store level
+        //         id=this.state.cityId;
+        //         bodyData=JSON.stringify({
+        //             date:this.state.date,
+        //             filter_type:'day',
+        //             city_id:id,
+        //         }),
+        //         url='getStoreSales'
+        //         AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, ""+id);
+        //         break;
+        //    }
+        // }
+        //    console.log('Action ID : '+id)
+        //    console.log('URL : '+url)
+        // //    AsyncStorage.getItem("parent_key").then((value) => {
+        // //     console.log(" parent_key : " + value);
+        // //     screenPosition = value;   
+        // // }
+        // this.callApi(url,bodyData)
+        //   this.pageStackComponentDidMount(id);
+
     };
 
 
@@ -221,151 +351,148 @@ export default class DayPage extends Component {
 
 
     totalSaleFormat = (val) => {
-       // try {
-        if (val > 999999) {
-            val = val / 1000000;
-            op = val.toFixed(2);
-            return (op + " mn");
-        } else {
-            val = val / 1000;
-            op = val.toFixed(2);
-           // op = getTwoDecimalFormat(val);
-            return (op + " K");
+        try {
+            if (val > 999999) {
+                val = val / 1000000;
+                op = val.toFixed(2);
+                return (op + " mn");
+            } else {
+                val = val / 1000;
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " K");
+            }
+        } catch (error) {
+            return (0 + " K");
         }
-    // } catch (Exception e) {
-    //     return (0 + " K");
-    // } 
     }
 
     renderItem = ({ item }) => {
-        var val =item.current_sale;
-       
-       
-        
+        var val = item.current_sale;
         var rounfFranchise = '0.00';
         if (item != null) {
             this.setState({ indeterminate: false });
         }
 
-        if (item.current_sale > item.last_sale){
-          return (
+        if (item.current_sale > item.last_sale) {
+            return (
 
 
-            <View style={styless.MainContainer}>
+                <View style={styless.MainContainer}>
 
 
-                <CardView
-                    cardElevation={2}
-                    cardMaxElevation={2}
-                    cornerRadius={1}
-                    style={styless.cardViewStyle}
-                >
-                    {
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+                    <CardView
+                        cardElevation={2}
+                        cardMaxElevation={2}
+                        cornerRadius={1}
+                        style={styless.cardViewStyle}
+                    >
+                        {
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
-                            <View style={styless.cardViewRow}>
-
-
-                                <Text style={{
-                                    fontSize: 22,
-
-                                    color: '#ffffff',
+                                <View style={styless.cardViewRow}>
 
 
-                                    justifyContent: 'center',
-                                    // textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}
-                            //    onPress={this.navigateToScreen('SaleDetails')}
-                            // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
-                            //     type: "Navigate",
-                            //     routeName: "Main",
-                            //     params: {param: 'param'},
-                            // })}
-                          
-                            onPress={() => { 
-                                this.setCurrentScreen(item.id); 
-                        
-                            }}
-                                /* 1. Navigate to the Details route with params */
-                                // this.props.navigation.navigate('SaleDetails', {
-                                //   itemId: 86,
-                                //   otherParam: 'anything you want here',
-                                // });
-
-                                
-                             
-                                >
-                                    {
-                                        item.name
-                                    }
-                                </Text>
-
-
-                                 
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-
-
-                                    <Image
-                                        source={require('../images/saleup.png')}
-                                        style={styless.ImageIconStyle} />
                                     <Text style={{
-                                        fontSize: 16,
-                                        //width: 150,
+                                        fontSize: 22,
+
                                         color: '#ffffff',
 
 
                                         justifyContent: 'center',
-                                        //textAlignVertical: "center",
+                                        // textAlignVertical: "center",
                                         alignItems: 'center',
 
-                                    }}>Total Sale :
-                                {
-                                            //item.current_sale.toFixed(2)
-                                            this.totalSaleFormat(val)
+                                    }}
+                                        //    onPress={this.navigateToScreen('SaleDetails')}
+                                        // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
+                                        //     type: "Navigate",
+                                        //     routeName: "Main",
+                                        //     params: {param: 'param'},
+                                        // })}
+
+                                        onPress={() => {
+                                            this.setCurrentScreen(item.id);
+                                        }}
+                                    /* 1. Navigate to the Details route with params */
+                                    // this.props.navigation.navigate('SaleDetails', {
+                                    //   itemId: 86,
+                                    //   otherParam: 'anything you want here',
+                                    // });
+
+
+
+                                    >
+                                        {
+                                            "" + item.name
                                         }
                                     </Text>
 
 
+
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+
+
+                                        <Image
+                                            source={require('../images/saleup.png')}
+                                            style={styless.ImageIconStyle} />
+                                        <Text style={{
+                                            fontSize: 16,
+                                            //width: 150,
+                                            color: '#ffffff',
+
+
+                                            justifyContent: 'center',
+                                            //textAlignVertical: "center",
+                                            alignItems: 'center',
+
+                                        }}>Total Sale :
+                                {
+                                                //item.current_sale.toFixed(2)
+                                                "" + this.totalSaleFormat(val)
+                                            }
+                                        </Text>
+
+
+                                    </View>
+
+
+
                                 </View>
-                                
 
-                                  
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        /* 1. Navigate to the Details route with params */
+                                        this.props.navigation.navigate('SaleDetails', {
+                                            itemId: item.name,
+                                            otherParam: this.totalSaleFormat(val),
+                                        });
+                                    }} >
+                                    <Image
+                                        source={require('../images/nextButton.png')}
+                                        style={{
+                                            width: 30,
+                                            height: 30,
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 15,
+                                            resizeMode: 'stretch',
+
+                                        }} />
+                                </TouchableOpacity>
+
+
+
+
                             </View>
-                           
-
-                            <TouchableOpacity onPress={() => {
-                                    /* 1. Navigate to the Details route with params */
-                                    this.props.navigation.navigate('SaleDetails', {
-                                      itemId: item.name,
-                                      otherParam: this.totalSaleFormat(val),
-                                    });
-                                  }} >
-                                  <Image
-                                  source={require('../images/nextButton.png')}
-                                  style={{
-                                      width: 30,
-                                      height: 30,
-                                      padding: 10,
-                                      margin: 5,
-                                      marginLeft: 15,
-                                      resizeMode: 'stretch',
-  
-                                  }}/> 
-                                  </TouchableOpacity>
-                                  
-                                
 
 
-                        </View>
+                        }
 
 
-                    }
-
-
-                    {/* {item.sale_data.map((data) =>
+                        {/* {item.sale_data.map((data) =>
 
 
                         <View style={styless.cardViewRow}>
@@ -394,141 +521,141 @@ export default class DayPage extends Component {
                         </View>
 
                     )} */}
-                    <View style={styless.hairline} />
-                </CardView>
-            </View>
-        ) }
-        else
-        {
+                        <View style={styless.hairline} />
+                    </CardView>
+                </View>
+            )
+        }
+        else {
             return (
-  
-  
-              <View style={styless.MainContainer}>
-  
-  {/* <View style={{ flex: 1,  }}>
+
+
+                <View style={styless.MainContainer}>
+
+                    {/* <View style={{ flex: 1,  }}>
         
         
       </View> */}
-                  <CardView
-                      cardElevation={2}
-                      cardMaxElevation={2}
-                      cornerRadius={1}
-                      style={styless.cardViewStyle}
-                  >
-                      {
-                          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-  
-                              <View style={styless.cardViewRow}>
-  
-  
-                                  <Text style={{
-                                      fontSize: 22,
-  
-                                      color: '#ffffff',
-  
-  
-                                      justifyContent: 'center',
-                                      // textAlignVertical: "center",
-                                      alignItems: 'center',
-  
-                                  }}
-                                //   onPress={this.login}
-                                // onPress={this.navigateToScreen('SaleDetails')}
-                                // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-                                // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-                                onPress={() => {
-                                    if(item.id==0||item.name=='National'){ 
-                                        return;
-                                    }else{ 
-                                        this.setCurrentScreen(item.id); 
-                                    }
-                                    
-                                    /* 1. Navigate to the Details route with params */
-                                //     this.props.navigation.navigate('SaleDetails', {
-                                //       itemId: item.name,
-                                //       otherParam:  
-                                //         this.totalSaleFormat(val)
-                                //    ,
-                                //     });
+                    <CardView
+                        cardElevation={2}
+                        cardMaxElevation={2}
+                        cornerRadius={1}
+                        style={styless.cardViewStyle}
+                    >
+                        {
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+                                <View style={styless.cardViewRow}>
+
+
+                                    <Text style={{
+                                        fontSize: 22,
+
+                                        color: '#ffffff',
+
+
+                                        justifyContent: 'center',
+                                        // textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}
+                                        //   onPress={this.login}
+                                        // onPress={this.navigateToScreen('SaleDetails')}
+                                        // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                                        // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                                        onPress={() => {
+                                            if (item.id == 0 || item.name == 'National') {
+                                                return;
+                                            } else {
+                                                this.setCurrentScreen(item.id);
+                                            }
+
+                                            /* 1. Navigate to the Details route with params */
+                                            //     this.props.navigation.navigate('SaleDetails', {
+                                            //       itemId: item.name,
+                                            //       otherParam:  
+                                            //         this.totalSaleFormat(val)
+                                            //    ,
+                                            //     });
 
 
 
 
-                                // this.props.navigation.navigate('SaleDetail', {
-                                //     parent: 1+parentVal,
-                                //     tabPosition: tabPositionVal,
-                                //   });
+                                            // this.props.navigation.navigate('SaleDetail', {
+                                            //     parent: 1+parentVal,
+                                            //     tabPosition: tabPositionVal,
+                                            //   });
 
 
-                                  }}
+                                        }}
 
-                                  >
-                                      {
-                                          item.name
-                                      }
-                                  </Text>
-  
- 
+                                    >
+                                        {
+                                            "" + item.name
+                                        }
+                                    </Text>
 
 
-  
-                                   
-                                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-  
-  
-  
-                                      <Image
-                                          source={require('../images/saledown.png')}
-                                          style={styless.ImageIconStyle} />
-                                      <Text style={{
-                                          fontSize: 16,
-                                          //width: 150,
-                                          color: '#ffffff',
-  
-  
-                                          justifyContent: 'center',
-                                          //textAlignVertical: "center",
-                                          alignItems: 'center',
-  
-                                      }}>Total Sale :
+
+
+
+
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+
+
+                                        <Image
+                                            source={require('../images/saledown.png')}
+                                            style={styless.ImageIconStyle} />
+                                        <Text style={{
+                                            fontSize: 16,
+                                            //width: 150,
+                                            color: '#ffffff',
+
+
+                                            justifyContent: 'center',
+                                            //textAlignVertical: "center",
+                                            alignItems: 'center',
+
+                                        }}>Total Sale :
                                   {
-                                               this.totalSaleFormat(val)
-                                          }
-                                      </Text>
-  
-  
-                                  </View>
-                                    
-                              </View>
-                              <TouchableOpacity onPress={() => {
+                                                "" + this.totalSaleFormat(val)
+                                            }
+                                        </Text>
+
+
+                                    </View>
+
+                                </View>
+                                <TouchableOpacity onPress={() => {
                                     /* 1. Navigate to the Details route with params */
                                     this.props.navigation.navigate('SaleDetails', {
-                                      itemId: item.name,
-                                      otherParam: this.totalSaleFormat(val),
+                                        itemId: item.name,
+                                        otherParam: this.totalSaleFormat(val),
                                     });
-                                  }} >
-                                 <Image
-                                  source={require('../images/nextButton.png')}
-                                  style={{
-                                      width: 30,
-                                      height: 30,
-                                      padding: 10,
-                                      margin: 5,
-                                      marginLeft: 15,
-                                      resizeMode: 'stretch',
-  
-                                  }}/> 
-                                  </TouchableOpacity>
-  
-  
-                       
-                          </View>
-  
-  
-                      }
-  
-  
-                      {/* {item.sale_data.map((data) =>
+                                }} >
+                                    <Image
+                                        source={require('../images/nextButton.png')}
+                                        style={{
+                                            width: 30,
+                                            height: 30,
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 15,
+                                            resizeMode: 'stretch',
+
+                                        }} />
+                                </TouchableOpacity>
+
+
+
+                            </View>
+
+
+                        }
+
+
+                        {/* {item.sale_data.map((data) =>
   
   
                           <View style={styless.cardViewRow}>
@@ -557,60 +684,341 @@ export default class DayPage extends Component {
                           </View>
   
                       )} */}
-                      <View style={styless.hairline} />
-                  </CardView>
-              </View>
-          ) }
+                        <View style={styless.hairline} />
+                    </CardView>
+                </View>
+            )
+        }
 
-        
+
 
     }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
-      }
+    }
     componentDidMount() {
-         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         // const { navigation } = this.props;
         // const parent = navigation.getParam('parent', '0');
         // const tabPosition = navigation.getParam('tabPosition', '0');
         //  parentVal =parent,
         //  tabPositionVal=tabPosition,
-    
+
         //  this.setState({ parent: parentVal, });
         //  this.setState({ tabPosition: tabPositionVal, });
-    
+
         // console.log('Parent : '+parent)
         // console.log('tabPosition : '+tabPosition)
-this.callCurrentApi()
+        this.callCurrentApi()
     }
 
-callCurrentApi= () =>  {
+    callCurrentApi = () => {
+        var urlPanDate = ''
+        this.getDate();
+        AsyncStorage.getItem("date_key").then((value) => {
+            console.log(" Getter date" + value);
+            urlPanDate = value;
+            const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+            console.log("  url " + urlPan)
+            fetch(urlPan, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
 
-    var urlPanDate = ''
-    this.getDate();
-    AsyncStorage.getItem("date_key").then((value) => {
-        console.log(" Getter date" + value);
-        urlPanDate = value;
-        const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+                    date: this.state.date,
+                    filter_type: 'day',
+
+                })
+            })
+                .then((response) => response.json())
+
+                .then((responseJson) => {
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    this.setState({
+                        dataSource: responseJson.data
+                    })
+
+                    if (responseJson != null) {
+
+                    }
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+
+
+                .catch((error) => {
+                    console.log(error)
+                })
+        }).done();
+    }
+
+
+    //for date
+    customComponentDidMount() {
+        console.log(" customComponentDidMount ");
+        var urlPanDate = ''
+        var regionId = ''
+        var cityId = '';
+        // this.getDate();
+        AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+            regionId = regionIdVal
+        }).done()
+        AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
+            cityId = cityIdVal
+        }).done()
+
+        AsyncStorage.getItem("parent_key").then((parent) => {
+            console.log(" parent_key : " + parent);
+            if (parent == null) {
+                parent = 0
+            }
+            AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
+                console.log(" date_key : " + value);
+                if (value == null || value == '') {
+                    var date = new Date().toDateString();
+                    date = dateFormat(date, "yyyy-mm-dd");
+                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                    value = date;
+                }
+                urlPanDate = value;
+                AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
+                    console.log("1st Is_Geo_key : " + value1);
+                    if (value1 === null) {
+                        value1 = "true";
+                    }
+                    console.log(" Is_Geo_key : " + value1);
+                    var urlValue = ''
+                    var bodyJson = JSON.stringify({
+                        date: urlPanDate,
+                        filter_type: 'day',
+
+                    })
+                    if (value1 == "true") {
+                        console.log(" value1==true");
+                        switch (parent) {
+                            case 0:
+                            case '0':
+                                console.log(" value1==true  case 0");
+                                urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: 'day',
+                                })
+                                break;
+                            case 1:
+                            case '1':
+                                console.log(" value1==true  case 1");
+                                urlValue = 'http://115.112.181.53:3000/api/getCitySales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: 'day',
+                                    region_id: regionId,
+                                })
+                                break;
+                            case 2:
+                            case '2':
+                                console.log(" value1==true  case 2");
+                                urlValue = 'http://115.112.181.53:3000/api/getStoreSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: 'day',
+                                    region_id: cityId,
+                                })
+                                break;
+                            case 3:
+                            case '3':
+                                console.log(" value1==true  case ");
+                                urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                                break;
+
+                        }
+                    } else {
+                        console.log("else value1==true");
+                        // urlValue='http://115.112.181.53:3000/api/getDeputyMgnSales' 
+                        switch (parent) {
+                            case 0:
+                            case '0':
+                                console.log("else value1==true case  0");
+                                urlValue = 'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: 'day',
+                                })
+                                break;
+                            case 1:
+                            case '1':
+                                console.log("else value1==true case  1");
+                                urlValue = 'http://115.112.181.53:3000/api/getPetchMgnSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: 'day',
+                                    deputy_id: regionId,
+                                })
+                                break;
+                            case 2:
+                            case '2':
+                                console.log("else value1==true case  2");
+                                return
+
+                        }
+                    }
+
+                    console.log(" Body Request : " + bodyJson)
+                    const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                    console.log("  url " + urlPan)
+                    fetch(urlPan, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: bodyJson
+                    })
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            // this.setState.dataSource.push( responseJson.sale_info );
+
+
+                            if (responseJson != null) {
+                                this.setState({
+                                    dataSource: responseJson.data
+                                })
+                            }
+
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+
+
+                        .catch((error) => {
+                            console.log(error)
+                        })
+
+                }).done();
+            }).done();
+        }).done();
+    }
+
+    //for page refersh
+
+    pageStackComponentDidMount(id, parent) {
+        console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
+        var bodyData = "", url = "";
+        var isGeo = this.state.isGeo
+
+        AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((isGeoVal) => {
+            console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
+            isGeo = isGeoVal;
+            if (isGeo == "true") {
+                switch (parent) {
+                    case 0:
+                        // Region level
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: 'day',
+                        }),
+                            url = 'getRegionSales'
+
+                        break;
+                    case 1:
+                        this.state.regionId = id;
+
+                        // Cities level
+
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: 'day',
+                            region_id: id,
+                        }),
+                            url = 'getCitySales'
+
+
+                        break;
+                    case 2:
+                        // Store level
+                        this.state.cityId = id;
+                        // this.state.storeId=id;
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: 'day',
+                            city_id: id,
+                        }),
+                            url = 'getStoreSales'
+
+                        break;
+                }
+            } else {
+                switch (parent) {
+                    case 0:
+                        // Region level
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: 'day',
+                        }),
+                            url = 'getDeputyMgnSales'
+
+                        break;
+                    case 1:
+
+                        // Cities level
+                        this.state.regionId = id;
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: 'day',
+                            deputy_id: id,
+                        }),
+                            url = 'getPetchMgnSales'
+                        AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id);
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+
+
+
+            console.log("this.callApi(url,bodyData)  url : " + url + "   bodyData : " + bodyData)
+            this.callApi(url, bodyData)
+            // AsyncStorage.getItem("parent_key").then((parent) => {
+            //     console.log(" Parent : " + parent);
+            //     if(parent===null){
+            //         parent=0
+            //     }
+            //     screenPosition = parent;
+
+            // }).done();
+
+
+
+
+        }).done()
+    }
+
+
+
+    callApi = (url, bodyData) => {
+
+        const urlPan = 'http://115.112.181.53:3000/api/' + url;
         console.log("  url " + urlPan)
-        fetch(urlPan,{
+        fetch(urlPan, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-            
-                date:this.state.date,
-                filter_type:'day',
-             
-            })
-        })
-            .then((response) => response.json())
-
+            body: bodyData,
+        }).then((response) => response.json())
             .then((responseJson) => {
+                console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
                 // this.setState.dataSource.push( responseJson.sale_info );
                 this.setState({
                     dataSource: responseJson.data
@@ -624,173 +1032,49 @@ callCurrentApi= () =>  {
             .catch((error) => {
                 console.log(error)
             })
-
-
             .catch((error) => {
                 console.log(error)
             })
-    }).done();
-}
 
-    
-//for date
-    customComponentDidMount() {
-        var urlPanDate = ''
-        // this.getDate();
-        AsyncStorage.getItem("date_key").then((value) => {
-            console.log(" Getter date" + value);
-            urlPanDate = value;
-            const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
-            console.log("  url " + urlPan)
-            fetch(urlPan,{
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                
-                    date:this.state.date,
-                    filter_type:'day',
-                 
-                })
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    // this.setState.dataSource.push( responseJson.sale_info );
-                    this.setState({
-                        dataSource: responseJson.data
-                    })
-
-                    if (responseJson != null) {
-
-                    }
-
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-
-
-                .catch((error) => {
-                    console.log(error)
-                })
-        }).done();
-    }
-
-    //for page refersh
-
-    pageStackComponentDidMount(id,parent) {
-        var bodyData="",url="";
-        switch(parent) {
-            case 0:
-            // Region level
-            bodyData=JSON.stringify({
-                date:this.state.date,
-                filter_type:'day',
-            }),
-            url='getRegionSales'
-
-            break;
-            case 1:
-            this.state.regionId=id;
-            
-            // Cities level
-
-            bodyData=JSON.stringify({
-                date:this.state.date,
-                filter_type:'day',
-                region_id:id,
-            }),
-            url='getCitySales'
-
-            
-            break;
-            case 2:
-            // Store level
-            this.state.cityId=id;
-            // this.state.storeId=id;
-            bodyData=JSON.stringify({
-                date:this.state.date,
-                filter_type:'day',
-                city_id:id,
-            }),
-            url='getStoreSales'
-
-            break;
-       }
-        var screenPosition = ''
-        // this.getDate();
-        AsyncStorage.getItem("parent_key").then((value) => {
-            console.log(" Getter date : " + value);
-            screenPosition = value;
-            this.callApi(url,bodyData)
-        }).done();
-      
-    }
-
-
-
-    callApi = (url,bodyData) => {
-       
-        const urlPan ='http://115.112.181.53:3000/api/'+url;
-            console.log("  url " + urlPan)
-
-
-            fetch(urlPan,{
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: bodyData,
-            }).then((response) => response.json())
-                .then((responseJson) => {
-                    // this.setState.dataSource.push( responseJson.sale_info );
-                    this.setState({
-                        dataSource: responseJson.data
-                    })
-
-                    if (responseJson != null) {
-
-                    }
-
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-        
     };
 
     // for back stack navigation
     onBackPress = () => {
-
         console.log('onBackPress function')
-        if(this.state.parent==0){
-            return;
+        // AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
+        //     if (value=="0") {
+        //         console.log('1 onBackPress Parent : '+value)
+        //         return true;
+        //     }
+        //     // works best when the goBack is async
+        //     else {
+        //         console.log('2 onBackPress Parent : '+value)
+        //         this.setBackStackScreen();
+        //     }
+        // })
+        if (this.state.parent==0) {
+                    console.log('1 onBackPress Parent : '+this.state.parent)
+                    return;
                 }
-     // works best when the goBack is async
-     else{
-        console.log('onBackPress function to calling setBackStackScreen ')
-    this.setBackStackScreen();
-    
-     }
+                // works best when the goBack is async
+                else {
+                    console.log('2 onBackPress Parent : '+this.state.parent)
+                    this.setBackStackScreen();
+                }
         return true;
-      }
-    
+       
+    }
+
 
 
 
     render() {
-        
+
         // const { navigate } = this.props.navigation;
 
-      
 
-    // console.log('Parent : '+parent)
+
+        // console.log('Parent : '+parent)
         /* 2. Read the params from the navigation state */
         // const { params } = this.props.navigation.state;
         //const itemId = params ? params.itemId : null;
@@ -814,7 +1098,7 @@ callCurrentApi= () =>  {
                             iconSource={require('../images/date_icon.png')}
                             onDateChange={(date) => {
                                 this.setState({ date: date });
-                                AsyncStorage.setItem("date_key", this.state.date);
+                                AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                 this.customComponentDidMount();
                             }}
 
@@ -832,26 +1116,35 @@ callCurrentApi= () =>  {
                             alignItems: 'center',
 
                         }}>Net Sales</Text>  */}
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.openDialog()
+                            }}>
+                            <Image
+                                source={require('../images/select_people.png')}
+                                style={{
+                                    padding: 10,
+                                    margin: 5,
+                                    marginLeft: 150,
+                                    resizeMode: 'stretch',
 
-                        <Image
-                            source={require('../images/select_people.png')}
-                            style={{
-                                padding: 10,
-                                margin: 5,
-                                marginLeft: 150,
-                                resizeMode: 'stretch',
+                                }}
+                            />
+                        </TouchableOpacity>
 
-                            }}
-                        />
-
-                        <Image
-                            source={require('../images/select_geo.png')}
-                            style={styless.ImageIconStyle}
-                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.openDialog()
+                            }}>
+                            <Image
+                                source={require('../images/select_geo.png')}
+                                style={styless.ImageIconStyle}
+                                onPress={() => this.openDialog()}
+                            />
+                        </TouchableOpacity>
 
 
                     </View>
-                  
 
 
                     <FlatList
@@ -896,7 +1189,7 @@ callCurrentApi= () =>  {
                             iconSource={require('../images/date_icon.png')}
                             onDateChange={(date) => {
                                 this.setState({ date: date });
-                                AsyncStorage.setItem("date_key", this.state.date);
+                                AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                 this.customComponentDidMount();
                             }} />
                         <Text style={styless.instructions}>{this.state.date}</Text>
@@ -921,11 +1214,13 @@ callCurrentApi= () =>  {
                                 resizeMode: 'stretch',
 
                             }}
+                            onPress={() => this.openDialog()}
                         />
 
                         <Image
                             source={require('../images/select_geo.png')}
                             style={styless.ImageIconStyle}
+                            onPress={() => this.openDialog()}
                         />
 
                     </View>
@@ -1088,3 +1383,4 @@ const styless = StyleSheet.create({
 // //initialRouteName: 'DayPage',
 
 // );
+
