@@ -25,7 +25,11 @@ import {
 } from 'react-native';
 import CardView from 'react-native-cardview';
 import styles from '../styles';
+<<<<<<< HEAD
+import {StackNavigator,HeaderBackButton} from 'react-navigation';
+=======
 import { StackNavigator } from 'react-navigation';
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
 import DrawerScreen from '../components/DrawerScreen';
 import * as Progress from 'react-native-progress';
 import DatePicker from '../utils/datepicker.js';
@@ -34,10 +38,21 @@ import SaleDetails from '../components/SaleDetail';
 
 
 var dateFormat = require('dateformat');
-var filter_type = 'day';
+var parentVal = 0;
 var tabPositionVal = 0;
 //var dateValue='';
 export default class DayPage extends Component {
+<<<<<<< HEAD
+  
+   
+//  navigateToScreen = (SaleDetails) => () => {
+//         navigateToScreen =createStackNavigator({
+//             SaleDetails:{screen: SaleDetails}, 
+//         });
+//         //  this.props.navigation.navigate(navigateAction);
+//         // this.props.navigation.dispatch(DrawerActions.closeDrawer())
+//       }
+=======
 
 
     //  navigateToScreen = (SaleDetails) => () => {
@@ -47,6 +62,7 @@ export default class DayPage extends Component {
     //         //  this.props.navigation.navigate(navigateAction);
     //         // this.props.navigation.dispatch(DrawerActions.closeDrawer())
     //       }
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
 
 
     constructor(props) {
@@ -75,31 +91,35 @@ export default class DayPage extends Component {
 
     static navigationOptions = ({ navigation }) => (
         {
-            // tabBarOnPress: e => {
-            // //   Alert.alert("Test", "Tab selected"); // Here
-            // //   e.jumpToIndex(e.scene.index);
-            // console.log('Month -> tabBarOnPress ') 
-            // this.callCurrentApi()
-            // }
-            // title: 'McDLiv',
-            // title: navigation.state.titleName,
-            // headerRight: <HeaderBackButton  onPress={() => { 
-            //     this.setBackStackScreen(); 
-
-            // }} />,
-
-
-            tabBarOnPress: ({ navigation, defaultHandler }) => {
-                // perform your logic here
-                // this is mandatory to perform the actual switch
-                // don't call this if you want to prevent focus
-
-                navigation.state.params.onTabFocus();
-                defaultHandler();
-            },
+        // tabBarOnPress: e => {
+        // //   Alert.alert("Test", "Tab selected"); // Here
+        // //   e.jumpToIndex(e.scene.index);
+        // console.log('Month -> tabBarOnPress ') 
+        // this.callCurrentApi()
+        // }
+<<<<<<< HEAD
+        // title: 'McDLiv',
+        // title: navigation.state.titleName,
+        // headerRight: <HeaderBackButton  onPress={() => { 
+        //     this.setBackStackScreen(); 
+    
+        // }} />,
+       
+=======
 
 
-        });
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
+        tabBarOnPress: ({ navigation, defaultHandler }) => {
+            // perform your logic here
+            // this is mandatory to perform the actual switch
+            // don't call this if you want to prevent focus
+
+            navigation.state.params.onTabFocus();
+            defaultHandler();
+        },
+
+
+    });
 
     _myHomeFunction = () => {
         alert('Here is home tab!');
@@ -229,10 +249,20 @@ export default class DayPage extends Component {
     setBackStackScreen = () => {
         var bodyData = "", url = "";
         //0 for region 1 for city 2 for store
+<<<<<<< HEAD
+        console.log('before parent : '+this.state.parent)
+        var parent = this.state.parent -1;
+        console.log('before parent : '+parent)
+
+        var id='';
+
+      // var clickId=id;
+=======
         console.log('before parent : ' + this.state.parent)
         var parent = this.state.parent - 1;
         console.log('before parent : ' + parent)
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
         this.setState({ parent });
         this.customComponentDidMount();
         //     var id=0;
@@ -331,6 +361,44 @@ export default class DayPage extends Component {
         // this.callApi(url,bodyData)
         //   this.pageStackComponentDidMount(id);
 
+<<<<<<< HEAD
+            break;
+            case 1:
+           
+            // Cities level
+            id=this.state.regionId;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                region_id:''+id,
+            }),
+            url='getCitySales'
+            console.log('setBackStackScreenswitchCities'+id)
+
+            
+            break;
+            case 2:
+            // Store level
+            id=this.state.cityId;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                city_id:''+id,
+            }),
+            url='getStoreSales'
+            break;
+       }
+       console.log('Action ID : '+id)
+       console.log('URL : '+url)
+       AsyncStorage.getItem("parent_key").then((value) => {
+        console.log(" Getter date : " + value);
+        screenPosition = value;
+        this.callApi(url,bodyData)
+    }).done();
+    //   this.pageStackComponentDidMount(id);
+        
+=======
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
     };
 
 
@@ -412,8 +480,27 @@ export default class DayPage extends Component {
                                         // textAlignVertical: "center",
                                         alignItems: 'center',
 
+<<<<<<< HEAD
+                                }
+                            } 
+                            //    onPress={this.navigateToScreen('SaleDetails')}
+                            // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
+                            //     type: "Navigate",
+                            //     routeName: "Main",
+                            //     params: {param: 'param'},
+                            // })}
+                          
+                            onPress={() => { 
+                                this.setCurrentScreen(item.id); 
+                        
+                            }}
+                                /* 1. Navigate to the Details route with params */
+                                // this.props.navigation.navigate('SaleDetails', {
+                                //   itemId: 86,
+                                //   otherParam: 'anything you want here',
+                                // });
+=======
                                     }}
-
                                         //    onPress={this.navigateToScreen('SaleDetails')}
                                         // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
                                         //     type: "Navigate",
@@ -429,6 +516,7 @@ export default class DayPage extends Component {
                                     //   itemId: 86,
                                     //   otherParam: 'anything you want here',
                                     // });
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
 
 
 
@@ -546,6 +634,48 @@ export default class DayPage extends Component {
         
         
       </View> */}
+<<<<<<< HEAD
+                  <CardView
+                      cardElevation={2}
+                      cardMaxElevation={2}
+                      cornerRadius={1}
+                      style={styless.cardViewStyle}
+                  >
+                      {
+                          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+  
+                              <View style={styless.cardViewRow}>
+  
+  
+                                  <Text style={{
+                                      fontSize: 18,
+                                      color: '#ffffff',
+  
+                                    //   width: 120,
+                                      justifyContent: 'center',
+                                      // textAlignVertical: "center",
+                                      alignItems: 'center',
+  
+                                  }} numberOfLines = { 1 }
+                                //   onPress={this.login}
+                                // onPress={this.navigateToScreen('SaleDetails')}
+                                // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                                // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
+                                onPress={() => {
+                                    if(item.id==0||item.name=='National'){ 
+                                        return;
+                                    }else{ 
+                                        this.setCurrentScreen(item.id); 
+                                    }
+                                    
+                                    /* 1. Navigate to the Details route with params */
+                                //     this.props.navigation.navigate('SaleDetails', {
+                                //       itemId: item.name,
+                                //       otherParam:  
+                                //         this.totalSaleFormat(val)
+                                //    ,
+                                //     });
+=======
                     <CardView
                         cardElevation={2}
                         cardMaxElevation={2}
@@ -554,20 +684,26 @@ export default class DayPage extends Component {
                     >
                         {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
 
                                 <View style={styless.cardViewRow}>
 
 
                                     <Text style={{
-                                        fontSize: 18,
+                                        fontSize: 22,
+
                                         color: '#ffffff',
 
-                                        //   width: 120,
+
+<<<<<<< HEAD
+                                  }} 
+=======
                                         justifyContent: 'center',
                                         // textAlignVertical: "center",
                                         alignItems: 'center',
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
 
-                                    }} numberOfLines={1}
+                                    }}
                                         //   onPress={this.login}
                                         // onPress={this.navigateToScreen('SaleDetails')}
                                         // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
@@ -741,7 +877,7 @@ export default class DayPage extends Component {
                 body: JSON.stringify({
 
                     date: this.state.date,
-                    filter_type: filter_type,
+                    filter_type: 'day',
 
                 })
             })
@@ -770,6 +906,54 @@ export default class DayPage extends Component {
     }
 
 
+<<<<<<< HEAD
+    pageStackComponentDidMount(id,parent) {
+        var bodyData="",url="";
+        switch(parent) {
+            case 0:
+            // Region level
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+            }),
+            url='getRegionSales'
+
+            break;
+            case 1:
+            this.state.regionId=id.toString();
+            
+            // Cities level
+
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                region_id:id.toString(),
+            }),
+            url='getCitySales'
+            
+            
+            
+            break;
+            case 2:
+            // Store level
+            this.state.cityId=id;
+            // this.state.storeId=id;
+            bodyData=JSON.stringify({
+                date:this.state.date,
+                filter_type:'day',
+                city_id:id.toString(),
+            }),
+            url='getStoreSales'
+            
+            break;
+       }
+        // var screenPosition = ''
+        // this.getDate();
+        AsyncStorage.getItem("parent_key").then((value) => {
+            console.log(" Getter date : " + value);
+            // screenPosition = value;
+            this.callApi(url,bodyData)
+=======
     //for date
     customComponentDidMount() {
         console.log(" customComponentDidMount ");
@@ -807,7 +991,7 @@ export default class DayPage extends Component {
                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,
-                        filter_type: filter_type,
+                        filter_type: 'day',
 
                     })
                     if (value1 == "true") {
@@ -819,7 +1003,7 @@ export default class DayPage extends Component {
                                 urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
-                                    filter_type: filter_type,
+                                    filter_type: 'day',
                                 })
                                 break;
                             case 1:
@@ -828,7 +1012,7 @@ export default class DayPage extends Component {
                                 urlValue = 'http://115.112.181.53:3000/api/getCitySales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
-                                    filter_type: filter_type,
+                                    filter_type: 'day',
                                     region_id: regionId,
                                 })
                                 break;
@@ -838,7 +1022,7 @@ export default class DayPage extends Component {
                                 urlValue = 'http://115.112.181.53:3000/api/getStoreSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
-                                    filter_type: filter_type,
+                                    filter_type: 'day',
                                     region_id: cityId,
                                 })
                                 break;
@@ -859,7 +1043,7 @@ export default class DayPage extends Component {
                                 urlValue = 'http://115.112.181.53:3000/api/getDeputyMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
-                                    filter_type: filter_type,
+                                    filter_type: 'day',
                                 })
                                 break;
                             case 1:
@@ -868,7 +1052,7 @@ export default class DayPage extends Component {
                                 urlValue = 'http://115.112.181.53:3000/api/getPetchMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
-                                    filter_type: filter_type,
+                                    filter_type: 'day',
                                     deputy_id: regionId,
                                 })
                                 break;
@@ -914,6 +1098,7 @@ export default class DayPage extends Component {
 
                 }).done();
             }).done();
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
         }).done();
     }
 
@@ -933,7 +1118,7 @@ export default class DayPage extends Component {
                         // Region level
                         bodyData = JSON.stringify({
                             date: this.state.date,
-                            filter_type: filter_type,
+                            filter_type: 'day',
                         }),
                             url = 'getRegionSales'
 
@@ -945,11 +1130,10 @@ export default class DayPage extends Component {
 
                         bodyData = JSON.stringify({
                             date: this.state.date,
-                            filter_type: filter_type,
+                            filter_type: 'day',
                             region_id: id,
                         }),
                             url = 'getCitySales'
-
 
 
                         break;
@@ -959,7 +1143,7 @@ export default class DayPage extends Component {
                         // this.state.storeId=id;
                         bodyData = JSON.stringify({
                             date: this.state.date,
-                            filter_type: filter_type,
+                            filter_type: 'day',
                             city_id: id,
                         }),
                             url = 'getStoreSales'
@@ -972,7 +1156,7 @@ export default class DayPage extends Component {
                         // Region level
                         bodyData = JSON.stringify({
                             date: this.state.date,
-                            filter_type: filter_type,
+                            filter_type: 'day',
                         }),
                             url = 'getDeputyMgnSales'
 
@@ -983,7 +1167,7 @@ export default class DayPage extends Component {
                         this.state.regionId = id;
                         bodyData = JSON.stringify({
                             date: this.state.date,
-                            filter_type: filter_type,
+                            filter_type: 'day',
                             deputy_id: id,
                         }),
                             url = 'getPetchMgnSales'
@@ -1062,17 +1246,17 @@ export default class DayPage extends Component {
         //         this.setBackStackScreen();
         //     }
         // })
-        if (this.state.parent == 0) {
-            console.log('1 onBackPress Parent : ' + this.state.parent)
-            return;
-        }
-        // works best when the goBack is async
-        else {
-            console.log('2 onBackPress Parent : ' + this.state.parent)
-            this.setBackStackScreen();
-        }
+        if (this.state.parent==0) {
+                    console.log('1 onBackPress Parent : '+this.state.parent)
+                    return;
+                }
+                // works best when the goBack is async
+                else {
+                    console.log('2 onBackPress Parent : '+this.state.parent)
+                    this.setBackStackScreen();
+                }
         return true;
-
+       
     }
 
 
@@ -1114,7 +1298,29 @@ export default class DayPage extends Component {
 
                         />
                         <Text style={styless.instructions}>{this.state.date}</Text>
+<<<<<<< HEAD
+                        
 
+                        <Image
+                            source={require('../images/select_people.png')}
+                            style={{
+                                padding: 10,
+                                margin: 5,
+                                marginLeft: 120,
+                                resizeMode: 'stretch',
+=======
+                        {/* <Text style={{
+                            fontSize: 12,
+
+                            color: '#ffffff',
+                            // paddingLeft: 40,
+
+                            marginLeft: 40,
+                            //justifyContent: 'center',
+                            textAlignVertical: "center",
+                            alignItems: 'center',
+
+                        }}>Net Sales</Text>  */}
                         <TouchableOpacity
                             onPress={() => {
                                 this.openDialog()
@@ -1124,12 +1330,13 @@ export default class DayPage extends Component {
                                 style={{
                                     padding: 10,
                                     margin: 5,
-                                    marginLeft: 120,
+                                    marginLeft: 150,
                                     resizeMode: 'stretch',
 
                                 }}
                             />
                         </TouchableOpacity>
+>>>>>>> 6e39d34032bf2e46cbb502bbee759a18c4b29199
 
                         <TouchableOpacity
                             onPress={() => {
@@ -1152,9 +1359,8 @@ export default class DayPage extends Component {
                             this.renderItem
                         }
                     />
-                   
-                     <Text style={{
-                            fontSize: 16,
+                    <Text style={{
+                            fontSize: 12,
                             height: 25,
                             color: '#ffffff',
                             // paddingLeft: 40,
@@ -1165,11 +1371,11 @@ export default class DayPage extends Component {
                             alignItems: 'center',
 
                         }} onPress={() => { 
-
+                            
                                  this.setBackStackScreen(); 
-
+                        
                              }}>Back</Text> 
-                </View >
+                </View>
 
 
 

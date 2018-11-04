@@ -75,6 +75,17 @@ export default class WeekPage extends Component{
           }
       });
 
+      componentWillReceiveProps(newProps) {
+        // this._myHomeFunction();
+        this.customComponentDidMount()
+        console.log(" componentWillReceiveProps : ")
+        // alert('Here is home tab! Week : '+newProps.screenProps.currentScreen);
+        // if (newProps.screenProps.route_index == 0) {
+        //   this._myHomeFunction();
+        // }
+      }
+
+
 
       getDate = () => {
         AsyncStorage.getItem("date_key").then((value) => {

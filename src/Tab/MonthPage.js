@@ -62,7 +62,6 @@ export default class MonthPage extends Component {
         // console.log('Month -> tabBarOnPress ') 
         // this.callCurrentApi()
         // }
-
         tabBarOnPress: ({ navigation, defaultHandler }) => {
             // perform your logic here
             // this is mandatory to perform the actual switch
@@ -86,6 +85,17 @@ export default class MonthPage extends Component {
    componentWillReceiveProps(nextProps) {
     console.log('Month -> componentWillReceiveProps ') 
    }
+
+   componentWillReceiveProps(newProps) {
+    // this._myHomeFunction();
+    this.customComponentDidMount()
+    console.log(" componentWillReceiveProps : ")
+    // alert('Here is home tab! : Month '+newProps.screenProps.currentScreen);
+    // if (newProps.screenProps.route_index == 0) {
+    //   this._myHomeFunction();
+    // }
+  }
+
 
     getDate = () => {
         AsyncStorage.getItem("date_key").then((value) => {

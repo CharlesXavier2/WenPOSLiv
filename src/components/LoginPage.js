@@ -5,13 +5,14 @@ StyleSheet,
 Text,
 Button,
 View,
+AsyncStorage,
 Image,
 TextInput,
 TouchableOpacity,
 ImageBackground
 
 } from 'react-native'
-
+const GLOBAL = require('../constant/Globals.js');
 export default class LoginPage extends Component{
 
     static navigationOptions = {
@@ -89,6 +90,10 @@ export default class LoginPage extends Component{
 
         if(this.state.username=='admin@mcdliv.in'&&this.state.password=='mcdliv' )
         {
+            AsyncStorage.setItem(GLOBAL.PARENT_KEY,"0")
+            AsyncStorage.setItem(GLOBAL.REGION_ID_KEY,"")
+            AsyncStorage.setItem(GLOBAL.CITY_ID_KEY,"")
+            AsyncStorage.setItem(GLOBAL.IS_GEO_KEY,"true")
             this.props.navigation.navigate('DayPage')
         }else {
             alert('Please check Email or Password');
