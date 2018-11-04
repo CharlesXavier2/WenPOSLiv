@@ -403,42 +403,34 @@ export default class DayPage extends Component {
 
                                 <View style={styless.cardViewRow}>
 
+                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
+                                        <Text style={{
+                                            fontSize: 22,
 
-                                    <Text style={{
-                                        fontSize: 22,
-
-                                        color: '#ffffff',
+                                            color: '#ffffff',
 
 
-                                        justifyContent: 'center',
-                                        // textAlignVertical: "center",
-                                        alignItems: 'center',
+                                            justifyContent: 'center',
+                                            // textAlignVertical: "center",
+                                            alignItems: 'center',
 
-                                    }}
-
-                                        //    onPress={this.navigateToScreen('SaleDetails')}
-                                        // onPress= {()=> this.props.navigation.navigate('SaleDetails',  {}, {
-                                        //     type: "Navigate",
-                                        //     routeName: "Main",
-                                        //     params: {param: 'param'},
-                                        // })}
-
-                                        onPress={() => {
-                                            this.setCurrentScreen(item.id);
-                                        }}
-                                    /* 1. Navigate to the Details route with params */
-                                    // this.props.navigation.navigate('SaleDetails', {
-                                    //   itemId: 86,
-                                    //   otherParam: 'anything you want here',
-                                    // });
+                                        }} >
+                                            {
+                                                "" + item.name
+                                            }
+                                        </Text>
+                                    </TouchableOpacity>
 
 
 
-                                    >
-                                        {
-                                            "" + item.name
-                                        }
-                                    </Text>
+
+
+
+
+
+
+
+
 
 
 
@@ -504,35 +496,7 @@ export default class DayPage extends Component {
                         }
 
 
-                        {/* {item.sale_data.map((data) =>
 
-
-                        <View style={styless.cardViewRow}>
-                            <Text style={styless.cardViewText}>
-                                {
-                                    data[0].name
-                                }
-                            </Text>
-                            <Text style={styless.dataRow}>
-
-                                {
-
-                                    data.total.toFixed(2)
-                                }
-                            </Text>
-                            <Text style={styless.dataRow}>
-                                {
-                                    data.self.toFixed(2)
-                                }
-                            </Text>
-
-                            <Text style={styless.dataRow}>
-                                {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
-                            </Text>
-
-                        </View>
-
-                    )} */}
                         <View style={styless.hairline} />
                     </CardView>
                 </View>
@@ -541,13 +505,9 @@ export default class DayPage extends Component {
         else {
             return (
 
-
                 <View style={styless.MainContainer}>
 
-                    {/* <View style={{ flex: 1,  }}>
-        
-        
-      </View> */}
+
                     <CardView
                         cardElevation={2}
                         cardMaxElevation={2}
@@ -558,59 +518,25 @@ export default class DayPage extends Component {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
                                 <View style={styless.cardViewRow}>
+                                <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id) ;}}>
+                                        <Text style={{
+                                            fontSize: 22,
+
+                                            color: '#ffffff',
 
 
-                                    <Text style={{
-                                        fontSize: 18,
-                                        color: '#ffffff',
+                                            justifyContent: 'center',
+                                            // textAlignVertical: "center",
+                                            alignItems: 'center',
 
-                                        //   width: 120,
-                                        justifyContent: 'center',
-                                        // textAlignVertical: "center",
-                                        alignItems: 'center',
-
-                                    }} numberOfLines={1}
-                                        //   onPress={this.login}
-                                        // onPress={this.navigateToScreen('SaleDetails')}
-                                        // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-                                        // onPress= {()=> this.props.navigation.navigate('SaleDetails')}
-                                        onPress={() => {
-                                            if (item.id == 0 || item.name == 'National') {
-                                                return;
-                                            } else {
-                                                this.setCurrentScreen(item.id);
+                                        }} >
+                                            {
+                                                "" + item.name
                                             }
+                                        </Text>
+                                    </TouchableOpacity>
 
-                                            /* 1. Navigate to the Details route with params */
-                                            //     this.props.navigation.navigate('SaleDetails', {
-                                            //       itemId: item.name,
-                                            //       otherParam:  
-                                            //         this.totalSaleFormat(val)
-                                            //    ,
-                                            //     });
-
-
-
-
-                                            // this.props.navigation.navigate('SaleDetail', {
-                                            //     parent: 1+parentVal,
-                                            //     tabPosition: tabPositionVal,
-                                            //   });
-
-
-                                        }}
-
-                                    >
-                                        {
-                                            "" + item.name
-                                        }
-                                    </Text>
-
-
-
-
-
-
+                                   
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
 
@@ -629,7 +555,8 @@ export default class DayPage extends Component {
                                             alignItems: 'center',
 
                                         }}>Total Sale :
-                                  {
+                            {
+                                                //item.current_sale.toFixed(2)
                                                 "" + this.totalSaleFormat(val)
                                             }
                                         </Text>
@@ -637,14 +564,19 @@ export default class DayPage extends Component {
 
                                     </View>
 
+
+
                                 </View>
-                                <TouchableOpacity onPress={() => {
-                                    /* 1. Navigate to the Details route with params */
-                                    this.props.navigation.navigate('SaleDetails', {
-                                        itemId: item.name,
-                                        otherParam: this.totalSaleFormat(val),
-                                    });
-                                }} >
+
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        /* 1. Navigate to the Details route with params */
+                                        this.props.navigation.navigate('SaleDetails', {
+                                            itemId: item.name,
+                                            otherParam: this.totalSaleFormat(val),
+                                        });
+                                    }} >
                                     <Image
                                         source={require('../images/nextButton.png')}
                                         style={{
@@ -660,41 +592,14 @@ export default class DayPage extends Component {
 
 
 
+
                             </View>
 
 
                         }
 
 
-                        {/* {item.sale_data.map((data) =>
-  
-  
-                          <View style={styless.cardViewRow}>
-                              <Text style={styless.cardViewText}>
-                                  {
-                                      data[0].name
-                                  }
-                              </Text>
-                              <Text style={styless.dataRow}>
-  
-                                  {
-  
-                                      data.total.toFixed(2)
-                                  }
-                              </Text>
-                              <Text style={styless.dataRow}>
-                                  {
-                                      data.self.toFixed(2)
-                                  }
-                              </Text>
-  
-                              <Text style={styless.dataRow}>
-                                  {data.franchise && data.franchise != null ? ` ${data.franchise.toFixed(2)}` : '0'}
-                              </Text>
-  
-                          </View>
-  
-                      )} */}
+
                         <View style={styless.hairline} />
                     </CardView>
                 </View>
@@ -923,9 +828,9 @@ export default class DayPage extends Component {
     //for page refersh
 
     pageStackComponentDidMount(id, parent) {
-        this.setState({
-            indeterminate=true
-        })
+        // this.setState({
+        //     indeterminate=true
+        // })
         console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
         var bodyData = "", url = "";
         var isGeo = this.state.isGeo
@@ -1035,10 +940,10 @@ export default class DayPage extends Component {
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-                // this.setState.dataSource.push( responseJson.sale_info );
-                this.setState({
-                    indeterminate=false
-                })
+                // this.setState.dataSource.push(responseJson.sale_info);
+                // this.setState({
+                //     indeterminate=false
+                // })
                 this.setState({
                     dataSource: responseJson.data
                 })
@@ -1101,9 +1006,9 @@ export default class DayPage extends Component {
         //const itemId = params ? params.itemId : null;
         // const filterType = params ? params.filterType : null;
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
-            
+
             return (
-                <View style={styless.MainContainer}>
+                <View style={{ backgroundColor: '#000000', flex: 1 }}>
 
                     {
                         this.state.indeterminate &&
@@ -1177,23 +1082,23 @@ export default class DayPage extends Component {
                             this.renderItem
                         }
                     />
-                   
-                     <Text style={{
-                            fontSize: 16,
-                            height: 25,
-                            color: '#ffffff',
-                            // paddingLeft: 40,
 
-                            marginLeft: 40,
-                            //justifyContent: 'center',
-                            textAlignVertical: "center",
-                            alignItems: 'center',
+                    <Text style={{
+                        fontSize: 16,
+                        height: 25,
+                        color: '#ffffff',
+                        // paddingLeft: 40,
 
-                        }} onPress={() => { 
+                        marginLeft: 40,
+                        //justifyContent: 'center',
+                        textAlignVertical: "center",
+                        alignItems: 'center',
 
-                                 this.setBackStackScreen(); 
+                    }} onPress={() => {
 
-                             }}>Back</Text> 
+                        this.setBackStackScreen();
+
+                    }}>Back</Text>
                 </View >
 
 
