@@ -20,6 +20,7 @@ import {
     BackHandler,
     TouchableOpacity,
     Alert,
+    exitApp,
 
 
 } from 'react-native';
@@ -1041,28 +1042,30 @@ export default class DayPage extends Component {
     // for back stack navigation
     onBackPress = () => {
         console.log('onBackPress function')
-        // AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
-        //     if (value=="0") {
-        //         console.log('1 onBackPress Parent : '+value)
-        //         return true;
-        //     }
-        //     // works best when the goBack is async
-        //     else {
-        //         console.log('2 onBackPress Parent : '+value)
-        //         this.setBackStackScreen();
-        //     }
-        // })
-        if (this.state.parent==0) {
-                    console.log('1 onBackPress Parent : '+this.state.parent)
-                    return;
-                }
-                // works best when the goBack is async
-                else {
-                    console.log('2 onBackPress Parent : '+this.state.parent)
-                    this.setBackStackScreen();
-                }
+    
+        if (this.state.parent == 0) {
+            console.log('1 onBackPress Parent : ' + this.state.parent)
+            Alert.alert(
+                'Quiting',
+                'Want to quit?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                  },
+                  { text: 'OK', onPress: () => BackHandler.exitApp() }
+                ],
+                { cancelable: false }
+              );
+              return true;
+        }
+        // works best when the goBack is async
+        else {
+            console.log('2 onBackPress Parent : ' + this.state.parent)
+            this.setBackStackScreen();
+        }
         return true;
-       
     }
 
 
