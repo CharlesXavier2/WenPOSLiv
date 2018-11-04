@@ -64,6 +64,7 @@ export default class DayPage extends Component {
             cityId: 0,
             storeId: 0,
             isGeo: "true",
+            isLoading: true,
         }
         this.onBackPress = this.onBackPress.bind(this);
         props.navigation.setParams({
@@ -764,6 +765,9 @@ export default class DayPage extends Component {
 
     //for date
     customComponentDidMount() {
+        this.setState({
+            indeterminate:true
+        })
         console.log(" customComponentDidMount ");
         var urlPanDate = ''
         var regionId = ''
@@ -912,6 +916,9 @@ export default class DayPage extends Component {
     //for page refersh
 
     pageStackComponentDidMount(id, parent) {
+        this.setState({
+            indeterminate=true
+        })
         console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
         var bodyData = "", url = "";
         var isGeo = this.state.isGeo
@@ -1022,6 +1029,9 @@ export default class DayPage extends Component {
                 console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
                 // this.setState.dataSource.push( responseJson.sale_info );
                 this.setState({
+                    indeterminate=false
+                })
+                this.setState({
                     dataSource: responseJson.data
                 })
 
@@ -1042,23 +1052,23 @@ export default class DayPage extends Component {
     // for back stack navigation
     onBackPress = () => {
         console.log('onBackPress function')
-    
+
         if (this.state.parent == 0) {
             console.log('1 onBackPress Parent : ' + this.state.parent)
             Alert.alert(
                 'Quiting',
                 'Want to quit?',
                 [
-                  {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel'
-                  },
-                  { text: 'OK', onPress: () => BackHandler.exitApp() }
+                    {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel'
+                    },
+                    { text: 'OK', onPress: () => BackHandler.exitApp() }
                 ],
                 { cancelable: false }
-              );
-              return true;
+            );
+            return true;
         }
         // works best when the goBack is async
         else {
@@ -1084,8 +1094,21 @@ export default class DayPage extends Component {
         // const filterType = params ? params.filterType : null;
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
             return (
-                <View style={{ backgroundColor: '#000000', flex: 1, }}>
+                <View style={styless.MainContainer}>
 
+                    {
+                        this.state.indeterminate &&
+                        <Progress.Bar
+                            style={styles.progress}
+                            progress={this.state.progress}
+                            indeterminate={this.state.indeterminate}
+                            width={380}
+                            borderColor={'#FAC209'}
+                            borderRadius={0}
+                            color={'rgb(250, 194, 9)'}
+                            marginTop={1}
+                        />
+                    }
                     <View style={styless.categries}>
                         <DatePicker
 
@@ -1165,18 +1188,19 @@ export default class DayPage extends Component {
         else {
             return (
                 <View style={styless.MainContainer}>
-
-                    <Progress.Bar
-                        style={styles.progress}
-                        progress={this.state.progress}
-                        indeterminate={this.state.indeterminate}
-                        width={380}
-                        borderColor={'#FAC209'}
-                        borderRadius={0}
-                        color={'rgb(250, 194, 9)'}
-                        marginTop={1}
-                    />
-
+                    {
+                        this.state.indeterminate &&
+                        <Progress.Bar
+                            style={styles.progress}
+                            progress={this.state.progress}
+                            indeterminate={this.state.indeterminate}
+                            width={380}
+                            borderColor={'#FAC209'}
+                            borderRadius={0}
+                            color={'rgb(250, 194, 9)'}
+                            marginTop={1}
+                        />
+                    }
                     <View style={styless.categries}>
                         <DatePicker
 
