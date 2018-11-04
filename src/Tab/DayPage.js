@@ -765,9 +765,7 @@ export default class DayPage extends Component {
 
     //for date
     customComponentDidMount() {
-        this.setState({
-            indeterminate:true
-        })
+
         console.log(" customComponentDidMount ");
         var urlPanDate = ''
         var regionId = ''
@@ -1093,6 +1091,7 @@ export default class DayPage extends Component {
         //const itemId = params ? params.itemId : null;
         // const filterType = params ? params.filterType : null;
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
+            
             return (
                 <View style={styless.MainContainer}>
 

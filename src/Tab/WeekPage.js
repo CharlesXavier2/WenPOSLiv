@@ -74,7 +74,7 @@ export default class WeekPage extends Component{
             defaultHandler();
           }
       });
-
+      
       componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         this.customComponentDidMount()
