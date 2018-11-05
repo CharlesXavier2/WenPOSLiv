@@ -112,16 +112,26 @@ export const DrawerNavigator = createDrawerNavigator({
     } ,
    
       
+     
+      WeekPage: {
+        screen: WeekPage,
+      },
+     
+      MonthPage: {
+        screen: WeekPage,
+      },
       LogoutScreen: {
         screen: LogoutScreen,
-      }
+      },
+
    
 },
     {
     drawerPosition: 'rights',
     initialRouteName: 'DayPage',
     contentComponent: DrawerScreen,
-    drawerWidth: 300
+    drawerWidth: 250,
+    drawerBackgroundColor: '#313131',
 },
 );
 
