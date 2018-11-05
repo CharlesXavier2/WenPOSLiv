@@ -51,7 +51,7 @@ export default class DayPage extends Component {
 
 
     constructor(props) {
-    
+
         super(props)
         props.navigation.setParams({
             onTabFocus: this.customComponentDidMount
@@ -71,7 +71,7 @@ export default class DayPage extends Component {
             isLoading: true,
         }
         this.onBackPress = this.onBackPress.bind(this);
-       
+
     }
     // static navigationOptions= ({navigation}) => {
     //     return {title: navigation.state.params.itemId}
@@ -129,13 +129,13 @@ export default class DayPage extends Component {
     getDate = () => {
         AsyncStorage.getItem("date_key").then((value) => {
             console.log(" Getter date" + value);
-            if(value==null ||value==''){
+            if (value == null || value == '') {
                 var date = new Date().toDateString();
                 date = dateFormat(date, "yyyy-mm-dd");
                 this.setState({ date });
                 AsyncStorage.setItem("date_key", date);
-            }else{
-                this.setState({ date:value });
+            } else {
+                this.setState({ date: value });
             }
         })
     };
@@ -197,18 +197,18 @@ export default class DayPage extends Component {
             console.log('Already in store ')
             return;
         }
-        var parent = this.state.parent + 1;
+        var parent = this.state.parent + 1
 
-        var clickId = id;
+        var clickId = id
+        var parentVal = parent
         //    var pageFlow = this.state.pageFlow + clickId;
-        // this.setState({ parent });
         this.setState({
-            parent
+            parent: parentVal
         });
         this.setState({
             clickId: id
         });
-        AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, "" + parent)
         switch (parent) {
             case 0:
             case '0':
@@ -230,12 +230,12 @@ export default class DayPage extends Component {
 
     };
     setBackStackScreen = () => {
-        var bodyData = "", url = "";
+
         //0 for region 1 for city 2 for store
         console.log('before parent : ' + this.state.parent)
         var parent = this.state.parent - 1;
         console.log('before parent : ' + parent)
-        AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, "" + parent)
         this.setState({ parent });
         this.customComponentDidMount();
     };
@@ -420,7 +420,7 @@ export default class DayPage extends Component {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
                                 <View style={styless.cardViewRow}>
-                                <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id) ;}}>
+                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
                                         <Text style={{
                                             fontSize: 22,
 
@@ -438,7 +438,7 @@ export default class DayPage extends Component {
                                         </Text>
                                     </TouchableOpacity>
 
-                                   
+
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
 
@@ -648,7 +648,7 @@ export default class DayPage extends Component {
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
-                                    region_id: cityId,
+                                    city_id: cityId,
                                 })
                                 break;
                             case 3:
@@ -840,13 +840,10 @@ export default class DayPage extends Component {
             .then((responseJson) => {
                 console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
                 // this.setState.dataSource.push(responseJson.sale_info);
-                // this.setState({
-                //     indeterminate=false
-                // })
+                this.setState({
                     dataSource: responseJson.data
-
+                })
                 if (responseJson != null) {
-
                 }
 
             })
@@ -861,30 +858,33 @@ export default class DayPage extends Component {
 
     // for back stack navigation
     onBackPress = () => {
-        console.log('onBackPress function')
+        console.log('onBackPress function  this.state.parent  : ' + this.state.parent)
 
-        if (this.state.parent == 0) {
-            console.log('1 onBackPress Parent : ' + this.state.parent)
-            Alert.alert(
-                'Quiting',
-                'Want to quit?',
-                [
-                    {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel'
-                    },
-                    { text: 'OK', onPress: () => BackHandler.exitApp() }
-                ],
-                { cancelable: false }
-            );
-            return true;
-        }
-        // works best when the goBack is async
-        else {
-            console.log('2 onBackPress Parent : ' + this.state.parent)
-            this.setBackStackScreen();
-        }
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
+            console.log(" parent_key : " + parent);
+            if (this.state.parent == 0) {
+                console.log('1 onBackPress Parent : ' + this.state.parent)
+                Alert.alert(
+                    'Quiting',
+                    'Want to quit?',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel'
+                        },
+                        { text: 'OK', onPress: () => BackHandler.exitApp() }
+                    ],
+                    { cancelable: false }
+                );
+                return true;
+            }
+            // works best when the goBack is async
+            else {
+                console.log('2 onBackPress Parent : ' + this.state.parent)
+                this.setBackStackScreen();
+            }
+        }).done()
         return true;
     }
 
@@ -906,7 +906,7 @@ export default class DayPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
-                
+
                     <View style={styless.categries}>
                         <DatePicker
 

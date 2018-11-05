@@ -37,7 +37,7 @@ var filter_type = 'month';
 var tabPositionVal = 0;
 //var dateValue='';
 export default class MonthPage extends Component {
-   
+
     //  navigateToScreen = (SaleDetails) => () => {
     //         navigateToScreen =createStackNavigator({
     //             SaleDetails:{screen: SaleDetails}, 
@@ -48,7 +48,7 @@ export default class MonthPage extends Component {
 
 
     constructor(props) {
-    
+
         super(props)
         props.navigation.setParams({
             onTabFocus: this.customComponentDidMount
@@ -67,8 +67,8 @@ export default class MonthPage extends Component {
             isGeo: "true",
             isLoading: true,
         }
-        this.onBackPress = this.onBackPress.bind(this);
-       
+        // this.onBackPress = this.onBackPress.bind(this);
+
     }
     // static navigationOptions= ({navigation}) => {
     //     return {title: navigation.state.params.itemId}
@@ -112,7 +112,7 @@ export default class MonthPage extends Component {
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
-            // this.customComponentDidMount()
+            this.customComponentDidMount()
             console.log(" componentWillReceiveProps : ")
         } catch (error) {
 
@@ -517,7 +517,7 @@ export default class MonthPage extends Component {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
                                 <View style={styless.cardViewRow}>
-                                <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id) ;}}>
+                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
                                         <Text style={{
                                             fontSize: 22,
 
@@ -535,7 +535,7 @@ export default class MonthPage extends Component {
                                         </Text>
                                     </TouchableOpacity>
 
-                                   
+
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
 
@@ -610,12 +610,12 @@ export default class MonthPage extends Component {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+        // BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
     }
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        // BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         // const { navigation } = this.props;
         // const parent = navigation.getParam('parent', '0');
         // const tabPosition = navigation.getParam('tabPosition', '0');
@@ -677,8 +677,16 @@ export default class MonthPage extends Component {
 
 
     //for date
-    customComponentDidMount() {
-
+    customComponentDidMount = () => {
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent1) => {
+            console.log(" parent_key : " + parent1);
+            if (parent1 == null) {
+                parent1 = 0
+            }
+            this.setState({
+                parent: parent1
+            })
+        }).done()
         console.log(" customComponentDidMount ");
         var urlPanDate = ''
         var regionId = ''
@@ -691,7 +699,7 @@ export default class MonthPage extends Component {
             cityId = cityIdVal
         }).done()
 
-        AsyncStorage.getItem("parent_key").then((parent) => {
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
             console.log(" parent_key : " + parent);
             if (parent == null) {
                 parent = 0
@@ -746,7 +754,7 @@ export default class MonthPage extends Component {
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
-                                    region_id: cityId,
+                                    city_id: cityId,
                                 })
                                 break;
                             case 3:
@@ -961,34 +969,7 @@ export default class MonthPage extends Component {
 
     };
 
-    // for back stack navigation
-    onBackPress = () => {
-        console.log('onBackPress function')
 
-        if (this.state.parent == 0) {
-            console.log('1 onBackPress Parent : ' + this.state.parent)
-            Alert.alert(
-                'Quiting',
-                'Want to quit?',
-                [
-                    {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel'
-                    },
-                    { text: 'OK', onPress: () => BackHandler.exitApp() }
-                ],
-                { cancelable: false }
-            );
-            return true;
-        }
-        // works best when the goBack is async
-        else {
-            console.log('2 onBackPress Parent : ' + this.state.parent)
-            this.setBackStackScreen();
-        }
-        return true;
-    }
 
 
 
