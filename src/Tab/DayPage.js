@@ -51,7 +51,11 @@ export default class DayPage extends Component {
 
 
     constructor(props) {
+    
         super(props)
+        props.navigation.setParams({
+            onTabFocus: this.customComponentDidMount
+        });
         this.state = {
             dataSource: [],
             progress: 0,
@@ -67,9 +71,7 @@ export default class DayPage extends Component {
             isLoading: true,
         }
         this.onBackPress = this.onBackPress.bind(this);
-        props.navigation.setParams({
-            onTabFocus: this.customComponentDidMount
-        });
+       
     }
     // static navigationOptions= ({navigation}) => {
     //     return {title: navigation.state.params.itemId}
@@ -113,7 +115,7 @@ export default class DayPage extends Component {
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
-            // this.customComponentDidMount()
+            this.customComponentDidMount()
             console.log(" componentWillReceiveProps : ")
         } catch (error) {
 
@@ -127,17 +129,16 @@ export default class DayPage extends Component {
     getDate = () => {
         AsyncStorage.getItem("date_key").then((value) => {
             console.log(" Getter date" + value);
-            if (value == null || value == '') {
+            if(value==null ||value==''){
                 var date = new Date().toDateString();
                 date = dateFormat(date, "yyyy-mm-dd");
                 this.setState({ date });
-                AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-            } else {
-                this.setState({ date: value });
+                AsyncStorage.setItem("date_key", date);
+            }else{
+                this.setState({ date:value });
             }
         })
     };
-
     openDialog = () => {
         // Works on both iOS and Android
         Alert.alert(
@@ -237,102 +238,6 @@ export default class DayPage extends Component {
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
         this.setState({ parent });
         this.customComponentDidMount();
-        //     var id=0;
-
-        //   // var clickId=id;
-        //     this.setState({ parent });
-        //     var isGeo="true"
-        //     AsyncStorage.getItem("Is_Geo_key").then((isGeoVal) => {
-        //         if(isGeoVal==null){
-        //             isGeo="true"
-        //         }else{
-        //             isGeo=isGeoVal
-        //         }
-
-        //     }).done()
-        //     console.log('isGeo : '+isGeo)
-        //     if(isGeo=="true") {
-        //     switch(this.state.parent) {
-        //         case 0:
-        //         // Region level
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //         }),
-        //         url='getRegionSales'
-
-        //         break;
-        //         case 1:
-
-        //         // Cities level
-        //         id=this.state.regionId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             region_id:id,
-        //         }),
-        //         url='getCitySales'
-        //         console.log('setBackStackScreenswitchCities'+id)
-        //         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, ""+id);
-        //         break;
-        //         case 2:
-        //         // Store level
-        //         id=this.state.cityId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             city_id:id,
-        //         }),
-        //         url='getStoreSales'
-        //         AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, ""+id);
-        //         break;
-        //    }
-        // }else{
-        //     switch(this.state.parent) {
-        //         case 0:
-        //         // Region level
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //         }),
-        //         url='getDeputyMgnSales'
-
-        //         break;
-        //         case 1:
-
-        //         // Cities level
-        //         id=this.state.regionId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             deputy_id:id,
-        //         }),
-        //         url='getPetchMgnSales'
-        //         console.log('setBackStackScreenswitch Cities in People : '+id)
-        //         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, ""+id);
-        //         break;
-        //         case 2:
-        //         // Store level
-        //         id=this.state.cityId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             city_id:id,
-        //         }),
-        //         url='getStoreSales'
-        //         AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, ""+id);
-        //         break;
-        //    }
-        // }
-        //    console.log('Action ID : '+id)
-        //    console.log('URL : '+url)
-        // //    AsyncStorage.getItem("parent_key").then((value) => {
-        // //     console.log(" parent_key : " + value);
-        // //     screenPosition = value;   
-        // // }
-        // this.callApi(url,bodyData)
-        //   this.pageStackComponentDidMount(id);
-
     };
 
 
@@ -381,9 +286,6 @@ export default class DayPage extends Component {
     renderItem = ({ item }) => {
         var val = item.current_sale;
         var rounfFranchise = '0.00';
-        if (item != null) {
-            this.setState({ indeterminate: false });
-        }
 
         if (item.current_sale > item.last_sale) {
             return (
@@ -628,7 +530,7 @@ export default class DayPage extends Component {
 
         // console.log('Parent : '+parent)
         // console.log('tabPosition : '+tabPosition)
-        this.callCurrentApi()
+        this.customComponentDidMount()
     }
 
     callCurrentApi = () => {
@@ -678,9 +580,8 @@ export default class DayPage extends Component {
 
 
     //for date
-    customComponentDidMount() {
-
-        console.log(" customComponentDidMount ");
+    customComponentDidMount = () => {
+        this.getDate();
         var urlPanDate = ''
         var regionId = ''
         var cityId = '';
@@ -692,7 +593,7 @@ export default class DayPage extends Component {
             cityId = cityIdVal
         }).done()
 
-        AsyncStorage.getItem("parent_key").then((parent) => {
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
             console.log(" parent_key : " + parent);
             if (parent == null) {
                 parent = 0
@@ -802,8 +703,6 @@ export default class DayPage extends Component {
                         .then((response) => response.json())
                         .then((responseJson) => {
                             // this.setState.dataSource.push( responseJson.sale_info );
-
-
                             if (responseJson != null) {
                                 this.setState({
                                     dataSource: responseJson.data
@@ -944,9 +843,7 @@ export default class DayPage extends Component {
                 // this.setState({
                 //     indeterminate=false
                 // })
-                this.setState({
                     dataSource: responseJson.data
-                })
 
                 if (responseJson != null) {
 
@@ -1009,20 +906,7 @@ export default class DayPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
-
-                    {
-                        this.state.indeterminate &&
-                        <Progress.Bar
-                            style={styles.progress}
-                            progress={this.state.progress}
-                            indeterminate={this.state.indeterminate}
-                            width={380}
-                            borderColor={'#FAC209'}
-                            borderRadius={0}
-                            color={'rgb(250, 194, 9)'}
-                            marginTop={1}
-                        />
-                    }
+                
                     <View style={styless.categries}>
                         <DatePicker
 

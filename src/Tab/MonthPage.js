@@ -48,7 +48,11 @@ export default class MonthPage extends Component {
 
 
     constructor(props) {
+    
         super(props)
+        props.navigation.setParams({
+            onTabFocus: this.customComponentDidMount
+        });
         this.state = {
             dataSource: [],
             progress: 0,
@@ -64,9 +68,7 @@ export default class MonthPage extends Component {
             isLoading: true,
         }
         this.onBackPress = this.onBackPress.bind(this);
-        props.navigation.setParams({
-            onTabFocus: this.customComponentDidMount
-        });
+       
     }
     // static navigationOptions= ({navigation}) => {
     //     return {title: navigation.state.params.itemId}
