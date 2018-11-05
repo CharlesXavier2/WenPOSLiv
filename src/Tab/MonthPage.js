@@ -50,8 +50,6 @@ export default class MonthPage extends Component {
         }
         this.onBackPress = this.onBackPress.bind(this);
 
-
-
     }
 
     static navigationOptions = ({ navigation }) => ({
