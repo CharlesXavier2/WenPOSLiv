@@ -51,7 +51,7 @@ export default class MonthPage extends Component {
 
         super(props)
         props.navigation.setParams({
-            onTabFocus: this.customComponentDidMount
+            onTabFocus: this.tabClick
         });
         this.state = {
             dataSource: [],
@@ -67,7 +67,7 @@ export default class MonthPage extends Component {
             isGeo: "true",
             isLoading: true,
         }
-        // this.onBackPress = this.onBackPress.bind(this);
+        this.onBackPress = this.onBackPress.bind(this);
 
     }
     // static navigationOptions= ({navigation}) => {
@@ -89,7 +89,7 @@ export default class MonthPage extends Component {
 
             // }} />,
 
-
+            swipeEnabled:false,
             tabBarOnPress: ({ navigation, defaultHandler }) => {
                 // perform your logic here
                 // this is mandatory to perform the actual switch
@@ -190,18 +190,22 @@ export default class MonthPage extends Component {
 
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
+        var isGeoVal="true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
-        if (this.state.parent >= 2) {
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
+            isGeoVal = value
+        }).done()
+        if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
         var parent = this.state.parent + 1;
 
         var clickId = id;
+        var parentVal = parent
         //    var pageFlow = this.state.pageFlow + clickId;
-        // this.setState({ parent });
         this.setState({
-            parent
+            parent: parentVal
         });
         this.setState({
             clickId: id
@@ -610,12 +614,12 @@ export default class MonthPage extends Component {
     }
 
     componentWillUnmount() {
-        // BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
     }
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
-        // BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         // const { navigation } = this.props;
         // const parent = navigation.getParam('parent', '0');
         // const tabPosition = navigation.getParam('tabPosition', '0');
@@ -675,9 +679,14 @@ export default class MonthPage extends Component {
         }).done();
     }
 
-
+    tabClick = () => {
+        this.setState({ parent: 0 })
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
+        this.customComponentDidMount()
+    }
     //for date
     customComponentDidMount = () => {
+        this.getDate()
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent1) => {
             console.log(" parent_key : " + parent1);
             if (parent1 == null) {
@@ -1165,16 +1174,26 @@ export default class MonthPage extends Component {
         }
     }
 
-    // render() {
-    //     return (
-    //         <View style={styless.MainContainer}>
+    ShowAlertWithDelay = () => {
 
-    //         <View style={styless.cardViewStyle} >
-    //         <View style={styless.cardViewRow} />
-    //         </View>
-    //         </View>
-    //     )
-    // }
+        setTimeout(function () {
+
+            //Put All Your Code Here, Which You Want To Execute After Some Delay Time.
+            // Alert.alert("Alert Shows After 5 Seconds of Delay.")
+         
+
+        }, 1000);
+
+
+    }
+    // for back stack navigation
+    onBackPress = () => {
+        this.ShowAlertWithDelay()
+        this.customComponentDidMount()
+        return true;
+    }
+
+
 
 
 }

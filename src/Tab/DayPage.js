@@ -54,7 +54,7 @@ export default class DayPage extends Component {
 
         super(props)
         props.navigation.setParams({
-            onTabFocus: this.customComponentDidMount
+            onTabFocus: this.tabClick
         });
         this.state = {
             dataSource: [],
@@ -92,7 +92,7 @@ export default class DayPage extends Component {
 
             // }} />,
 
-
+            swipeEnabled:false,
             tabBarOnPress: ({ navigation, defaultHandler }) => {
                 // perform your logic here
                 // this is mandatory to perform the actual switch
@@ -192,8 +192,12 @@ export default class DayPage extends Component {
 
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
+        var isGeoVal="true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
-        if (this.state.parent >= 2) {
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
+            isGeoVal = value
+        }).done()
+        if ((isGeoVal=="true" && this.state.parent >= 2) || (isGeoVal=="false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -234,6 +238,10 @@ export default class DayPage extends Component {
         //0 for region 1 for city 2 for store
         console.log('before parent : ' + this.state.parent)
         var parent = this.state.parent - 1;
+        if(parent<=0){
+            parent=0
+            return;
+        }
         console.log('before parent : ' + parent)
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, "" + parent)
         this.setState({ parent });
@@ -578,6 +586,11 @@ export default class DayPage extends Component {
         }).done();
     }
 
+    tabClick = () => {
+        this.setState({ parent: 0 })
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
+        this.customComponentDidMount()
+    }
 
     //for date
     customComponentDidMount = () => {
@@ -621,6 +634,11 @@ export default class DayPage extends Component {
                     })
                     if (value1 == "true") {
                         console.log(" value1==true");
+                        urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: filter_type,
+                                })
                         switch (parent) {
                             case 0:
                             case '0':
@@ -653,13 +671,18 @@ export default class DayPage extends Component {
                                 break;
                             case 3:
                             case '3':
-                                console.log(" value1==true  case ");
-                                urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
-                                break;
+                                // console.log(" value1==true  case ");
+                                // urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                                // break;
 
                         }
                     } else {
                         console.log("else value1==true");
+                        urlValue = 'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: filter_type,
+                                })
                         // urlValue='http://115.112.181.53:3000/api/getDeputyMgnSales' 
                         switch (parent) {
                             case 0:
@@ -738,6 +761,11 @@ export default class DayPage extends Component {
             console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
             if (isGeo == "true") {
+                bodyData = JSON.stringify({
+                    date: this.state.date,
+                    filter_type: filter_type,
+                }),
+                    url = 'getRegionSales'
                 switch (parent) {
                     case 0:
                         // Region level
@@ -777,6 +805,11 @@ export default class DayPage extends Component {
                         break;
                 }
             } else {
+                bodyData = JSON.stringify({
+                    date: this.state.date,
+                    filter_type: filter_type,
+                }),
+                    url = 'getDeputyMgnSales'
                 switch (parent) {
                     case 0:
                         // Region level
@@ -800,7 +833,7 @@ export default class DayPage extends Component {
                         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id);
                         break;
                     case 2:
-                        break;
+                        return;
                 }
             }
 
@@ -1068,18 +1101,6 @@ export default class DayPage extends Component {
             );
         }
     }
-
-    // render() {
-    //     return (
-    //         <View style={styless.MainContainer}>
-
-    //         <View style={styless.cardViewStyle} >
-    //         <View style={styless.cardViewRow} />
-    //         </View>
-    //         </View>
-    //     )
-    // }
-
 
 }
 
