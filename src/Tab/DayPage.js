@@ -21,6 +21,7 @@ import {
     TouchableOpacity,
     Alert,
     exitApp,
+    RefreshControl,
 
 
 } from 'react-native';
@@ -54,7 +55,7 @@ export default class DayPage extends Component {
 
         super(props)
         props.navigation.setParams({
-            onTabFocus: this.customComponentDidMount
+            onTabFocus: this.tabClick
         });
         this.state = {
             dataSource: [],
@@ -69,6 +70,8 @@ export default class DayPage extends Component {
             storeId: 0,
             isGeo: "true",
             isLoading: true,
+            refreshing: false,
+
         }
         this.onBackPress = this.onBackPress.bind(this);
 
@@ -92,7 +95,7 @@ export default class DayPage extends Component {
 
             // }} />,
 
-
+            swipeEnabled: false,
             tabBarOnPress: ({ navigation, defaultHandler }) => {
                 // perform your logic here
                 // this is mandatory to perform the actual switch
@@ -192,8 +195,12 @@ export default class DayPage extends Component {
 
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
+        var isGeoVal = "true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
-        if (this.state.parent >= 2) {
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
+            isGeoVal = value
+        }).done()
+        if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -234,7 +241,11 @@ export default class DayPage extends Component {
         //0 for region 1 for city 2 for store
         console.log('before parent : ' + this.state.parent)
         var parent = this.state.parent - 1;
-        console.log('before parent : ' + parent)
+        if (parent < 0) {
+            parent = 0
+            return;
+        }
+        console.log('After parent : ' + parent)
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, "" + parent)
         this.setState({ parent });
         this.customComponentDidMount();
@@ -578,6 +589,11 @@ export default class DayPage extends Component {
         }).done();
     }
 
+    tabClick = () => {
+        this.setState({ parent: 0 })
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
+        this.customComponentDidMount()
+    }
 
     //for date
     customComponentDidMount = () => {
@@ -621,6 +637,11 @@ export default class DayPage extends Component {
                     })
                     if (value1 == "true") {
                         console.log(" value1==true");
+                        urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                        bodyJson = JSON.stringify({
+                            date: urlPanDate,
+                            filter_type: filter_type,
+                        })
                         switch (parent) {
                             case 0:
                             case '0':
@@ -653,13 +674,18 @@ export default class DayPage extends Component {
                                 break;
                             case 3:
                             case '3':
-                                console.log(" value1==true  case ");
-                                urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
-                                break;
+                            // console.log(" value1==true  case ");
+                            // urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                            // break;
 
                         }
                     } else {
                         console.log("else value1==true");
+                        urlValue = 'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                        bodyJson = JSON.stringify({
+                            date: urlPanDate,
+                            filter_type: filter_type,
+                        })
                         // urlValue='http://115.112.181.53:3000/api/getDeputyMgnSales' 
                         switch (parent) {
                             case 0:
@@ -692,6 +718,8 @@ export default class DayPage extends Component {
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
+                    this.setState({ indeterminate: true });
+                    this.setState({ refreshing: true });
                     fetch(urlPan, {
                         method: 'POST',
                         headers: {
@@ -702,6 +730,8 @@ export default class DayPage extends Component {
                     })
                         .then((response) => response.json())
                         .then((responseJson) => {
+                            this.setState({ indeterminate: false });
+                            this.setState({ refreshing: false });
                             // this.setState.dataSource.push( responseJson.sale_info );
                             if (responseJson != null) {
                                 this.setState({
@@ -738,6 +768,11 @@ export default class DayPage extends Component {
             console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
             if (isGeo == "true") {
+                bodyData = JSON.stringify({
+                    date: this.state.date,
+                    filter_type: filter_type,
+                }),
+                    url = 'getRegionSales'
                 switch (parent) {
                     case 0:
                         // Region level
@@ -777,6 +812,11 @@ export default class DayPage extends Component {
                         break;
                 }
             } else {
+                bodyData = JSON.stringify({
+                    date: this.state.date,
+                    filter_type: filter_type,
+                }),
+                    url = 'getDeputyMgnSales'
                 switch (parent) {
                     case 0:
                         // Region level
@@ -800,14 +840,15 @@ export default class DayPage extends Component {
                         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id);
                         break;
                     case 2:
-                        break;
+                        return;
                 }
             }
 
 
 
             console.log("this.callApi(url,bodyData)  url : " + url + "   bodyData : " + bodyData)
-            this.callApi(url, bodyData)
+            // this.callApi(url, bodyData)
+            this.customComponentDidMount()
             // AsyncStorage.getItem("parent_key").then((parent) => {
             //     console.log(" Parent : " + parent);
             //     if(parent===null){
@@ -826,7 +867,8 @@ export default class DayPage extends Component {
 
 
     callApi = (url, bodyData) => {
-
+        this.setState({ refreshing: true });
+        this.setState({ indeterminate: true });
         const urlPan = 'http://115.112.181.53:3000/api/' + url;
         console.log("  url " + urlPan)
         fetch(urlPan, {
@@ -843,6 +885,8 @@ export default class DayPage extends Component {
                 this.setState({
                     dataSource: responseJson.data
                 })
+                this.setState({ refreshing: false });
+                this.setState({ indeterminate: false });
                 if (responseJson != null) {
                 }
 
@@ -906,7 +950,23 @@ export default class DayPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
-
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh}
+                    />
+                    {
+                        this.state.indeterminate &&
+                        <Progress.Bar
+                            style={styles.progress}
+                            progress={this.state.progress}
+                            indeterminate={this.state.indeterminate}
+                            width={380}
+                            borderColor={'#FAC209'}
+                            borderRadius={0}
+                            color={'rgb(250, 194, 9)'}
+                            marginTop={1}
+                        />
+                    }
                     <View style={styless.categries}>
                         <DatePicker
 
@@ -1068,18 +1128,6 @@ export default class DayPage extends Component {
             );
         }
     }
-
-    // render() {
-    //     return (
-    //         <View style={styless.MainContainer}>
-
-    //         <View style={styless.cardViewStyle} >
-    //         <View style={styless.cardViewRow} />
-    //         </View>
-    //         </View>
-    //     )
-    // }
-
 
 }
 

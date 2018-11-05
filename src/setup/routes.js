@@ -38,6 +38,7 @@ export const Tabs = createMaterialTopTabNavigator({
             console.log('onPress:', scene.route);
             jumpToIndex(scene.index);
           },
+          swipeEnabled:false,
       
     }, // navigationOptions: ({ navigation }) => ({
         //     // tabBarOnPress: (scene, jumpToIndex) => {
