@@ -406,7 +406,7 @@ export default class MonthPage extends Component {
 
                                 <View style={styless.cardViewRow}>
 
-                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
+                                    {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
                                         <Text style={{
                                             fontSize: 22,
 
@@ -422,7 +422,22 @@ export default class MonthPage extends Component {
                                                 "" + item.name
                                             }
                                         </Text>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
+                                   <Text style={{
+                                            fontSize: 22,
+
+                                            color: '#ffffff',
+
+
+                                            justifyContent: 'center',
+                                            // textAlignVertical: "center",
+                                            alignItems: 'center',
+
+                                        }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                            {
+                                                "" + item.name
+                                            }
+                                        </Text>
 
 
 
@@ -521,7 +536,7 @@ export default class MonthPage extends Component {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
                                 <View style={styless.cardViewRow}>
-                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
+                                    {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
                                         <Text style={{
                                             fontSize: 22,
 
@@ -537,7 +552,22 @@ export default class MonthPage extends Component {
                                                 "" + item.name
                                             }
                                         </Text>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
+                                    <Text style={{
+                                            fontSize: 22,
+
+                                            color: '#ffffff',
+
+
+                                            justifyContent: 'center',
+                                            // textAlignVertical: "center",
+                                            alignItems: 'center',
+
+                                        }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                            {
+                                                "" + item.name
+                                            }
+                                        </Text>
 
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>

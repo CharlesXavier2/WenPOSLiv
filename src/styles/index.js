@@ -25,7 +25,7 @@ export default styles = StyleSheet.create({
     menuItem:{
         flexDirection: 'row',
         padding: 10,
-        borderWidth: 0.5,
+        borderWidth: 0.2,
         borderColor: '#d6d7da'
     }
 });
