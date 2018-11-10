@@ -100,8 +100,8 @@ export default class YearPage extends Component {
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
-            this.customComponentDidMount()
-            console.log(" componentWillReceiveProps : ")
+            // this.customComponentDidMount()
+            console.log(" componentWillReceiveProps year : ")
         } catch (error) {
 
         }
@@ -649,7 +649,7 @@ export default class YearPage extends Component {
 
         // console.log('Parent : '+parent)
         // console.log('tabPosition : '+tabPosition)
-        this.callCurrentApi()
+        this.customComponentDidMount()
     }
 
     callCurrentApi = () => {

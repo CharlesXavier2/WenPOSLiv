@@ -31,7 +31,7 @@ import DrawerScreen from '../components/DrawerScreen';
 import * as Progress from 'react-native-progress';
 import DatePicker from '../utils/datepicker.js';
 import Moment from 'moment';
-import SaleDetails from '../components/SaleDetail';
+import Details from '../components/Details';
 
 
 var dateFormat = require('dateformat');
@@ -111,12 +111,11 @@ export default class DayPage extends Component {
     componentWillMount() {
 
     }
-
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
-            this.customComponentDidMount()
-            console.log(" componentWillReceiveProps : ")
+            // this.customComponentDidMount()
+            console.log(" componentWillReceiveProps day : ")
         } catch (error) {
 
         }
@@ -338,19 +337,6 @@ export default class DayPage extends Component {
                                             }
                                         </Text>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
 
@@ -387,8 +373,12 @@ export default class DayPage extends Component {
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
                                         this.props.navigation.navigate('SaleDetails', {
-                                            itemId: item.name,
-                                            otherParam: this.totalSaleFormat(val),
+                                            itemName: item.name,
+                                            itemId: item.id,
+                                            parent:  this.state.parent,
+                                            date:  this.state.date,
+                                            isGeo:  this.state.isGeo,
+                                            filter_type:filter_type
                                         });
                                     }} >
                                     <Image
@@ -400,13 +390,8 @@ export default class DayPage extends Component {
                                             margin: 5,
                                             marginLeft: 15,
                                             resizeMode: 'stretch',
-
                                         }} />
                                 </TouchableOpacity>
-
-
-
-
                             </View>
 
 
@@ -506,8 +491,12 @@ export default class DayPage extends Component {
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
                                         this.props.navigation.navigate('SaleDetails', {
-                                            itemId: item.name,
-                                            otherParam: this.totalSaleFormat(val),
+                                            itemName: item.name,
+                                            itemId: item.id,
+                                            parent:  this.state.parent,
+                                            date:  this.state.date,
+                                            isGeo:  this.state.isGeo,
+                                            filter_type:filter_type
                                         });
                                     }} >
                                     <Image
