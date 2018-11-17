@@ -406,7 +406,7 @@ export default class MonthPage extends Component {
 
                                 <View style={styless.cardViewRow}>
 
-                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
+                                    {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
                                         <Text style={{
                                             fontSize: 22,
 
@@ -422,7 +422,22 @@ export default class MonthPage extends Component {
                                                 "" + item.name
                                             }
                                         </Text>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
+                                   <Text style={{
+                                            fontSize: 22,
+
+                                            color: '#ffffff',
+
+
+                                            justifyContent: 'center',
+                                            // textAlignVertical: "center",
+                                            alignItems: 'center',
+
+                                        }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                            {
+                                                "" + item.name
+                                            }
+                                        </Text>
 
 
 
@@ -521,7 +536,7 @@ export default class MonthPage extends Component {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
                                 <View style={styless.cardViewRow}>
-                                    <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
+                                    {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
                                         <Text style={{
                                             fontSize: 22,
 
@@ -537,7 +552,22 @@ export default class MonthPage extends Component {
                                                 "" + item.name
                                             }
                                         </Text>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
+                                    <Text style={{
+                                            fontSize: 22,
+
+                                            color: '#ffffff',
+
+
+                                            justifyContent: 'center',
+                                            // textAlignVertical: "center",
+                                            alignItems: 'center',
+
+                                        }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                            {
+                                                "" + item.name
+                                            }
+                                        </Text>
 
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
@@ -999,41 +1029,70 @@ export default class MonthPage extends Component {
             return (
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
 
-                    {
-                        this.state.indeterminate &&
-                        <Progress.Bar
-                            style={styles.progress}
-                            progress={this.state.progress}
-                            indeterminate={this.state.indeterminate}
-                            width={380}
-                            borderColor={'#FAC209'}
-                            borderRadius={0}
-                            color={'rgb(250, 194, 9)'}
-                            marginTop={1}
-                        />
-                    }
                     <View style={styless.categries}>
-                        <DatePicker
+                    <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}>
+                        <Image
+                            source={require('../images/back.png')}
+                            style={{
+                                paddingLeft: 10,
+                                paddingTop:10,
+                                paddingBottom:10,
+                                marginLeft: 10,
+                                resizeMode: 'stretch',
 
-                            date={this.state.date}
-                            placeholder="placeholder"
-
-                            mode="date"
-                            format="YYYY-MM-DD"
-                            minDate="2016-05-01"
-                            maxDate="2021-06-01"
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            iconSource={require('../images/calendar.png')}
-                            onDateChange={(date) => {
-                                this.setState({ date: date });
-                                AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
-                                this.customComponentDidMount();
                             }}
-
                         />
-                        <Text style={styless.instructions}>{this.state.date}</Text>
+                        <Text style={{
+                            fontSize: 14,
+                           
+                            color: '#ffffff',
+                            // paddingLeft: 40,
 
+
+                            //justifyContent: 'center',
+                            textAlignVertical: "center",
+                            alignItems: 'center',
+
+                        }} onPress={() => {
+
+                            this.setBackStackScreen();
+
+                        }}>Back</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: 80,
+                        }}>
+                            <DatePicker
+
+                                date={this.state.date}
+                                placeholder="placeholder"
+
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    this.setState({ date: date });
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.customComponentDidMount();
+                                }}
+
+                            />
+                            <Text style={styless.instructions}>{this.state.date}</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}>
                         <TouchableOpacity
                             onPress={() => {
                                 this.openDialog()
@@ -1043,7 +1102,7 @@ export default class MonthPage extends Component {
                                 style={{
                                     padding: 10,
                                     margin: 5,
-                                    marginLeft: 120,
+                                    marginLeft: 80,
                                     resizeMode: 'stretch',
 
                                 }}
@@ -1061,7 +1120,7 @@ export default class MonthPage extends Component {
                             />
                         </TouchableOpacity>
 
-
+                      </View> 
                     </View>
 
 
@@ -1072,22 +1131,7 @@ export default class MonthPage extends Component {
                         }
                     />
 
-                    <Text style={{
-                        fontSize: 16,
-                        height: 25,
-                        color: '#ffffff',
-                        // paddingLeft: 40,
 
-                        marginLeft: 40,
-                        //justifyContent: 'center',
-                        textAlignVertical: "center",
-                        alignItems: 'center',
-
-                    }} onPress={() => {
-
-                        this.setBackStackScreen();
-
-                    }}>Back</Text>
                 </View >
 
 
@@ -1111,24 +1155,63 @@ export default class MonthPage extends Component {
                         />
                     }
                     <View style={styless.categries}>
-                        <DatePicker
+                    <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            
+                        }}>
+                        <Image
+                            source={require('../images/back.png')}
+                            style={{
+                                paddingLeft: 10,
+                                paddingTop:10,
+                                paddingBottom:10,
+                               
+                                marginLeft: 10,
+                                resizeMode: 'stretch',
 
-                            date={this.state.date}
-                            // placeholder="placeholder"
+                            }}
+                        />
+                        <Text style={{
+                            fontSize: 14,
+                            color: '#ffffff',
+                            // paddingLeft: 40,
 
-                            mode="date"
-                            format="YYYY-MM-DD"
-                            minDate="2016-05-01"
-                            maxDate="2021-06-01"
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            iconSource={require('../images/calendar.png')}
-                            onDateChange={(date) => {
-                                this.setState({ date: date });
-                                AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
-                                this.customComponentDidMount();
-                            }} />
-                        <Text style={styless.instructions}>{this.state.date}</Text>
+
+                            //justifyContent: 'center',
+                            textAlignVertical: "center",
+                            alignItems: 'center',
+
+                        }} onPress={() => {
+
+                            this.setBackStackScreen();
+
+                        }}>Back</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: 80,
+                        }}>
+                            <DatePicker
+
+                                date={this.state.date}
+                                // placeholder="placeholder"
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    this.setState({ date: date });
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.customComponentDidMount();
+                                }} />
+                            <Text style={styless.instructions}>{this.state.date}</Text>
+                        </View>
                         {/* <Text style={{
                             fontSize: 12,
 
@@ -1141,12 +1224,17 @@ export default class MonthPage extends Component {
                             alignItems: 'center',
 
                         }}>Net Sales</Text>  */}
+                          <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginLeft: 80,
+                        }}>
                         <Image
                             source={require('../images/select_people.png')}
                             style={{
                                 padding: 10,
                                 margin: 5,
-                                marginLeft: 150,
+                               
                                 resizeMode: 'stretch',
 
                             }}
@@ -1158,7 +1246,7 @@ export default class MonthPage extends Component {
                             style={styless.ImageIconStyle}
                             onPress={() => this.openDialog()}
                         />
-
+                      </View>
                     </View>
 
 
@@ -1216,8 +1304,8 @@ const styless = StyleSheet.create({
     categries: {
 
         // width: '100%',
-        height: 40,
-        marginTop: 10,
+        height: 70,
+        marginTop: 5,
         justifyContent: 'flex-start',
         flexDirection: 'row',
     },
