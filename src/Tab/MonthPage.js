@@ -199,11 +199,10 @@ export default class MonthPage extends Component {
             console.log('Already in store ')
             return;
         }
-        var parent = this.state.parent + 1;
+        var parent = (parseInt(this.state.parent) + 1);
 
         var clickId = id;
         var parentVal = parent
-        //    var pageFlow = this.state.pageFlow + clickId;
         this.setState({
             parent: parentVal
         });
@@ -488,8 +487,12 @@ export default class MonthPage extends Component {
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
                                         this.props.navigation.navigate('SaleDetails', {
-                                            itemId: item.name,
-                                            otherParam: this.totalSaleFormat(val),
+                                            itemName: item.name,
+                                            itemId: item.id,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: filter_type
                                         });
                                     }} >
                                     <Image
@@ -606,8 +609,12 @@ export default class MonthPage extends Component {
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
                                         this.props.navigation.navigate('SaleDetails', {
-                                            itemId: item.name,
-                                            otherParam: this.totalSaleFormat(val),
+                                            itemName: item.name,
+                                            itemId: item.id,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: filter_type
                                         });
                                     }} >
                                     <Image
@@ -1030,6 +1037,8 @@ export default class MonthPage extends Component {
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
 
                     <View style={styless.categries}>
+                    {
+                            this.state.parent > 0 &&
                     <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -1062,6 +1071,7 @@ export default class MonthPage extends Component {
 
                         }}>Back</Text>
                         </View>
+                    }
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',

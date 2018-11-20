@@ -53,9 +53,6 @@ export default class DayPage extends Component {
     constructor(props) {
 
         super(props)
-        props.navigation.setParams({
-            onTabFocus: this.customComponentDidMount
-        });
         this.state = {
             dataSource: [],
             progress: 0,
@@ -71,7 +68,9 @@ export default class DayPage extends Component {
             isLoading: true,
         }
         this.onBackPress = this.onBackPress.bind(this);
-
+        props.navigation.setParams({
+            onTabFocus: this.tabClick
+        });
     }
     // static navigationOptions= ({navigation}) => {
     //     return {title: navigation.state.params.itemId}
@@ -108,6 +107,14 @@ export default class DayPage extends Component {
     _myHomeFunction = () => {
         alert('Here is home tab!');
     }
+
+    tabClick = () => {
+        this.setState({ parent: 0 })
+        AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
+        this.customComponentDidMount()
+    }
+
+
     componentWillMount() {
 
     }
@@ -928,10 +935,13 @@ export default class DayPage extends Component {
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
 
                     <View style={styless.categries}>
+                    {
+                            this.state.parent > 0 &&
                     <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                         }}>
+                        
                         <Image
                             source={require('../images/back.png')}
                             style={{
@@ -959,7 +969,9 @@ export default class DayPage extends Component {
                             this.setBackStackScreen();
 
                         }}>Back</Text>
+                  
                         </View>
+                    }
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',

@@ -14,7 +14,6 @@ import {
     FlatList,
     AsyncStorage,
     TouchableOpacity,
-    RefreshControl,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import CardView from 'react-native-cardview';
@@ -363,17 +362,11 @@ export default class SaleDetails extends Component {
                                 </View>
                             </View>
                         }
-
-
-
                         <View style={styless.hairline} />
                     </CardView>
                 </View>
             )
         }
-
-
-
     }
 
 
@@ -392,10 +385,7 @@ export default class SaleDetails extends Component {
 
             return (
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
-                    />
+                    
                     {
                         this.state.indeterminate &&
                         <Progress.Bar
