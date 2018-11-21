@@ -666,7 +666,7 @@ export default class WeekPage extends Component {
         AsyncStorage.getItem("date_key").then((value) => {
             console.log(" Getter date" + value);
             urlPanDate = value;
-            const urlPan = 'http://115.112.181.53:3000/api/getRegionSales'
+            const urlPan = 'http://115.112.224.200:3000/api/getRegionSales'
             console.log("  url " + urlPan)
             fetch(urlPan, {
                 method: 'POST',
@@ -766,7 +766,7 @@ export default class WeekPage extends Component {
                             case 0:
                             case '0':
                                 console.log(" value1==true  case 0");
-                                urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -775,7 +775,7 @@ export default class WeekPage extends Component {
                             case 1:
                             case '1':
                                 console.log(" value1==true  case 1");
-                                urlValue = 'http://115.112.181.53:3000/api/getCitySales'
+                                urlValue = 'http://115.112.224.200:3000/api/getCitySales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -785,7 +785,7 @@ export default class WeekPage extends Component {
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'http://115.112.181.53:3000/api/getStoreSales'
+                                urlValue = 'http://115.112.224.200:3000/api/getStoreSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -795,18 +795,18 @@ export default class WeekPage extends Component {
                             case 3:
                             case '3':
                                 console.log(" value1==true  case ");
-                                urlValue = 'http://115.112.181.53:3000/api/getRegionSales'
+                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 break;
 
                         }
                     } else {
                         console.log("else value1==true");
-                        // urlValue='http://115.112.181.53:3000/api/getDeputyMgnSales' 
+                        // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
                         switch (parent) {
                             case 0:
                             case '0':
                                 console.log("else value1==true case  0");
-                                urlValue = 'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                                urlValue = 'http://115.112.224.200:3000/api/getDeputyMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -815,7 +815,7 @@ export default class WeekPage extends Component {
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'http://115.112.181.53:3000/api/getPetchMgnSales'
+                                urlValue = 'http://115.112.224.200:3000/api/getPetchMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -970,7 +970,7 @@ export default class WeekPage extends Component {
 
     callApi = (url, bodyData) => {
 
-        const urlPan = 'http://115.112.181.53:3000/api/' + url;
+        const urlPan = 'http://115.112.224.200:3000/api/' + url;
         console.log("  url " + urlPan)
         fetch(urlPan, {
             method: 'POST',
