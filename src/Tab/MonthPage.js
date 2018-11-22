@@ -1099,38 +1099,77 @@ export default class MonthPage extends Component {
                             />
                             <Text style={styless.instructions}>{this.state.date}</Text>
                         </View>
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                        }}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.openDialog()
-                            }}>
-                            <Image
-                                source={require('../images/select_people.png')}
-                                style={{
-                                    padding: 10,
-                                    margin: 5,
-                                    marginLeft: 80,
-                                    resizeMode: 'stretch',
+                        {
+                                
+                                this.state.isGeo &&
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                }}>
+                                <TouchableOpacity
+                                onPress={() => {
+                                    this.openDialog()
+                                }}>
+                                <Image
+                                    source={require('../images/yellow_people.png')}
+                                    style={{
+                                        padding: 10,
+                                        margin: 5,
+                                        marginLeft: 80,
+                                        resizeMode: 'stretch',
 
-                                }}
-                            />
-                        </TouchableOpacity>
+                                    }}
+                                />
+                            </TouchableOpacity> 
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                        source={require('../images/select_geo.png')}
+                                        style={styless.ImageIconStyle}
+                                        onPress={() => this.openDialog()}
+                                    />
+                                </TouchableOpacity>
+                                </View>
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.openDialog()
-                            }}>
-                            <Image
-                                source={require('../images/select_geo.png')}
-                                style={styless.ImageIconStyle}
-                                onPress={() => this.openDialog()}
-                            />
-                        </TouchableOpacity>
+                            }
+                            
+                            {
+                                !this.state.isGeo &&
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                }}>
+                                <TouchableOpacity
+                                onPress={() => {
+                                    this.openDialog()
+                                }}>
+                                <Image
+                                    source={require('../images/select_people.png')}
+                                    style={{
+                                        padding: 10,
+                                        margin: 5,
+                                        marginLeft: 80,
+                                        resizeMode: 'stretch',
 
-                      </View> 
+                                    }}
+                                />
+                            </TouchableOpacity> 
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                    source={require('../images/yellow_geo.png')
+                                       }
+                                        style={styless.ImageIconStyle}
+                                        onPress={() => this.openDialog()}
+                                    />
+                                </TouchableOpacity>
+                                </View>
+                                
+                            }
                     </View>
 
 

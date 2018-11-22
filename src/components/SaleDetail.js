@@ -125,9 +125,9 @@ export default class SaleDetails extends Component {
             date: urlPanDate,
             filter_type: filter_type,
         })
-        urlValue = 'http://115.112.181.53:3000/api/getBmSales'
+        urlValue = 'http://115.112.224.200:3000/api/getBmSales'
 
-        console.log(" customComponentDidMount start =>  http://115.112.181.53:3000/api/getBmSales ");
+        console.log(" customComponentDidMount start =>  http://115.112.224.200:3000/api/getBmSales ");
         if (isGeo == "true") {
             console.log(" value1==true");
 
@@ -176,7 +176,7 @@ export default class SaleDetails extends Component {
                 date: urlPanDate,
                 filter_type: filter_type,
             })
-            // urlValue='http://115.112.181.53:3000/api/getDeputyMgnSales' 
+            // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
             switch (parent) {
                 case 0:
                 case '0':

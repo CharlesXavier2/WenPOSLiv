@@ -935,43 +935,43 @@ export default class DayPage extends Component {
                 <View style={{ backgroundColor: '#000000', flex: 1 }}>
 
                     <View style={styless.categries}>
-                    {
+                        {
                             this.state.parent > 0 &&
-                    <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                        }}>
-                        
-                        <Image
-                            source={require('../images/back.png')}
-                            style={{
-                                paddingLeft: 10,
-                                paddingTop:10,
-                                paddingBottom:10,
-                                marginLeft: 10,
-                                resizeMode: 'stretch',
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
 
-                            }}
-                        />
-                        <Text style={{
-                            fontSize: 14,
-                           
-                            color: '#ffffff',
-                            // paddingLeft: 40,
+                                <Image
+                                    source={require('../images/back.png')}
+                                    style={{
+                                        paddingLeft: 10,
+                                        paddingTop: 10,
+                                        paddingBottom: 10,
+                                        marginLeft: 10,
+                                        resizeMode: 'stretch',
+
+                                    }}
+                                />
+                                <Text style={{
+                                    fontSize: 14,
+
+                                    color: '#ffffff',
+                                    // paddingLeft: 40,
 
 
-                            //justifyContent: 'center',
-                            textAlignVertical: "center",
-                            alignItems: 'center',
+                                    //justifyContent: 'center',
+                                    textAlignVertical: "center",
+                                    alignItems: 'center',
 
-                        }} onPress={() => {
+                                }} onPress={() => {
 
-                            this.setBackStackScreen();
+                                    this.setBackStackScreen();
 
-                        }}>Back</Text>
-                  
-                        </View>
-                    }
+                                }}>Back</Text>
+
+                            </View>
+                        }
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -999,38 +999,82 @@ export default class DayPage extends Component {
                             />
                             <Text style={styless.instructions}>{this.state.date}</Text>
                         </View>
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                        }}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.openDialog()
-                            }}>
-                            <Image
-                                source={require('../images/select_people.png')}
-                                style={{
-                                    padding: 10,
-                                    margin: 5,
-                                    marginLeft: 80,
-                                    resizeMode: 'stretch',
+                        
+                           
+                           
 
-                                }}
-                            />
-                        </TouchableOpacity>
+                            {
+                                
+                                this.state.isGeo &&
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                }}>
+                                <TouchableOpacity
+                                onPress={() => {
+                                    this.openDialog()
+                                }}>
+                                <Image
+                                    source={require('../images/yellow_people.png')}
+                                    style={{
+                                        padding: 10,
+                                        margin: 5,
+                                        marginLeft: 80,
+                                        resizeMode: 'stretch',
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.openDialog()
-                            }}>
-                            <Image
-                                source={require('../images/select_geo.png')}
-                                style={styless.ImageIconStyle}
-                                onPress={() => this.openDialog()}
-                            />
-                        </TouchableOpacity>
+                                    }}
+                                />
+                            </TouchableOpacity> 
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                        source={require('../images/select_geo.png')}
+                                        style={styless.ImageIconStyle}
+                                        onPress={() => this.openDialog()}
+                                    />
+                                </TouchableOpacity>
+                                </View>
 
-                      </View> 
+                            }
+                            
+                            {
+                                !this.state.isGeo &&
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                }}>
+                                <TouchableOpacity
+                                onPress={() => {
+                                    this.openDialog()
+                                }}>
+                                <Image
+                                    source={require('../images/select_people.png')}
+                                    style={{
+                                        padding: 10,
+                                        margin: 5,
+                                        marginLeft: 80,
+                                        resizeMode: 'stretch',
+
+                                    }}
+                                />
+                            </TouchableOpacity> 
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                    source={require('../images/yellow_geo.png')
+                                       }
+                                        style={styless.ImageIconStyle}
+                                        onPress={() => this.openDialog()}
+                                    />
+                                </TouchableOpacity>
+                                </View>
+                                
+                            }
+                            
                     </View>
 
 
@@ -1065,7 +1109,7 @@ export default class DayPage extends Component {
                         />
                     }
                     <View style={styless.categries}>
-                    <View style={{
+                        {/* <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             
@@ -1097,7 +1141,7 @@ export default class DayPage extends Component {
                             this.setBackStackScreen();
 
                         }}>Back</Text>
-                        </View>
+                        </View> */}
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -1134,29 +1178,29 @@ export default class DayPage extends Component {
                             alignItems: 'center',
 
                         }}>Net Sales</Text>  */}
-                          <View style={{
+                        <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             marginLeft: 80,
                         }}>
-                        <Image
-                            source={require('../images/select_people.png')}
-                            style={{
-                                padding: 10,
-                                margin: 5,
-                               
-                                resizeMode: 'stretch',
+                            <Image
+                                source={require('../images/select_people.png')}
+                                style={{
+                                    padding: 10,
+                                    margin: 5,
 
-                            }}
-                            onPress={() => this.openDialog()}
-                        />
+                                    resizeMode: 'stretch',
 
-                        <Image
-                            source={require('../images/select_geo.png')}
-                            style={styless.ImageIconStyle}
-                            onPress={() => this.openDialog()}
-                        />
-                      </View>
+                                }}
+                                onPress={() => this.openDialog()}
+                            />
+
+                            <Image
+                                source={require('../images/select_geo.png')}
+                                style={styless.ImageIconStyle}
+                                onPress={() => this.openDialog()}
+                            />
+                        </View>
                     </View>
 
 
