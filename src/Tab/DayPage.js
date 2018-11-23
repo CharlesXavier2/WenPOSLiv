@@ -40,7 +40,7 @@ var tabPositionVal = 0;
 //var dateValue='';
 export default class DayPage extends Component {
 
-
+   
     //  navigateToScreen = (SaleDetails) => () => {
     //         navigateToScreen =createStackNavigator({
     //             SaleDetails:{screen: SaleDetails}, 

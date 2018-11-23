@@ -13,6 +13,7 @@ import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
 import LogoutScreen from '../components/LogoutScreen.js'
+import Dashboard from '../components/Dashboard.js'
 
 //import DatePicker from '../components/DateSelector';
 
@@ -202,7 +203,7 @@ export const CustomHeader = ({ title, subtitle }) => (
     LoginPage:{screen: LoginPage},
     DrawerNavigator:{screen: DrawerNavigator},
     DatePicker: {screen: DatePicker},
-    // DayPage: {screen: DayPage},
+    Dashboard: {screen: Dashboard},
     SaleDetails:
     { 
         screen: SaleDetails, 
