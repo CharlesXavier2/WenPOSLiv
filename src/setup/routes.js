@@ -23,7 +23,7 @@ export const Tabs = createMaterialTopTabNavigator({
     Year: YearPage
 },{
     tabBarOptions: {
-
+        upperCaseLabel: false,
         backgroundColor: '#CE000A',
         activeTintColor: '#fff',
         inactiveTintColor: '#FAC209',
