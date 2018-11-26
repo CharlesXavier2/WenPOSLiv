@@ -40,7 +40,7 @@ var tabPositionVal = 0;
 //var dateValue='';
 export default class DayPage extends Component {
 
-   
+
     //  navigateToScreen = (SaleDetails) => () => {
     //         navigateToScreen =createStackNavigator({
     //             SaleDetails:{screen: SaleDetails}, 
@@ -293,46 +293,182 @@ export default class DayPage extends Component {
         var val = item.current_sale;
         var rounfFranchise = '0.00';
 
-        if (item.current_sale > item.last_sale) {
-            return (
+        // if (item.current_sale > item.last_sale) {
+        //     return (
 
+
+        //         <View style={styless.MainContainer}>
+
+
+        //             <View
+        //                 // cardElevation={2}
+        //                 //cardMaxElevation={2}
+        //                 //cornerRadius={1}
+        //                 //borderRadius={5}
+        //                 // borderColor={'#CE000A'}
+        //                 style={styless.cardViewStyle}
+        //             >
+        //                 {
+        //                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+        //                         <View style={styless.cardViewRow}>
+
+        //                             {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
+        //                                 <Text style={{
+        //                                     fontSize: 22,
+
+        //                                     color: '#ffffff',
+
+
+        //                                     justifyContent: 'center',
+        //                                     // textAlignVertical: "center",
+        //                                     alignItems: 'center',
+
+        //                                 }} >
+        //                                     {
+        //                                         "" + item.name
+        //                                     }
+        //                                 </Text>
+        //                             </TouchableOpacity> */}
+        //                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+
+        //                                 <TouchableOpacity
+        //                                     onPress={() => {
+        //                                         /* 1. Navigate to the Details route with params */
+        //                                         this.props.navigation.navigate('SaleDetails', {
+        //                                             itemName: item.name,
+        //                                             itemId: item.id,
+        //                                             parent: this.state.parent,
+        //                                             date: this.state.date,
+        //                                             isGeo: this.state.isGeo,
+        //                                             filter_type: filter_type
+        //                                         });
+        //                                     }} >
+        //                                     <Image
+        //                                         source={require('../images/detail.png')}
+        //                                         style={styless.ImageIconStyle} />
+        //                                 </TouchableOpacity>
+        //                                 <Text style={{
+        //                                     fontSize: 16,
+
+        //                                     color: '#CE000A',
+
+
+        //                                     justifyContent: 'center',
+        //                                     // textAlignVertical: "center",
+        //                                     alignItems: 'center',
+
+        //                                 }} onPress={() => { this.setCurrentScreen(item.id); }} >
+        //                                     {
+        //                                         "" + item.name
+        //                                     }
+        //                                 </Text>
+
+
+        //                             </View>
+        //                         </View>
+
+        //                         {/* <Divider style={{ backgroundColor: 'blue', height: 1 }} /> */}
+
+        //                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+
+
+
+        //                             <Image
+        //                                 source={require('../images/saleup.png')}
+        //                                 style={styless.ImageIconStyle} />
+        //                             <Text style={{
+        //                                 fontSize: 12,
+        //                                 //width: 150,
+        //                                 color: '#000000',
+
+
+        //                                 justifyContent: 'center',
+        //                                 //textAlignVertical: "center",
+        //                                 alignItems: 'center',
+
+        //                             }}>Net Sales :
+        //                         {
+        //                                     //item.current_sale.toFixed(2)
+        //                                     "" + this.totalSaleFormat(val)
+        //                                 }
+        //                             </Text>
+
+
+        //                         </View>
+
+
+
+
+
+        //                     </View>
+
+
+        //                 }
+
+
+
+        //                 <View style={styless.hairline} />
+        //             </View>
+        //         </View>
+        //     )
+        // }
+      
+            return (
 
                 <View style={styless.MainContainer}>
 
 
-                    <CardView
-                        cardElevation={2}
-                        cardMaxElevation={2}
-                        cornerRadius={1}
+                    <View
+                        // cardElevation={2}
+                        // cardMaxElevation={2}
+                        // cornerRadius={1}
+                        // borderRadius={5}
+                        // borderColor={'#CE000A'}
+
+                        //shadowRadius={'#CE000A'}
                         style={styless.cardViewStyle}
                     >
-                        {
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-                                <View style={styless.cardViewRow}>
-
-                                    {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
-                                        <Text style={{
-                                            fontSize: 22,
-
-                                            color: '#ffffff',
 
 
-                                            justifyContent: 'center',
-                                            // textAlignVertical: "center",
-                                            alignItems: 'center',
+                        <View style={styless.cardViewRowHeader}>
 
-                                        }} >
-                                            {
-                                                "" + item.name
-                                            }
-                                        </Text>
-                                    </TouchableOpacity> */}
-                                    <Text style={{
-                                        fontSize: 22,
+                            <View style={{ flexDirection: 'row', }}>
 
-                                        color: '#ffffff',
 
+                                <View style={{
+        backgroundColor: '#FFFFFF',
+        width: '30%',
+    }}>
+                                    <TouchableOpacity
+                                        >
+                                        <Image
+                                            source={require('../images/detail.png')}
+                                            style={{
+                                                width: 25,
+                                                height: 25,
+                                                padding: 10,
+                                                marginLeft: 20,
+                                                margin: 5,
+                                                alignItems: 'center', justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }} />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={{
+        backgroundColor: '#FFFFFF',
+        width: '40%',
+    }}>
+
+                                    <Text numberOfLines={1} style={{
+                                        fontSize: 16,
+
+                                        color: '#CE000A',
+
+                                        marginLeft: 50,
 
                                         justifyContent: 'center',
                                         // textAlignVertical: "center",
@@ -343,197 +479,238 @@ export default class DayPage extends Component {
                                             "" + item.name
                                         }
                                     </Text>
+                                </View>
 
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+                                <TouchableOpacity
+                                        onPress={() => {
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('SaleDetails', {
+                                                itemName: item.name,
+                                                itemId: item.id,
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: filter_type
+                                            });
+                                        }} >
+
+                                <View style={{
+        backgroundColor: '#FFFFFF',
+        width: '20%',
+    }}>
+                               
+
+                                    <Image
+                                        source={require('../images/nextButton.png')}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            padding: 10,
+                                            marginLeft: 70,
+
+                                            margin: 5,
+                                            resizeMode: 'stretch',
+
+                                        }} />
+                                        
+                                        </View>
+                                        </TouchableOpacity>
+                               
+
+
+                            </View>
+
+                        </View>
+                        <View style={styless.hairline} />
 
 
 
-                                        <Image
-                                            source={require('../images/saleup.png')}
-                                            style={styless.ImageIconStyle} />
-                                        <Text style={{
-                                            fontSize: 16,
-                                            //width: 150,
-                                            color: '#ffffff',
 
 
-                                            justifyContent: 'center',
-                                            //textAlignVertical: "center",
-                                            alignItems: 'center',
+                        <View style={styless.cardViewRow}>
+                            <View style={{
+                                flexDirection: 'row',
 
-                                        }}>Total Sale :
-                                {
-                                                //item.current_sale.toFixed(2)
-                                                "" + this.totalSaleFormat(val)
-                                            }
-                                        </Text>
+                            }}>
+                                <View style={styless.shapeyellow}>
 
 
-                                    </View>
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 20,
 
+                                        fontWeight: 'bold',
+                                        justifyContent: 'center',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
 
+                                    }}>Net Sales
+                                        
+</Text>
 
                                 </View>
 
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        /* 1. Navigate to the Details route with params */
-                                        this.props.navigation.navigate('SaleDetails', {
-                                            itemName: item.name,
-                                            itemId: item.id,
-                                            parent: this.state.parent,
-                                            date: this.state.date,
-                                            isGeo: this.state.isGeo,
-                                            filter_type: filter_type
-                                        });
-                                    }} >
-                                    <Image
-                                        source={require('../images/nextButton.png')}
-                                        style={{
-                                            width: 30,
-                                            height: 30,
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 15,
-                                            resizeMode: 'stretch',
-                                        }} />
-                                </TouchableOpacity>
-                            </View>
-
-
-                        }
 
 
 
-                        <View style={styless.hairline} />
-                    </CardView>
-                </View>
-            )
-        }
-        else {
-            return (
-
-                <View style={styless.MainContainer}>
+                                <View style={styless.shapeinnerwhite}>
 
 
-                    <CardView
-                        cardElevation={2}
-                        cardMaxElevation={2}
-                        cornerRadius={1}
-                        style={styless.cardViewStyle}
-                    >
-                        {
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-                                <View style={styless.cardViewRow}>
-                                    {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
-                                        <Text style={{
-                                            fontSize: 22,
-
-                                            color: '#ffffff',
-
-
-                                            justifyContent: 'center',
-                                            // textAlignVertical: "center",
-                                            alignItems: 'center',
-
-                                        }} >
-                                            {
-                                                "" + item.name
-                                            }
-                                        </Text>
-                                    </TouchableOpacity> */}
                                     <Text style={{
-                                        fontSize: 22,
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 50,
 
-                                        color: '#ffffff',
-
-
+                                        fontWeight: 'bold',
                                         justifyContent: 'center',
-                                        // textAlignVertical: "center",
+                                        //textAlignVertical: "center",
                                         alignItems: 'center',
 
-                                    }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                    }}>
                                         {
-                                            "" + item.name
+                                            //item.current_sale.toFixed(2)
+                                            "" + this.totalSaleFormat(val)
                                         }
                                     </Text>
 
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styless.hairline} />
+
+                        <View style={styless.cardViewRow}>
+                            <View style={{
+                                flexDirection: 'row',
+
+                            }}>
+                                <View style={styless.shapeyellow}>
 
 
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 20,
 
 
+                                        justifyContent: 'center',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
 
-                                        <Image
-                                            source={require('../images/saledown.png')}
-                                            style={styless.ImageIconStyle} />
-                                        <Text style={{
-                                            fontSize: 16,
-                                            //width: 150,
-                                            color: '#ffffff',
-
-
-                                            justifyContent: 'center',
-                                            //textAlignVertical: "center",
-                                            alignItems: 'center',
-
-                                        }}>Total Sale :
-                            {
-                                                //item.current_sale.toFixed(2)
-                                                "" + this.totalSaleFormat(val)
-                                            }
-                                        </Text>
-
-
-                                    </View>
-
-
+                                    }}>Average Sales
+                                        
+</Text>
 
                                 </View>
 
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        /* 1. Navigate to the Details route with params */
-                                        this.props.navigation.navigate('SaleDetails', {
-                                            itemName: item.name,
-                                            itemId: item.id,
-                                            parent: this.state.parent,
-                                            date: this.state.date,
-                                            isGeo: this.state.isGeo,
-                                            filter_type: filter_type
-                                        });
-                                    }} >
-                                    <Image
-                                        source={require('../images/nextButton.png')}
-                                        style={{
-                                            width: 30,
-                                            height: 30,
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 15,
-                                            resizeMode: 'stretch',
-
-                                        }} />
-                                </TouchableOpacity>
 
 
 
+                                <View style={styless.shapeinnerwhite}>
 
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 50,
+
+                                        justifyContent: 'center',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                        {
+                                            //item.current_sale.toFixed(2)
+                                            "" + this.totalSaleFormat(val)
+                                        }
+                                    </Text>
+
+                                </View>
                             </View>
-
-
-                        }
-
-
-
+                        </View>
                         <View style={styless.hairline} />
-                    </CardView>
+
+
+                        <View style={styless.cardViewRow}>
+                            <View style={{
+                                flexDirection: 'row',
+
+                            }}>
+                                <View style={styless.shapeyellow}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 20,
+
+
+                                        justifyContent: 'center',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>SSSG %
+                                        
+</Text>
+
+                                </View>
+
+
+
+
+
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 50,
+
+
+                                        justifyContent: 'center',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                        {
+                                            //item.current_sale.toFixed(2)
+                                            "" + this.totalSaleFormat(val)
+                                        }
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </View>
                 </View>
             )
-        }
+        
 
 
 
@@ -932,7 +1109,7 @@ export default class DayPage extends Component {
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
 
             return (
-                <View style={{ backgroundColor: '#000000', flex: 1 }}>
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
 
                     <View style={styless.categries}>
                         {
@@ -976,7 +1153,7 @@ export default class DayPage extends Component {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            marginLeft: 80,
+                            marginLeft: 60,
                         }}>
                             <DatePicker
 
@@ -999,82 +1176,68 @@ export default class DayPage extends Component {
                             />
                             <Text style={styless.instructions}>{this.state.date}</Text>
                         </View>
-                        
-                           
-                           
+
+
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+
+                        }}>
+
 
                             {
-                                
-                                this.state.isGeo &&
-                                <View style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}>
-                                <TouchableOpacity
-                                onPress={() => {
-                                    this.openDialog()
-                                }}>
-                                <Image
-                                    source={require('../images/yellow_people.png')}
-                                    style={{
-                                        padding: 10,
-                                        margin: 5,
-                                        marginLeft: 80,
-                                        resizeMode: 'stretch',
 
-                                    }}
-                                />
-                            </TouchableOpacity> 
+
+                                this.state.isGeo &&
+
                                 <TouchableOpacity
                                     onPress={() => {
                                         this.openDialog()
                                     }}>
                                     <Image
-                                        source={require('../images/select_geo.png')}
-                                        style={styless.ImageIconStyle}
-                                        onPress={() => this.openDialog()}
+                                        source={require('../images/people.png')}
+                                        style={{
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 40,
+
+                                            justifyContent: 'center',
+                                            resizeMode: 'stretch',
+
+                                        }}
                                     />
                                 </TouchableOpacity>
-                                </View>
-
                             }
-                            
                             {
                                 !this.state.isGeo &&
-                                <View style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                }}>
-                                <TouchableOpacity
-                                onPress={() => {
-                                    this.openDialog()
-                                }}>
-                                <Image
-                                    source={require('../images/select_people.png')}
-                                    style={{
-                                        padding: 10,
-                                        margin: 5,
-                                        marginLeft: 80,
-                                        resizeMode: 'stretch',
 
-                                    }}
-                                />
-                            </TouchableOpacity> 
                                 <TouchableOpacity
                                     onPress={() => {
                                         this.openDialog()
                                     }}>
                                     <Image
-                                    source={require('../images/yellow_geo.png')
-                                       }
-                                        style={styless.ImageIconStyle}
+                                        source={require('../images/geo.png')
+                                        }
+                                        style={{
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 40,
+
+                                            justifyContent: 'center',
+                                            resizeMode: 'stretch',
+
+                                        }}
                                         onPress={() => this.openDialog()}
                                     />
                                 </TouchableOpacity>
-                                </View>
-                                
+
                             }
-                            
+
+
+
+
+                        </View>
+
                     </View>
 
 
@@ -1146,7 +1309,7 @@ export default class DayPage extends Component {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            marginLeft: 80,
+                            marginLeft: 60,
                         }}>
                             <DatePicker
 
@@ -1238,7 +1401,7 @@ const styless = StyleSheet.create({
         flex: 1,
         height: '100%',
         width: '100%',
-        backgroundColor: '#000000',
+        backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
         // flexDirection: 'column',
@@ -1250,6 +1413,7 @@ const styless = StyleSheet.create({
         // width: '100%',
         height: 70,
         marginTop: 5,
+        backgroundColor: '#000000',
         justifyContent: 'flex-start',
         flexDirection: 'row',
     },
@@ -1262,22 +1426,42 @@ const styless = StyleSheet.create({
     },
 
     cardViewStyle: {
-        justifyContent: 'center',
-        alignItems: 'center',
+        // justifyContent: 'center',
+        // alignItems: 'center',
         width: '90%',
-        height: 100,
-        backgroundColor: '#313131',
-        marginTop: 10,
-        //    // marginBottom: 10,
+        height: 105,
+        // borderRadius: 1,
+        borderColor: '#000',
+        backgroundColor: '#FFFFFF',
+        marginTop: 5,
+        marginBottom: 5,
+        borderWidth: 1,
+        borderRadius: 1,
+
         //     marginLeft: 10,
         //     marginRight: 10
     },
-    cardViewRow: {
+    cardViewRowHeader: {
         flexDirection: 'column',
-        height: 22.7,
+        height: 40,
+
         //backgroundColor: '#fff',
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
+        // textAlignVertical: "center"
+
+
+
+
+
+    },
+    cardViewRow: {
+        flexDirection: 'column',
+        height: 20,
+
+        //backgroundColor: '#fff',
+        // justifyContent: 'center',
+        // alignItems: 'center',
         // textAlignVertical: "center"
 
 
@@ -1323,9 +1507,25 @@ const styless = StyleSheet.create({
         alignItems: 'flex-end'
 
     },
+    shapeyellow: {
+        backgroundColor: '#FBE028',
+        width: '35%',
+        height: 19.6,
+
+    },
+    shapewhite: {
+        backgroundColor: '#FFFFFF',
+        width: '30%',
+    },
+    shapeinnerwhite: {
+        backgroundColor: '#FFFFFF',
+        width: '55%',
+        height: 19.6,
+
+    },
     hairline: {
         backgroundColor: '#000',
-        height: 2,
+        height: 0.8,
 
     },
     welcome: {
@@ -1346,6 +1546,11 @@ const styless = StyleSheet.create({
         fontSize: 12,
         textAlign: 'center',
         color: '#fff',
+    },
+    separator: {
+        borderWidth: 1,
+        flexDirection: 'row',
+        borderColor: 'red'
     },
 
 

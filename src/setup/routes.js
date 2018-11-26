@@ -13,7 +13,6 @@ import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
 import LogoutScreen from '../components/LogoutScreen.js'
-import Dashboard from '../components/Dashboard.js'
 
 //import DatePicker from '../components/DateSelector';
 
@@ -25,11 +24,11 @@ export const Tabs = createMaterialTopTabNavigator({
 },{
     tabBarOptions: {
 
-        backgroundColor: '#C11929',
+        backgroundColor: '#CE000A',
         activeTintColor: '#fff',
         inactiveTintColor: '#FAC209',
         style: {
-            backgroundColor: '#C11929',
+            backgroundColor: '#CE000A',
         },
         indicatorStyle: {
             backgroundColor: '#fff',
@@ -139,7 +138,14 @@ export const DrawerNavigator = createDrawerNavigator({
 
 export const MenuImage = ({navigation}) => {
     if(!navigation.state.isDrawerOpen){
-        return <Image source={require('../images/burgermenu.png')}/>
+        return <Image source={require('../images/drawer.png')}
+        style={{
+           
+          marginLeft:15,
+        
+       
+       }}
+        />
     }
     else{
         return <Image source={require('../images/left-arrow.png')}
@@ -203,7 +209,6 @@ export const CustomHeader = ({ title, subtitle }) => (
     LoginPage:{screen: LoginPage},
     DrawerNavigator:{screen: DrawerNavigator},
     DatePicker: {screen: DatePicker},
-    Dashboard: {screen: Dashboard},
     SaleDetails:
     { 
         screen: SaleDetails, 
@@ -260,7 +265,7 @@ export const CustomHeader = ({ title, subtitle }) => (
             <MenuImage style="styles.bar" navigation={navigation}/>
         </TouchableOpacity>,
         headerStyle: {
-            backgroundColor: '#C11929',
+            backgroundColor: '#CE000A',
         },
         headerTintColor: '#FAC209',
         headerTitleStyle: {
