@@ -107,6 +107,9 @@ export default class DayPage extends Component {
     _myHomeFunction = () => {
         alert('Here is home tab!');
     }
+    onSelect = () => {
+        this.customComponentDidMount()
+      };
 
     tabClick = () => {
         this.setState({ parent: 0 })
@@ -121,7 +124,22 @@ export default class DayPage extends Component {
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
-            // this.customComponentDidMount()
+            var clearTop=navigation.getParam('refresh', 'Undefined');
+            this.customComponentDidMount()
+            var date11 = new Date().toDateString();
+                date11 = dateFormat(date11, "yyyy-mm-dd");
+
+                AsyncStorage.getItem("date_key").then((value) => {
+                    console.log(" Calender selected" + value);
+                    if (clearTop!='Undefined') {
+                        this.setState({ date });
+                    }else {
+                    // var date = new Date().toDateString();
+                    //     date = dateFormat(date, "yyyy-mm-dd");
+                    //     this.setState({ date });
+                    //     AsyncStorage.setItem("date_key", date);
+                    }
+                })
             console.log(" componentWillReceiveProps day : ")
         } catch (error) {
 

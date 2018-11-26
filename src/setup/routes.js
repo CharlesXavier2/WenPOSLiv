@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createDrawerNavigator, createMaterialTopTabNavigator,StackNavigator,HeaderBackButton} from 'react-navigation';
-import { DrawerActions } from 'react-navigation';
-import {View,Text,StyleSheet,Platform,TouchableOpacity,Image,
-        AsyncStorage,
-    StatusBar} from 'react-native';
+import { createStackNavigator, createDrawerNavigator, createMaterialTopTabNavigator, StackNavigator, HeaderBackButton } from 'react-navigation';
+import { DrawerActions,StackActions, NavigationActions } from 'react-navigation';
+import {
+    View, Text, StyleSheet, Platform, TouchableOpacity, Image,
+    AsyncStorage, Alert,
+    StatusBar
+} from 'react-native';
 import DayPage from '../Tab/DayPage';
 import WeekPage from '../Tab/WeekPage';
 import MonthPage from '../Tab/MonthPage';
@@ -13,7 +15,7 @@ import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
 import LogoutScreen from '../components/LogoutScreen.js'
-
+const GLOBAL = require('../constant/Globals.js');
 //import DatePicker from '../components/DateSelector';
 
 export const Tabs = createMaterialTopTabNavigator({
@@ -21,32 +23,32 @@ export const Tabs = createMaterialTopTabNavigator({
     Week: WeekPage,
     Month: MonthPage,
     Year: YearPage
-},{
-    tabBarOptions: {
+}, {
+        tabBarOptions: {
 
-        backgroundColor: '#CE000A',
-        activeTintColor: '#fff',
-        inactiveTintColor: '#FAC209',
-        style: {
             backgroundColor: '#CE000A',
-        },
-        indicatorStyle: {
-            backgroundColor: '#fff',
-        },
+            activeTintColor: '#fff',
+            inactiveTintColor: '#FAC209',
+            style: {
+                backgroundColor: '#CE000A',
+            },
+            indicatorStyle: {
+                backgroundColor: '#fff',
+            },
 
-        tabBarOnPress: (scene, jumpToIndex) => {
-            console.log('onPress:', scene.route);
-            jumpToIndex(scene.index);
-          },
-          swipeEnabled:false,
-      
-    }, // navigationOptions: ({ navigation }) => ({
+            tabBarOnPress: (scene, jumpToIndex) => {
+                console.log('onPress:', scene.route);
+                jumpToIndex(scene.index);
+            },
+            swipeEnabled: false,
+
+        }, // navigationOptions: ({ navigation }) => ({
         //     // tabBarOnPress: (scene, jumpToIndex) => {
         //     //     console.log('onPress:', scene.route);
         //     //     jumpToIndex(scene.index);
         //     // },
         //     tabBarOnPress: (scene, jumpToIndex) => {
-                
+
         //          console.log('test tab bar press overview');
         //          console.log('onPress:', scene.route);
         //             jumpToIndex(scene.index); },
@@ -59,7 +61,7 @@ export const Tabs = createMaterialTopTabNavigator({
         //         // jumpToIndex(scene.index);
         //     }
         // }),
-    //}
+        //}
         // tabBarComponent: ({ jumpToIndex, ...props}) => (
         //     <TabBarTop
         //        {...props}
@@ -76,7 +78,7 @@ export const Tabs = createMaterialTopTabNavigator({
         //  />
         // )
 
-        
+
         // navigationOptions: ({ navigation }) => {
         //     return {
         //         // tabBarOnPress: (tab) => {
@@ -93,83 +95,91 @@ export const Tabs = createMaterialTopTabNavigator({
         //           },
         //         }
         //     }
-                    
-            //   tabBarOnPress({ navigation, defaultHandler }) {
-            //     console.log('test tab bar press overview'+navigation);
-            //     if (navigation.isFocused()) {
-            //       // same tab was tapped twice
-            //       // reset inner state
-            //       return;
-            //     }
-            //     // tab was not previously focused
-            //     defaultHandler();
-            //   }
-        
-});
+
+        //   tabBarOnPress({ navigation, defaultHandler }) {
+        //     console.log('test tab bar press overview'+navigation);
+        //     if (navigation.isFocused()) {
+        //       // same tab was tapped twice
+        //       // reset inner state
+        //       return;
+        //     }
+        //     // tab was not previously focused
+        //     defaultHandler();
+        //   }
+
+    });
 
 export const DrawerNavigator = createDrawerNavigator({
-    DayPage:{
+    DayPage: {
         screen: Tabs
-    } ,
-   
-      
-     
-      WeekPage: {
-        screen: WeekPage,
-      },
-     
-      MonthPage: {
-        screen: WeekPage,
-      },
-      LogoutScreen: {
-        screen: LogoutScreen,
-      },
+    },
 
-   
+
+
+    WeekPage: {
+        screen: WeekPage,
+    },
+
+    MonthPage: {
+        screen: WeekPage,
+    },
+    LogoutScreen: {
+        screen: LogoutScreen,
+    },
+
+
 },
     {
-    drawerPosition: 'rights',
-    initialRouteName: 'DayPage',
-    contentComponent: DrawerScreen,
-    drawerWidth: 250,
-    drawerBackgroundColor: '#313131',
-},
+        drawerPosition: 'rights',
+        initialRouteName: 'DayPage',
+        contentComponent: DrawerScreen,
+        drawerWidth: 250,
+        drawerBackgroundColor: '#313131',
+    },
 );
 
-export const MenuImage = ({navigation}) => {
-    if(!navigation.state.isDrawerOpen){
+export const MenuImage = ({ navigation }) => {
+    if (!navigation.state.isDrawerOpen) {
         return <Image source={require('../images/drawer.png')}
-        style={{
-           
-          marginLeft:15,
-        
-       
-       }}
+            style={{
+
+                marginLeft: 15,
+
+
+            }}
         />
     }
-    else{
+    else {
         return <Image source={require('../images/left-arrow.png')}
-        style={{
-            width:30,
-            height: 30,
-           padding: 10,
-           margin: 5,
-           backgroundColor:'#313131',
-          //marginLeft:15,
-           resizeMode: 'stretch',
-       
-       }}
+            style={{
+                width: 30,
+                height: 30,
+                padding: 10,
+                margin: 5,
+                backgroundColor: '#313131',
+                //marginLeft:15,
+                resizeMode: 'stretch',
+
+            }}
         />
     }
 }
 
+export const CalenderMenu = ({ navigation }) => {
+    return <Image source={require('../images/calendar.png')}
+        style={{
+            marginRight: 15,
+        }}
+    />
+}
+
 export const CustomHeader = ({ title, subtitle }) => (
     <View >
-      <Text style={{fontSize:16,color: '#000'}}>{title}</Text>
-      <Text style={{fontSize:16,color: '#000'}}>{subtitle}</Text>
+        <Text style={{ fontSize: 16, color: '#000' }}>{title}</Text>
+        <Text style={{ fontSize: 16, color: '#000' }}>{subtitle}</Text>
     </View>
-  );
-  
+);
+
 
 //   export const SaleDetails = StackNavigator({
 //     SaleDetails: {
@@ -179,7 +189,7 @@ export const CustomHeader = ({ title, subtitle }) => (
 //       }
 //     },
 //   });
-  
+
 //   export const RootNavigator = (signedIn = false) => {
 //     return StackNavigator(
 //       {
@@ -202,89 +212,168 @@ export const CustomHeader = ({ title, subtitle }) => (
 //       }
 //     );
 //   };
-  const RootNavigator = createStackNavigator({
 
-    
+
+
+class MyButton extends React.Component {
+    _myHomeFunction = () => {
+
+        alert('Here is home tab!');
+
+    }
+    render() {
+        return (
+            <View>
+                <Text
+                    onPress={() => {
+                        this.props.navigation.navigate('DayPage')
+                        // navigate.navigate("LogoutScreen")
+                        //   this._myHomeFunction() 
+                    }}>
+                    {this.props.label}
+                </Text>
+            </View>
+        )
+    }
+}
+
+const RootNavigator = createStackNavigator({
+
+
     //important: key and screen name (i.e. DrawerNavigator) should be same while using the drawer navigator inside stack navigator.
-    LoginPage:{screen: LoginPage},
-    DrawerNavigator:{screen: DrawerNavigator},
-    DatePicker: {screen: DatePicker},
+    LoginPage: { screen: LoginPage },
+    DrawerNavigator: { screen: DrawerNavigator },
+    DatePicker: { screen: DatePicker },
     SaleDetails:
-    { 
-        screen: SaleDetails, 
-        navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
-          //title: 'National',
-          headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+    {
+        screen: SaleDetails,
+        navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
+            //title: 'National',
+            headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
         })
-      },
-      
-  },
-  {
-    navigationOptions: ({ navigation ,title,subtitle}) => {
-        const { navigate } = navigation
-        return {
-        
-            title: 'McDLiv',  // Title to appear in status bar
-       // headerTitle: <CustomHeader title='McDa' 
-       // subtitle={}/>,
-//    headerLeft: (
-//         <TouchableOpacity  >
-       
-//                 <Image source={require('../images/left-arrow.png')} style={{ height: 30, resizeMode: 'contain'}}  />
-//             </TouchableOpacity>
-//     //     <DatePicker
-         
-//     //    // date={this.state.date}
-//     //      mode="date"
-//     //     placeholder=""
-//     //     format="YYYY-MM-DD"
-//     //     minDate="2016-05-01"
-//     //     maxDate="2016-06-01"
-//     //     confirmBtnText="Confirm"
-//     //     cancelBtnText="Cancel"
-//     //     iconSource={require('../images/date_icon.png')}
-//     //    // selected={1} 
-//     //    // onDateChange={() => params.Tracking()}
-//     //    // onDateChange={(date) => {this.setState({date: date});}}
-//     //   />
-//       )      
-    // headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
-
-// ,
-// Day:
-// { 
-//     screen: DayPage, 
-//     navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
-//       //title: 'National',
-//       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
-//     })
-//   },
-
-        headerLeft: 
-        <TouchableOpacity  onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())} }>
-            <MenuImage style="styles.bar" navigation={navigation}/>
-        </TouchableOpacity>,
-        headerStyle: {
-            backgroundColor: '#CE000A',
-        },
-        headerTintColor: '#FAC209',
-        headerTitleStyle: {
-         
-          fontStyle: 'normal',
-
-
-          
-          
-        },
-    };
-
     },
-    initialRouteName: 'LoginPage',
 
-});
+},
+    {
+        navigationOptions: ({ navigation, title, subtitle }) => {
+            const { navigate } = navigation
+            return {
+
+                title: 'McDLiv',  // Title to appear in status bar
+                // headerTitle: <CustomHeader title='McDa' 
+                // subtitle={}/>,
+                //    headerLeft: (
+                //         <TouchableOpacity  >
+
+                //                 <Image source={require('../images/left-arrow.png')} style={{ height: 30, resizeMode: 'contain'}}  />
+                //             </TouchableOpacity>
+                //     //     <DatePicker
+
+                //     //    // date={this.state.date}
+                //     //      mode="date"
+                //     //     placeholder=""
+                //     //     format="YYYY-MM-DD"
+                //     //     minDate="2016-05-01"
+                //     //     maxDate="2016-06-01"
+                //     //     confirmBtnText="Confirm"
+                //     //     cancelBtnText="Cancel"
+                //     //     iconSource={require('../images/date_icon.png')}
+                //     //    // selected={1} 
+                //     //    // onDateChange={() => params.Tracking()}
+                //     //    // onDateChange={(date) => {this.setState({date: date});}}
+                //     //   />
+                //       )      
+                // headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+
+                // ,
+                // Day:
+                // { 
+                //     screen: DayPage, 
+                //     navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
+                //       //title: 'National',
+                //       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+                //     })
+                //   },
+
+                headerLeft:
+
+                    //     <TouchableOpacity>
+                    //     <MyButton label="Press me!" />
+                    //   </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        navigation.dispatch(DrawerActions.toggleDrawer())
+                        // this.props.navigation.navigate('DayPage')
+                        // DayPage._myHomeFunction()
+                        // DayPage.this._myHomeFunction
+                    }
+
+                    }>
+                        <MenuImage style="styles.bar" navigation={navigation} />
+                    </TouchableOpacity>
+                ,
+                headerRight:
+                    <TouchableOpacity>
+                        <DatePicker
+                            // date={this.state.date}
+                            placeholder="placeholder"
+
+                            mode="date"
+                            format="YYYY-MM-DD"
+                            minDate="2016-05-01"
+                            maxDate="2021-06-01"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            iconSource={require('../images/calendar.png')}
+                            onDateChange={(date) => {
+                                // this.setState({ date: date });
+                                console.log('Date ->  '+date);
+                                AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                                // this.customComponentDidMount();
+                                // const resetAction = NavigationActions.reset({
+                                //     index: 0,
+                                //     actions: [
+                                //       NavigationActions.navigate({ routeName: 'DayPage'})
+                                //     ] })
+                                // this.props.navigation.dispatch(resetAction);
+                                // navigation.navigate("DayPage")
+
+                                this.props.navigation.navigate('DayPage', {
+                                                                                refresh: "item.name",
+                                                                            });
+                            }}
+
+                        />
+                    </TouchableOpacity>,
+                //     <TouchableOpacity  onPress={() => {
+                //         navigation.navigate('LogoutScreen')
+                //         DayPage._myHomeFunction()
+                //         // DayPage.this._myHomeFunction
+                //     } 
+
+                //         }>
+                //         <CalenderMenu style="styles.bar" navigation={navigation}/>
+                //     </TouchableOpacity>
+                // ,
+                headerStyle: {
+                    backgroundColor: '#CE000A',
+                },
+                headerTintColor: '#FAC209',
+                headerTitleStyle: {
+
+                    fontStyle: 'normal',
 
 
- 
+
+
+                },
+            };
+
+        },
+        initialRouteName: 'LoginPage',
+
+    });
+
+
 export default RootNavigator;
 
 
