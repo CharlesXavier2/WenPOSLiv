@@ -23,9 +23,19 @@ export const Tabs = createMaterialTopTabNavigator({
     Week: WeekPage,
     Month: MonthPage,
     Year: YearPage
+<<<<<<< HEAD
 }, {
         tabBarOptions: {
+
+=======
+},{
+    tabBarOptions: {
         upperCaseLabel: false,
+        backgroundColor: '#CE000A',
+        activeTintColor: '#fff',
+        inactiveTintColor: '#FAC209',
+        style: {
+>>>>>>> 35bdda6abee71967dc8dc0edd161233a7e35ab2c
             backgroundColor: '#CE000A',
             activeTintColor: '#fff',
             inactiveTintColor: '#FAC209',
