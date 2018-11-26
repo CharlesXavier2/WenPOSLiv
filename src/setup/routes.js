@@ -311,39 +311,39 @@ const RootNavigator = createStackNavigator({
                         <MenuImage style="styles.bar" navigation={navigation} />
                     </TouchableOpacity>
                 ,
-                headerRight:
-                    <TouchableOpacity>
-                        <DatePicker
-                            // date={this.state.date}
-                            placeholder="placeholder"
+                // headerRight:
+                //     <TouchableOpacity>
+                //         <DatePicker
+                //             // date={this.state.date}
+                //             placeholder="placeholder"
 
-                            mode="date"
-                            format="YYYY-MM-DD"
-                            minDate="2016-05-01"
-                            maxDate="2021-06-01"
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            iconSource={require('../images/calendar.png')}
-                            onDateChange={(date) => {
-                                // this.setState({ date: date });
-                                console.log('Date ->  '+date);
-                                AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                                // this.customComponentDidMount();
-                                // const resetAction = NavigationActions.reset({
-                                //     index: 0,
-                                //     actions: [
-                                //       NavigationActions.navigate({ routeName: 'DayPage'})
-                                //     ] })
-                                // this.props.navigation.dispatch(resetAction);
-                                // navigation.navigate("DayPage")
+                //             mode="date"
+                //             format="YYYY-MM-DD"
+                //             minDate="2016-05-01"
+                //             maxDate="2021-06-01"
+                //             confirmBtnText="Confirm"
+                //             cancelBtnText="Cancel"
+                //             iconSource={require('../images/calendar.png')}
+                //             onDateChange={(date) => {
+                //                 // this.setState({ date: date });
+                //                 console.log('Date ->  '+date);
+                //                 AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                //                 // this.customComponentDidMount();
+                //                 // const resetAction = NavigationActions.reset({
+                //                 //     index: 0,
+                //                 //     actions: [
+                //                 //       NavigationActions.navigate({ routeName: 'DayPage'})
+                //                 //     ] })
+                //                 // this.props.navigation.dispatch(resetAction);
+                //                 // navigation.navigate("DayPage")
 
-                                this.props.navigation.navigate('DayPage', {
-                                                                                refresh: "item.name",
-                                                                            });
-                            }}
+                //                 this.props.navigation.navigate('DayPage', {
+                //                                                                 refresh: "item.name",
+                //                                                             });
+                //             }}
 
-                        />
-                    </TouchableOpacity>,
+                //         />
+                //     </TouchableOpacity>,
                 //     <TouchableOpacity  onPress={() => {
                 //         navigation.navigate('LogoutScreen')
                 //         DayPage._myHomeFunction()

@@ -162,7 +162,7 @@ export default class SaleDetails extends Component {
                     bodyJson = JSON.stringify({
                         date: urlPanDate,
                         filter_type: filter_type,
-                        store_id: itemId,
+                        storeid: itemId,
                     })
                     break;
                 case 3:
@@ -199,6 +199,12 @@ export default class SaleDetails extends Component {
                 case 2:
                 case '2':
                     console.log("else value1==true case  2");
+                    // bodyJson = JSON.stringify({
+                    //     date: urlPanDate,
+                    //     filter_type: filter_type,
+                    //     store_id: itemId,
+                    // })
+                    // break;
                     return
 
             }
