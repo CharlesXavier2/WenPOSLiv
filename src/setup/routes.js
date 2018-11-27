@@ -356,16 +356,34 @@ const RootNavigator = createStackNavigator({
                 // ,
                 headerStyle: {
                     backgroundColor: '#CE000A',
+                    position: 'absolute',
                 },
                 headerTintColor: '#FAC209',
                 headerTitleStyle: {
-
                     fontStyle: 'normal',
-
-
-
-
+                    width: '100%',
                 },
+
+
+                // headerStyle: {
+                //     backgroundColor: '#CE000A',
+                //     position: 'absolute',
+                //     height: 50,
+                //     top: 0,
+                //     left: 80,
+                //     right: 0,
+                //     },
+
+                //     headerTitleStyle:{
+                //     alignSelf:'center',
+                //     textAlign: 'center',
+                //     width: '100%',
+                //     },
+                //     headerTintColor: '#fff',
+                    
+
+
+
             };
 
         },

@@ -128,7 +128,7 @@ export default class SaleDetails extends Component {
         urlValue = 'http://115.112.224.200:3000/api/getBmSales'
 
         console.log(" customComponentDidMount start =>  http://115.112.224.200:3000/api/getBmSales ");
-        if (isGeo == "true") {
+        if (""+isGeo == "true") {
             console.log(" value1==true");
 
             bodyJson = JSON.stringify({
@@ -175,6 +175,7 @@ export default class SaleDetails extends Component {
             bodyJson = JSON.stringify({
                 date: urlPanDate,
                 filter_type: filter_type,
+                city_id: itemId,
             })
             // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
             switch (parent) {
@@ -184,6 +185,7 @@ export default class SaleDetails extends Component {
                     bodyJson = JSON.stringify({
                         date: urlPanDate,
                         filter_type: filter_type,
+                        deputy_id: itemId,
                     })
                     break;
                 case 1:
@@ -193,7 +195,7 @@ export default class SaleDetails extends Component {
                     bodyJson = JSON.stringify({
                         date: urlPanDate,
                         filter_type: filter_type,
-                        deputy_id: itemId,
+                        petch_id: itemId,
                     })
                     break;
                 case 2:
