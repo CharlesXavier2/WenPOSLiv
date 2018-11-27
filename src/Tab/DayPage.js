@@ -84,7 +84,7 @@ export default class DayPage extends Component {
             // console.log('Month -> tabBarOnPress ') 
             // this.callCurrentApi()
             // }
-            // title: 'McDLiv',
+            // title: 'McDLiv Day',
             // title: navigation.state.titleName,
             // headerRight: <HeaderBackButton  onPress={() => { 
             //     this.setBackStackScreen(); 
@@ -124,22 +124,21 @@ export default class DayPage extends Component {
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
-            var clearTop=navigation.getParam('refresh', 'Undefined');
-            this.customComponentDidMount()
-            var date11 = new Date().toDateString();
-                date11 = dateFormat(date11, "yyyy-mm-dd");
-
-                AsyncStorage.getItem("date_key").then((value) => {
-                    console.log(" Calender selected" + value);
-                    if (clearTop!='Undefined') {
-                        this.setState({ date });
-                    }else {
-                    // var date = new Date().toDateString();
-                    //     date = dateFormat(date, "yyyy-mm-dd");
-                    //     this.setState({ date });
-                    //     AsyncStorage.setItem("date_key", date);
-                    }
-                })
+            // var clearTop=navigation.getParam('refresh', 'Undefined');
+            // this.customComponentDidMount()
+            // var date11 = new Date().toDateString();
+            //     date11 = dateFormat(date11, "yyyy-mm-dd");
+            //     AsyncStorage.getItem("date_key").then((value) => {
+            //         console.log(" Calender selected" + value);
+            //         if (clearTop!='Undefined') {
+            //             this.setState({ date });
+            //         }else {
+            //         // var date = new Date().toDateString();
+            //         //     date = dateFormat(date, "yyyy-mm-dd");
+            //         //     this.setState({ date });
+            //         //     AsyncStorage.setItem("date_key", date);
+            //         }
+            //     })
             console.log(" componentWillReceiveProps day : ")
         } catch (error) {
 
@@ -487,12 +486,16 @@ export default class DayPage extends Component {
                                     color: '#CE000A',
 
                                     marginLeft: 50,
-                                    textTransform: 'lowercase',
+                                    
                                     justifyContent: 'center',
                                     // textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                }} onPress={() => { 
+                                    if(!(item.name=="National")){
+                                    this.setCurrentScreen(item.id); 
+                                    }
+                                    }} >
                                     {
                                         "" + item.name
                                     }
@@ -788,6 +791,7 @@ export default class DayPage extends Component {
 
     //for date
     customComponentDidMount = () => {
+        this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
         var regionId = ''
@@ -910,6 +914,7 @@ export default class DayPage extends Component {
                         .then((response) => response.json())
                         .then((responseJson) => {
                             // this.setState.dataSource.push( responseJson.sale_info );
+                            this.setState({ indeterminate: false });
                             if (responseJson != null) {
                                 this.setState({
                                     dataSource: responseJson.data
@@ -934,9 +939,7 @@ export default class DayPage extends Component {
     //for page refersh
 
     pageStackComponentDidMount(id, parent) {
-        // this.setState({
-        //     indeterminate=true
-        // })
+        this.setState({ indeterminate: true });
         console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
         var bodyData = "", url = "";
         var isGeo = this.state.isGeo
