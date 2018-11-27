@@ -1237,13 +1237,13 @@ export default class DayPage extends Component {
                             }
 
 
-
+                      
 
                         </View>
 
                     </View>
 
-
+                
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
