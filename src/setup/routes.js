@@ -249,7 +249,16 @@ const RootNavigator = createStackNavigator({
         screen: SaleDetails,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
+            headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
+            headerStyle: {
+                backgroundColor: '#CE000A',
+                position: 'absolute',
+            },
+            headerTintColor: '#FAC209',
+            headerTitleStyle: {
+                fontStyle: 'normal',
+                width: '100%',
+            },
         })
     },
 

@@ -486,12 +486,16 @@ export default class DayPage extends Component {
                                     color: '#CE000A',
 
                                     marginLeft: 50,
-                                    textTransform: 'lowercase',
+                                    
                                     justifyContent: 'center',
                                     // textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                }} onPress={() => { 
+                                    if(!(item.name=="National")){
+                                    this.setCurrentScreen(item.id); 
+                                    }
+                                    }} >
                                     {
                                         "" + item.name
                                     }
