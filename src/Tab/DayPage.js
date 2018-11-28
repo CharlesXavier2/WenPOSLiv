@@ -21,7 +21,7 @@ import {
     TouchableOpacity,
     Alert,
     exitApp,
-
+    Platform,
 
 } from 'react-native';
 import CardView from 'react-native-cardview';
@@ -899,7 +899,6 @@ export default class DayPage extends Component {
 
                         }
                     }
-
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
@@ -1155,12 +1154,16 @@ export default class DayPage extends Component {
 
                             </View>
                         }
+
+                         
+                        {Platform.OS === 'android' &&
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginLeft: 60,
                         }}>
+                       
                             <DatePicker
 
                                 date={this.state.date}
@@ -1174,6 +1177,7 @@ export default class DayPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
+                                    console.log("  onDateChange={(date) => " + date)
                                     this.setState({ date: date });
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                     this.customComponentDidMount();
@@ -1182,6 +1186,38 @@ export default class DayPage extends Component {
                             />
                             <Text style={styless.instructions}>{this.state.date}</Text>
                         </View>
+                        }
+
+                        <View style={{
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: 60,
+                        }}>
+                       
+                            <DatePicker
+
+                                date={this.state.date}
+                                placeholder="placeholder"
+
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    console.log("  onDateChange={(date) => " + date)
+                                    this.setState({ date: date });
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.customComponentDidMount();
+                                }}
+
+                            />
+                            <Text style={styless.instructions}>{this.state.date}</Text>
+                        </View>
+                        }
 
 
                         <View style={{
@@ -1334,6 +1370,7 @@ export default class DayPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
+                                    console.log("  onDateChange={(date) => " + date)
                                     this.setState({ date: date });
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                     this.customComponentDidMount();
