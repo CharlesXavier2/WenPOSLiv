@@ -1035,8 +1035,7 @@ export default class WeekPage extends Component {
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
 
                     <View style={styless.categries}>
-                        {
-                            this.state.parent > 0 &&
+                       
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',

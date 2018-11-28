@@ -1044,10 +1044,10 @@ export default class YearPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-
-                    <View style={styless.categries}>
-                        {
+                    {
                             this.state.parent > 0 &&
+                    <View style={styless.categries}>
+                       
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -1082,7 +1082,7 @@ export default class YearPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                        }
+                        
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -1168,13 +1168,112 @@ export default class YearPage extends Component {
                             }
 
 
-
+                      
 
                         </View>
-
+                    
                     </View>
 
+}
 
+{
+   ! this.state.parent > 0 &&
+<View style={styless.categries}>
+
+    
+
+<View style={{
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 25,
+}}>
+    <DatePicker
+
+        date={this.state.date}
+        placeholder="placeholder"
+
+        mode="date"
+        format="YYYY-MM-DD"
+        minDate="2016-05-01"
+        maxDate="2021-06-01"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        iconSource={require('../images/calendar.png')}
+        onDateChange={(date) => {
+            this.setState({ date: date });
+            AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+            this.customComponentDidMount();
+        }}
+
+    />
+    <Text style={styless.instructions}>{this.state.date}</Text>
+</View>
+
+
+<View style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+
+}}>
+
+
+    {
+
+
+        this.state.isGeo &&
+
+        <TouchableOpacity
+            onPress={() => {
+                this.openDialog()
+            }}>
+            <Image
+                source={require('../images/people.png')}
+                style={{
+                    padding: 10,
+                    margin: 5,
+                    marginLeft: 130,
+
+                    justifyContent: 'center',
+                    resizeMode: 'stretch',
+
+                }}
+            />
+        </TouchableOpacity>
+    }
+    {
+        !this.state.isGeo &&
+
+        <TouchableOpacity
+            onPress={() => {
+                this.openDialog()
+            }}>
+            <Image
+                source={require('../images/geo.png')
+                }
+                style={{
+                    padding: 10,
+                    margin: 5,
+                    marginLeft: 130,
+
+                    justifyContent: 'center',
+                    resizeMode: 'stretch',
+
+                }}
+                onPress={() => this.openDialog()}
+            />
+        </TouchableOpacity>
+
+    }
+
+
+
+
+</View>
+
+</View>
+
+}
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
@@ -1205,9 +1304,12 @@ export default class YearPage extends Component {
                             marginTop={1}
                         />
                     }
-                    <View style={styless.categries}>
-                        {
+
+
+                    {
                             this.state.parent > 0 &&
+                    <View style={styless.categries}>
+                        
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -1242,7 +1344,7 @@ export default class YearPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                        }
+                        
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -1333,6 +1435,104 @@ export default class YearPage extends Component {
                         </View>
 
                     </View>
+                    }
+                     {
+                            !this.state.parent > 0 &&
+                    <View style={styless.categries}>
+                        
+                            
+                        
+                        <View style={{
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: 25,
+                        }}>
+                            <DatePicker
+
+                                date={this.state.date}
+                                placeholder="placeholder"
+
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    this.setState({ date: date });
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.customComponentDidMount();
+                                }}
+
+                            />
+                            <Text style={styless.instructions}>{this.state.date}</Text>
+                        </View>
+
+
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+
+                        }}>
+
+
+                            {
+
+
+                                this.state.isGeo &&
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                        source={require('../images/people.png')}
+                                        style={{
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 130,
+
+                                            justifyContent: 'center',
+                                            resizeMode: 'stretch',
+
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            }
+                            {
+                                !this.state.isGeo &&
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                        source={require('../images/geo.png')
+                                        }
+                                        style={{
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 130,
+
+                                            justifyContent: 'center',
+                                            resizeMode: 'stretch',
+
+                                        }}
+                                        onPress={() => this.openDialog()}
+                                    />
+                                </TouchableOpacity>
+
+                            }
+
+
+
+
+                        </View>
+
+                    </View>
+                    }
 
 
                     <FlatList
