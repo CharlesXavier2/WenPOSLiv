@@ -28,7 +28,7 @@ export const Tabs = createMaterialTopTabNavigator({
         upperCaseLabel: false,
             backgroundColor: '#CE000A',
             activeTintColor: '#fff',
-            inactiveTintColor: '#FAC209',
+            inactiveTintColor: 'yellow',
             style: {
                 backgroundColor: '#CE000A',
             },

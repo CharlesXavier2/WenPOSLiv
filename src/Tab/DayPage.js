@@ -9,7 +9,6 @@
 import React, { Component } from 'react';
 const GLOBAL = require('../constant/Globals.js');
 import {
-    Platform,
     StyleSheet,
     Text,
     View,
@@ -21,7 +20,7 @@ import {
     TouchableOpacity,
     Alert,
     exitApp,
-    
+    Platform,
 
 
 } from 'react-native';
@@ -459,8 +458,18 @@ export default class DayPage extends Component {
                                 backgroundColor: '#FFFFFF',
                                 width: '30%',
                             }}>
-                                <TouchableOpacity
-                                >
+                                 <TouchableOpacity
+                                onPress={() => {
+                                    /* 1. Navigate to the Details route with params */
+                                    this.props.navigation.navigate('SaleDetails', {
+                                        itemName: item.name,
+                                        itemId: item.id,
+                                        parent: this.state.parent,
+                                        date: this.state.date,
+                                        isGeo: this.state.isGeo,
+                                        filter_type: filter_type
+                                    });
+                                }} >
                                     <Image
                                         source={require('../images/detail.png')}
                                         style={{
@@ -492,11 +501,7 @@ export default class DayPage extends Component {
                                     // textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }} onPress={() => { 
-                                    if(!(item.name=="National")){
-                                    this.setCurrentScreen(item.id); 
-                                    }
-                                    }} >
+                                }}>
                                     {
                                         "" + item.name
                                     }
@@ -504,17 +509,11 @@ export default class DayPage extends Component {
                             </View>
 
                             <TouchableOpacity
-                                onPress={() => {
-                                    /* 1. Navigate to the Details route with params */
-                                    this.props.navigation.navigate('SaleDetails', {
-                                        itemName: item.name,
-                                        itemId: item.id,
-                                        parent: this.state.parent,
-                                        date: this.state.date,
-                                        isGeo: this.state.isGeo,
-                                        filter_type: filter_type
-                                    });
-                                }} >
+                                onPress={() => { 
+                                    if(!(item.name=="National")){
+                                    this.setCurrentScreen(item.id); 
+                                    }
+                                    }}  >
 
                                 <View style={{
                                     backgroundColor: '#FFFFFF',
@@ -900,7 +899,6 @@ export default class DayPage extends Component {
 
                         }
                     }
-
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
@@ -1156,12 +1154,15 @@ export default class DayPage extends Component {
 
                             </View>
                         
+
+
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
                             marginLeft: 60,
                         }}>
+                       
                             <DatePicker
 
                                 date={this.state.date}
@@ -1175,6 +1176,7 @@ export default class DayPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
+                                    console.log("  onDateChange={(date) => " + date)
                                     this.setState({ date: date });
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                     this.customComponentDidMount();
@@ -1183,6 +1185,7 @@ export default class DayPage extends Component {
                             />
                             <Text style={styless.instructions}>{this.state.date}</Text>
                         </View>
+                        
 
 
                         <View style={{
@@ -1437,6 +1440,7 @@ export default class DayPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
+                                    console.log("  onDateChange={(date) => " + date)
                                     this.setState({ date: date });
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                     this.customComponentDidMount();

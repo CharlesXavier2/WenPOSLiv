@@ -402,8 +402,18 @@ export default class WeekPage extends Component {
                                 backgroundColor: '#FFFFFF',
                                 width: '30%',
                             }}>
-                                <TouchableOpacity
-                                >
+                                 <TouchableOpacity
+                                onPress={() => {
+                                    /* 1. Navigate to the Details route with params */
+                                    this.props.navigation.navigate('SaleDetails', {
+                                        itemName: item.name,
+                                        itemId: item.id,
+                                        parent: this.state.parent,
+                                        date: this.state.date,
+                                        isGeo: this.state.isGeo,
+                                        filter_type: filter_type
+                                    });
+                                }} >
                                     <Image
                                         source={require('../images/detail.png')}
                                         style={{
@@ -430,12 +440,12 @@ export default class WeekPage extends Component {
                                     color: '#CE000A',
 
                                     marginLeft: 50,
-
+                                    
                                     justifyContent: 'center',
                                     // textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }} onPress={() => { this.setCurrentScreen(item.id); }} >
+                                }}>
                                     {
                                         "" + item.name
                                     }
@@ -443,17 +453,11 @@ export default class WeekPage extends Component {
                             </View>
 
                             <TouchableOpacity
-                                onPress={() => {
-                                    /* 1. Navigate to the Details route with params */
-                                    this.props.navigation.navigate('SaleDetails', {
-                                        itemName: item.name,
-                                        itemId: item.id,
-                                        parent: this.state.parent,
-                                        date: this.state.date,
-                                        isGeo: this.state.isGeo,
-                                        filter_type: filter_type
-                                    });
-                                }} >
+                                onPress={() => { 
+                                    if(!(item.name=="National")){
+                                    this.setCurrentScreen(item.id); 
+                                    }
+                                    }}  >
 
                                 <View style={{
                                     backgroundColor: '#FFFFFF',
@@ -1033,7 +1037,268 @@ export default class WeekPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
+                    {
+                            this.state.parent > 0 &&
+                    <View style={styless.categries}>
+                   
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
 
+                                <Image
+                                    source={require('../images/back.png')}
+                                    style={{
+                                        paddingLeft: 10,
+                                        paddingTop: 10,
+                                        paddingBottom: 10,
+                                        marginLeft: 10,
+                                        resizeMode: 'stretch',
+
+                                    }}
+                                />
+                                <Text style={{
+                                    fontSize: 14,
+
+                                    color: '#ffffff',
+                                    // paddingLeft: 40,
+
+
+                                    //justifyContent: 'center',
+                                    textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }} onPress={() => {
+
+                                    this.setBackStackScreen();
+
+                                }}>Back</Text>
+
+                            </View>
+                       
+                        <View style={{
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: 60,
+                        }}>
+                            <DatePicker
+
+                                date={this.state.date}
+                                placeholder="placeholder"
+
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    this.setState({ date: date });
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.customComponentDidMount();
+                                }}
+
+                            />
+                            <Text style={styless.instructions}>{this.state.date}</Text>
+                        </View>
+
+
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+
+                        }}>
+
+
+                            {
+
+
+                                this.state.isGeo &&
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                        source={require('../images/people.png')}
+                                        style={{
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 40,
+
+                                            justifyContent: 'center',
+                                            resizeMode: 'stretch',
+
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            }
+                            {
+                                !this.state.isGeo &&
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.openDialog()
+                                    }}>
+                                    <Image
+                                        source={require('../images/geo.png')
+                                        }
+                                        style={{
+                                            padding: 10,
+                                            margin: 5,
+                                            marginLeft: 40,
+
+                                            justifyContent: 'center',
+                                            resizeMode: 'stretch',
+
+                                        }}
+                                        onPress={() => this.openDialog()}
+                                    />
+                                </TouchableOpacity>
+
+                            }
+
+
+
+
+                        </View>
+
+                    </View>
+                  }
+
+  {
+   this.state.parent == 0 &&
+<View style={styless.categries}>
+
+    
+
+<View style={{
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 25,
+}}>
+    <DatePicker
+
+        date={this.state.date}
+        placeholder="placeholder"
+
+        mode="date"
+        format="YYYY-MM-DD"
+        minDate="2016-05-01"
+        maxDate="2021-06-01"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        iconSource={require('../images/calendar.png')}
+        onDateChange={(date) => {
+            this.setState({ date: date });
+            AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+            this.customComponentDidMount();
+        }}
+
+    />
+    <Text style={styless.instructions}>{this.state.date}</Text>
+</View>
+
+
+<View style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+
+}}>
+
+
+    {
+
+
+        this.state.isGeo &&
+
+        <TouchableOpacity
+            onPress={() => {
+                this.openDialog()
+            }}>
+            <Image
+                source={require('../images/people.png')}
+                style={{
+                    padding: 10,
+                    margin: 5,
+                    marginLeft: 130,
+
+                    justifyContent: 'center',
+                    resizeMode: 'stretch',
+
+                }}
+            />
+        </TouchableOpacity>
+    }
+    {
+        !this.state.isGeo &&
+
+        <TouchableOpacity
+            onPress={() => {
+                this.openDialog()
+            }}>
+            <Image
+                source={require('../images/geo.png')
+                }
+                style={{
+                    padding: 10,
+                    margin: 5,
+                    marginLeft: 130,
+
+                    justifyContent: 'center',
+                    resizeMode: 'stretch',
+
+                }}
+                onPress={() => this.openDialog()}
+            />
+        </TouchableOpacity>
+
+    }
+
+
+
+
+</View>
+
+</View>
+
+}
+
+                    <FlatList
+                        data={this.state.dataSource}
+                        renderItem={
+                            this.renderItem
+                        }
+                    />
+
+
+                </View >
+
+
+
+            );
+        }
+        else {
+            return (
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
+                    {
+                        this.state.indeterminate &&
+                        <Progress.Bar
+                            style={styles.progress}
+                            progress={this.state.progress}
+                            indeterminate={this.state.indeterminate}
+                            width={380}
+                            borderColor={'#FAC209'}
+                            borderRadius={0}
+                            color={'rgb(250, 194, 9)'}
+                            marginTop={1}
+                        />
+                    }
+                     {
+                            this.state.parent > 0 &&
                     <View style={styless.categries}>
                        
                             <View style={{
@@ -1070,7 +1335,7 @@ export default class WeekPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                        }
+                       
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -1161,41 +1426,11 @@ export default class WeekPage extends Component {
                         </View>
 
                     </View>
-
-
-                    <FlatList
-                        data={this.state.dataSource}
-                        renderItem={
-                            this.renderItem
-                        }
-                    />
-
-
-                </View >
-
-
-
-            );
-        }
-        else {
-            return (
-                <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-                    {
-                        this.state.indeterminate &&
-                        <Progress.Bar
-                            style={styles.progress}
-                            progress={this.state.progress}
-                            indeterminate={this.state.indeterminate}
-                            width={380}
-                            borderColor={'#FAC209'}
-                            borderRadius={0}
-                            color={'rgb(250, 194, 9)'}
-                            marginTop={1}
-                        />
-                    }
+ }
+ {
+                           ! this.state.parent > 0 &&
                     <View style={styless.categries}>
-                        {
-                            this.state.parent > 0 &&
+                       
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -1230,7 +1465,7 @@ export default class WeekPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                        }
+                       
                         <View style={{
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -1321,8 +1556,7 @@ export default class WeekPage extends Component {
                         </View>
 
                     </View>
-
-
+ }
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
