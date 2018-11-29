@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 const GLOBAL = require('../constant/Globals.js');
 import {
-    Platform,
+   
     StyleSheet,
     Text,
     View,
@@ -1156,37 +1156,7 @@ export default class DayPage extends Component {
                         }
 
                          
-                        {Platform.OS === 'android' &&
-                        <View style={{
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginLeft: 60,
-                        }}>
-                       
-                            <DatePicker
-
-                                date={this.state.date}
-                                placeholder="placeholder"
-
-                                mode="date"
-                                format="YYYY-MM-DD"
-                                minDate="2016-05-01"
-                                maxDate="2021-06-01"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                iconSource={require('../images/calendar.png')}
-                                onDateChange={(date) => {
-                                    console.log("  onDateChange={(date) => " + date)
-                                    this.setState({ date: date });
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
-                                    this.customComponentDidMount();
-                                }}
-
-                            />
-                            <Text style={styless.instructions}>{this.state.date}</Text>
-                        </View>
-                        }
+                        
 
                         <View style={{
                             flexDirection: 'column',
@@ -1209,15 +1179,17 @@ export default class DayPage extends Component {
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
                                     console.log("  onDateChange={(date) => " + date)
-                                    this.setState({ date: date });
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.setState({  date });
+                                    AsyncStorage.setItem("date_key", date);
+                                    // AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    console.log("  constant={(GLOBAL.DATE_KEY) => " + this.state.date)
                                     this.customComponentDidMount();
                                 }}
 
                             />
                             <Text style={styless.instructions}>{this.state.date}</Text>
                         </View>
-                        }
+                        
 
 
                         <View style={{
@@ -1371,8 +1343,8 @@ export default class DayPage extends Component {
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
                                     console.log("  onDateChange={(date) => " + date)
-                                    this.setState({ date: date });
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.setState({  date });
+                                    AsyncStorage.setItem("date_key", date);
                                     this.customComponentDidMount();
                                 }}
 
