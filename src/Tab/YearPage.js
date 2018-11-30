@@ -1098,8 +1098,8 @@ export default class YearPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
-                                    this.setState({ date: date });
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.setState({  date });
+                                    AsyncStorage.setItem("date_key", date);
                                     this.customComponentDidMount();
                                 }}
 
@@ -1196,8 +1196,8 @@ export default class YearPage extends Component {
         cancelBtnText="Cancel"
         iconSource={require('../images/calendar.png')}
         onDateChange={(date) => {
-            this.setState({ date: date });
-            AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+            this.setState({  date });
+            AsyncStorage.setItem("date_key", date);
             this.customComponentDidMount();
         }}
 
@@ -1358,8 +1358,8 @@ export default class YearPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
-                                    this.setState({ date: date });
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.setState({  date });
+                                    AsyncStorage.setItem("date_key", date);
                                     this.customComponentDidMount();
                                 }}
 
@@ -1488,8 +1488,8 @@ export default class YearPage extends Component {
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
                                 onDateChange={(date) => {
-                                    this.setState({ date: date });
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                    this.setState({  date });
+                                    AsyncStorage.setItem("date_key", date);
                                     this.customComponentDidMount();
                                 }}
 
