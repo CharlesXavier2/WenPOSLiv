@@ -415,10 +415,10 @@ export default class WeekPage extends Component {
                                     });
                                 }} >
                                     <Image
-                                        source={require('../images/detail.png')}
+                                        source={require('../images/list.png')}
                                         style={{
-                                            width: 25,
-                                            height: 25,
+                                            width: 22,
+                                            height: 20,
                                             padding: 10,
                                             marginLeft: 20,
                                             margin: 5,
@@ -437,7 +437,7 @@ export default class WeekPage extends Component {
                                 <Text numberOfLines={1} style={{
                                     fontSize: 16,
 
-                                    color: '#CE000A',
+                                    color: '#0000FF',
 
                                     marginLeft: 50,
                                     
@@ -466,10 +466,10 @@ export default class WeekPage extends Component {
 
 
                                     <Image
-                                        source={require('../images/nextButton.png')}
+                                        source={require('../images/next.png')}
                                         style={{
                                             width: 25,
-                                            height: 25,
+                                            height: 20,
                                             padding: 10,
                                             marginLeft: 70,
 

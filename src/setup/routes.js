@@ -151,6 +151,7 @@ export const MenuImage = ({ navigation }) => {
     }
     else {
         return <Image source={require('../images/left-arrow.png')}
+       
             style={{
                 width: 30,
                 height: 30,
@@ -249,7 +250,7 @@ const RootNavigator = createStackNavigator({
         screen: SaleDetails,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
+            headerLeft: <HeaderBackButton style={{ overlayColor:'#000000'}} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
                 backgroundColor: '#CE000A',
                 position: 'absolute',

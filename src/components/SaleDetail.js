@@ -41,7 +41,9 @@ export default class SaleDetails extends Component {
             indeterminate: true,
             refreshing: true,
             date: '',
+            itemName:'',
         }
+        
     }
     animate() {
         let progress = 0;
@@ -68,7 +70,8 @@ export default class SaleDetails extends Component {
         const isGeo = navigation.getParam('isGeo', '0');
         const date11 = navigation.getParam('date', date);
         const filter_type = navigation.getParam('filter_type', date);
-
+        const title = navigation.getParam('itemName',"McDLiv")
+        this.setState({ itemName:title  });
         this.customComponentDidMount(itemId, parent, isGeo, date11, filter_type)
     }
 
@@ -253,128 +256,125 @@ export default class SaleDetails extends Component {
         var val = item.current_sale;
         var rounfFranchise = '0.00';
 
-        if (item.current_sale > item.last_sale) {
-            return (
-                <View style={styless.MainContainer}>
-                    <CardView
-                        cardElevation={2}
-                        cardMaxElevation={2}
-                        cornerRadius={1}
-                        style={styless.cardViewStyle}
-                    >
-                        {
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+        // if (item.current_sale > item.last_sale) {
+        //     return (
+        //         <View style={styless.MainContainer}>
+        //             <CardView
+        //                 cardElevation={2}
+        //                 cardMaxElevation={2}
+        //                 cornerRadius={1}
+        //                 style={styless.cardViewStyle}
+        //             >
+        //                 {
+        //                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
-                                <View style={styless.cardViewRow}>
+        //                         <View style={styless.cardViewRow}>
 
-                                    <TouchableOpacity
-                                    //  onPress={() => { this.setCurrentScreen(item.id); }}
-                                    >
-                                        <Text style={{
-                                            fontSize: 22,
-                                            color: '#ffffff',
-                                            justifyContent: 'center',
-                                            // textAlignVertical: "center",
-                                            alignItems: 'center',
-                                        }} >
-                                            {
-                                                "" + item.name
-                                            }
-                                        </Text>
-                                    </TouchableOpacity>
+        //                             <TouchableOpacity
+        //                             //  onPress={() => { this.setCurrentScreen(item.id); }}
+        //                             >
+        //                                 <Text style={{
+        //                                     fontSize: 22,
+        //                                     color: '#ffffff',
+        //                                     justifyContent: 'center',
+        //                                     // textAlignVertical: "center",
+        //                                     alignItems: 'center',
+        //                                 }} >
+        //                                     {
+        //                                         "" + item.name
+        //                                     }
+        //                                 </Text>
+        //                             </TouchableOpacity>
 
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-                                        <Image
-                                            source={require('../images/saleup.png')}
-                                            style={styless.ImageIconStyle} />
-                                        <Text style={{
-                                            fontSize: 16,
-                                            //width: 150,
-                                            color: '#ffffff',
-                                            justifyContent: 'center',
-                                            //textAlignVertical: "center",
-                                            alignItems: 'center',
+        //                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+        //                                 <Image
+        //                                     source={require('../images/saleup.png')}
+        //                                     style={styless.ImageIconStyle} />
+        //                                 <Text style={{
+        //                                     fontSize: 16,
+        //                                     //width: 150,
+        //                                     color: '#ffffff',
+        //                                     justifyContent: 'center',
+        //                                     //textAlignVertical: "center",
+        //                                     alignItems: 'center',
 
-                                        }}>Total Sale :
-                                {
-                                    //item.current_sale.toFixed(2)
-                                                "" + this.totalSaleFormat(val)
-                                            }
-                                        </Text>
-                                    </View>
-                                </View>
+        //                                 }}>Total Sale :
+        //                         {
+        //                             //item.current_sale.toFixed(2)
+        //                                         "" + this.totalSaleFormat(val)
+        //                                     }
+        //                                 </Text>
+        //                             </View>
+        //                         </View>
+        //                     </View>
+        //                 }
+        //                 <View style={styless.hairline} />
+        //             </CardView>
+        //         </View>
+        //     )
+        // }
+        
+        return (
+
+            <View style={styless.MainContainer}>
+     
+   <View style={styless.cardViewRow}>
+   <View style={styless.hairline} />
+                        <View style={{
+                            flexDirection: 'row',width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+
+
+                                <Text style={{
+                                    fontSize: 16,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 20,
+
+                                    // fontWeight: 'bold',
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }}>{
+                                    item.name
+                                }
+    
+                              </Text>
+
                             </View>
-                        }
-                        <View style={styless.hairline} />
-                    </CardView>
-                </View>
-            )
-        }
-        else {
-            return (
 
-                <View style={styless.MainContainer}>
+                            <View style={styless.shapeinnerwhite}>
 
 
-                    <CardView
-                        cardElevation={2}
-                        cardMaxElevation={2}
-                        cornerRadius={1}
-                        style={styless.cardViewStyle}
-                    >
-                        {
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+                                <Text style={{
+                                    fontSize: 16,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 50,
 
-                                <View style={styless.cardViewRow}>
-                                    <TouchableOpacity 
-                                    // onPress={() => { this.setCurrentScreen(item.id) } }
-                                    >
-                                        <Text style={{
-                                            fontSize: 22,
-                                            color: '#ffffff',
-                                            justifyContent: 'center',
-                                            // textAlignVertical: "center",
-                                            alignItems: 'center',
-                                        }} >
-                                            {
-                                                "" + item.name
-                                            }
-                                        </Text>
-                                    </TouchableOpacity>
+                                    // fontWeight: 'bold',
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
 
+                                }}>
+                                    {
+                                        //item.current_sale.toFixed(2)
+                                        "" + this.totalSaleFormat(val)
+                                    }
+                                </Text>
 
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-
-
-                                        <Image
-                                            source={require('../images/saledown.png')}
-                                            style={styless.ImageIconStyle} />
-                                        <Text style={{
-                                            fontSize: 16,
-                                            //width: 150,
-                                            color: '#ffffff',
-
-
-                                            justifyContent: 'center',
-                                            //textAlignVertical: "center",
-                                            alignItems: 'center',
-
-                                        }}>Total Sale :
-                            {
-                                                //item.current_sale.toFixed(2)
-                                                "" + this.totalSaleFormat(val)
-                                            }
-                                        </Text>
-                                    </View>
-                                </View>
                             </View>
-                        }
-                        <View style={styless.hairline} />
-                    </CardView>
-                </View>
-            )
-        }
+                        </View>
+                    </View>
+                   
+                 
+            </View>
+        )
+
     }
 
 
@@ -392,7 +392,7 @@ export default class SaleDetails extends Component {
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
 
             return (
-                <View style={{ backgroundColor: '#000000', flex: 1 }}>
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1,  alignItems: 'center',width: '100%',height:'100%'  }}>
                     
                     {
                         this.state.indeterminate &&
@@ -408,12 +408,63 @@ export default class SaleDetails extends Component {
                         />
                     }
 
+                     <View
+                    // cardElevation={2}
+                    // cardMaxElevation={2}
+                    // cornerRadius={1}
+                    // borderRadius={5}
+                    // borderColor={'#CE000A'}
+
+                    //shadowRadius={'#CE000A'}
+                    style={styless.cardViewStyle}
+                >
+<View style={styless.cardViewRowHeader}>
+
+<View style={{
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    // textAlignVertical: "center",
+    alignItems: 'center',
+    flexDirection: 'row',
+}}>
+
+    <Text numberOfLines={1} style={{
+        fontSize: 20,
+
+        color: '#0000FF',
+
+       
+        
+        justifyContent: 'center',
+        // textAlignVertical: "center",
+        alignItems: 'center',
+
+    }}>
+     {this.state.itemName} 
+        
+    </Text>
+</View>
+
+</View>
+
+<View style={styless.hairline} />
+
+
+                   
+
+
+
+                    
+
+             
+
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
                             this.renderItem
                         }
                     />
+                     </View>   
                 </View >
 
 
@@ -422,7 +473,7 @@ export default class SaleDetails extends Component {
         }
         else {
             return (
-                <View style={styless.MainContainer}>
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1,  alignItems: 'center',width: '100%',height:'100%' }}>
                     {
                         this.state.indeterminate &&
                         <Progress.Bar
@@ -438,6 +489,44 @@ export default class SaleDetails extends Component {
                     }
                         
 
+  <View
+                    // cardElevation={2}
+                    // cardMaxElevation={2}
+                    // cornerRadius={1}
+                    // borderRadius={5}
+                    // borderColor={'#CE000A'}
+
+                    //shadowRadius={'#CE000A'}
+                    style={styless.cardViewStyle}
+                >
+                  <View style={styless.cardViewRowHeader}>
+
+<View style={{
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    // textAlignVertical: "center",
+    alignItems: 'center',
+    flexDirection: 'row',
+}}>
+
+    <Text numberOfLines={1} style={{
+        fontSize: 20,
+
+        color: '#0000FF',
+
+       
+        
+        justifyContent: 'center',
+        // textAlignVertical: "center",
+        alignItems: 'center',
+
+    }}> {this.state.itemName} 
+        
+    </Text>
+</View>
+<View style={styless.hairline} />
+</View>
+
 
                     <FlatList
                         data={this.state.dataSource}
@@ -445,7 +534,7 @@ export default class SaleDetails extends Component {
                             this.renderItem
                         }
                     />
-
+ </View>
                     </View>
             )
         }
@@ -457,10 +546,11 @@ const styless = StyleSheet.create({
 
     MainContainer: {
 
-        flex: 1,
-        height: '100%',
+        
         width: '100%',
-        backgroundColor: '#000000',
+        
+       
+        backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
         // flexDirection: 'column',
@@ -470,8 +560,9 @@ const styless = StyleSheet.create({
     categries: {
 
         // width: '100%',
-        height: 40,
-        marginTop: 10,
+        height: 70,
+        marginTop: 5,
+        backgroundColor: '#000000',
         justifyContent: 'flex-start',
         flexDirection: 'row',
     },
@@ -484,22 +575,28 @@ const styless = StyleSheet.create({
     },
 
     cardViewStyle: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '90%',
-        height: 100,
-        backgroundColor: '#313131',
-        marginTop: 10,
-        //    // marginBottom: 10,
+        //justifyContent: 'center',
+         alignItems: 'center',
+         width: '90%',
+     
+        // borderRadius: 1,
+        borderColor: '#000',
+        backgroundColor: '#FFFFFF',
+        marginTop: 5,
+        marginBottom: 5,
+        borderWidth: 1,
+        borderRadius: 1,
+
         //     marginLeft: 10,
         //     marginRight: 10
     },
-    cardViewRow: {
+    cardViewRowHeader: {
         flexDirection: 'column',
-        height: 22.7,
+        height: 40,
+
         //backgroundColor: '#fff',
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
         // textAlignVertical: "center"
 
 
@@ -507,26 +604,29 @@ const styless = StyleSheet.create({
 
 
     },
-    cardViewText: {
-        flex: 1,
-        fontSize: 10,
-        width: 80,
-        paddingLeft: 35,
-        backgroundColor: 'red',
-        color: '#ffffff',
-        //justifyContent: 'center',
-        alignItems: 'center',
-        textAlignVertical: "center"
+    cardViewRow: {
+        flexDirection: 'column',
+        height: 30,
+       
+        // width: '90%',
+        //backgroundColor: '#fff',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // textAlignVertical: "center"
+
+
+
 
 
     },
+   
     cardViewHeader: {
         fontSize: 10,
         width: 75,
 
         color: '#ffffff',
 
-        paddingLeft: 20,
+        // paddingLeft: 20,
         backgroundColor: '#FAC209',
         //justifyContent: 'center',
         textAlignVertical: "center",
@@ -545,9 +645,30 @@ const styless = StyleSheet.create({
         alignItems: 'flex-end'
 
     },
+    shapeyellow: {
+        backgroundColor: '#FBE028',
+        width: '40%',
+        height: 29.5,
+        justifyContent: 'center',
+
+    },
+    shapewhite: {
+        backgroundColor: '#FFFFFF',
+        width: '30%',
+    },
+    shapeinnerwhite: {
+        backgroundColor: '#FFFFFF',
+        width: '60%',
+        height: 29.5,
+        justifyContent: 'center',
+
+    },
     hairline: {
-        backgroundColor: '#000',
-        height: 2,
+        marginTop: 1,
+        marginBottom: 1,
+        backgroundColor: '#000000',
+        height: 1,
+        width: '100%',
 
     },
     welcome: {
@@ -568,7 +689,11 @@ const styless = StyleSheet.create({
         fontSize: 12,
         textAlign: 'center',
         color: '#fff',
-        marginBottom: 5
+    },
+    separator: {
+        borderWidth: 1,
+        flexDirection: 'row',
+        borderColor: 'red'
     },
 
 
