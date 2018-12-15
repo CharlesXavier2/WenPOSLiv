@@ -216,7 +216,14 @@ export default class DayPage extends Component {
  
     setExpandableData = (id) => {
         this.setState({ indeterminate: true });
-        const URL = 'http://bkliveapp.bklive.in:4500/v2/get_all_region_sale?filter_type=day&date=2018-12-13&region_id=' + id;
+        this.getDate();
+        AsyncStorage.getItem("date_key").then((value) => {
+            console.log(" Getter date" + value);
+            // date= this.state.date;
+            urlPanDate = value;
+            const urlPan = 'http://115.112.224.200:3000/api/getRegionSales'
+            console.log("  url " + urlPan)
+        const URL = 'http://115.112.224.200:3000/v2/get_all_region_sale?filter_type=day&date='+this.state.date+'&region_id=' + id;
         console.log("data : URL ");
         return fetch(URL)
             // .then((res) => res.json()); 
@@ -272,11 +279,231 @@ export default class DayPage extends Component {
             .catch((error) => {
                 console.log(error)
             })
-      
+        }).done();
     };
 
+    setExpandableData1 = (obj) => {
+        var id=obj.id;
+        var name=obj.name
+        this.setState({ indeterminate: true });
+        this.getDate();
+        var urlPanDate = ''
+        var regionId = ''
+        var cityId = '';
+        // this.getDate();
+        AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+            regionId = regionIdVal
+        }).done()
+        AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
+            cityId = cityIdVal
+        }).done()
+        AsyncStorage.getItem(GLOBAL.CITY_NAME_KEY).then((cityNameVal) => {
+            cityName = cityNameVal
+            console.log("cityName : " + cityName);
 
-    setCurrentScreen = (id) => {
+        }).done()
+
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
+            console.log(" parent_key : " + parent);
+            if (parent == null) {
+                parent = 0
+            }
+            AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
+                console.log(" date_key : " + value);
+                if (value == null || value == '') {
+                    var date = new Date().toDateString();
+                    date = dateFormat(date, "yyyy-mm-dd");
+                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                    value = date;
+                }
+                urlPanDate = value;
+                AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
+                    console.log("1st Is_Geo_key : " + value1);
+                    if (value1 === null) {
+                        value1 = "true";
+                    }
+                    console.log(" Is_Geo_key : " + value1);
+                    var urlValue = ''
+                    var bodyJson = JSON.stringify({
+                        date: urlPanDate,
+                        filter_type: filter_type,
+
+                    })
+                    if (value1 == "true") {
+                        console.log(" value1==true");
+                        switch (parent) {
+                            case 0:
+                            case '0':
+                                console.log(" value1==true  case 0");
+                                console.log(" region_id= "+id);
+                                // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                urlValue = 'http://115.112.224.200:3000/v2/get_all_region_sale?filter_type=day&date='+urlPanDate+'&region_id=' + id;
+                                // var cityId=id
+
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                // })
+                                break;
+                            case 1:
+                            case '1':
+                                console.log(" value1==true  case 1");
+                               
+                                console.log(" region_id= "+id);
+                                console.log("city_name= "+name);
+                                urlValue = 'http://115.112.224.200:3000/v2/get_all_city_sale?filter_type=day&date='+urlPanDate+'&region_id='+ regionId+'&city_name='+name;
+                                
+                                break;
+                            case 2:
+                            case '2':
+                                console.log(" value1==true  case 2");
+                                urlValue = 'http://115.112.224.200:3000/v2/get_all_store_sale?filter_type=day&date='+urlPanDate+'&city_name='+cityId+'&store_code='+ id;
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                //     city_id: cityId,
+                                // })
+                                break;
+                            // case 3:
+                            // case '3':
+                            //     console.log(" value1==true  case ");
+                            //     urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                            //     break;
+
+                        }
+                    } else {
+                        console.log("else value1==true");
+                        // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
+                        switch (parent) {
+                            case 0:
+                            case '0':
+                                console.log("else value1==true case  0");
+                                console.log(" region_id= "+id);
+                                console.log(" region_id---= "+regionId);
+                                console.log("city_name= "+name);
+                                urlValue = 'http://115.112.224.200:3000/v2/get_all_deputy_manager_sale?filter_type=day&date='+urlPanDate+'&region_id='+1+'&deputy_name='+name;
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                // })
+                                break;
+                            case 1:
+                            case '1':
+                                console.log("else value1==true case  1");
+                                urlValue = 'http://115.112.224.200:3000/v2/get_all_petch_manager_sale?filter_type=day&date='+urlPanDate+'&deputy_name='+regionId+'&petch_name='+id;
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                //     deputy_id: regionId,
+                                // })
+                                break;
+                            case 2:
+                            case '2':
+                                console.log("else value1==true case  2");
+                                return
+
+                        }
+                    }
+                    console.log(" Body Request : " + bodyJson)
+                    const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                    console.log("  url " + urlPan)
+                    // fetch(urlPan, {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Accept': 'application/json',
+                    //         'Content-Type': 'application/json'
+                    //     },
+                    //     body: bodyJson
+                    // })
+                    //     .then((response) => response.json())
+                    //     .then((responseJson) => {
+                    //         responseJson.data.map((dataa) => {
+                    //             var sale_data=[]
+                    //             sale_data.push({
+                    //                 name: 'Net Sales', total: dataa.current_sale,
+                    //             })
+                    //             dataa.sale_data = sale_data
+                    //         })
+                    //         // this.setState.dataSource.push( responseJson.sale_info );
+                    //         this.setState({ indeterminate: false });
+                    //         if (responseJson != null) {
+                    //             this.setState({
+                    //                 dataSource: responseJson.data
+                    //             })
+                    //         }
+
+                    //     })
+                    //     .catch((error) => {
+                    //         console.log(error)
+                    //     })
+
+
+                    //     .catch((error) => {
+                    //         console.log(error)
+                    //     })
+                    return fetch(urlPan)
+                    // .then((res) => res.json()); 
+                    .then((response) => response.json())
+        
+                    .then((responseJson) => {
+                        var dataSourceTemp = [];
+                        this.setState({ indeterminate: false });
+                        console.log("Response data responseJson -> " + responseJson);
+                        this.state.dataSource.map((value) => {
+        
+                            dataSourceTemp.push({
+                                id: value.id, name: value.name,
+                                current_sale: value.current_sale,
+                                last_sale: value.last_sale, sale_data: []
+                            })
+                        }),
+                            console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
+        
+                            responseJson.sale_info.map((data) => {
+                                console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
+                                    dataSourceTemp.map((dataa) => {
+                                        if (id == dataa.id) {
+                                            dataa.sale_data = data.sale_data
+                                        }else{
+                                            var sale_data=[]
+                                            sale_data.push({
+                                                name: 'Net Sales', total: dataa.current_sale,
+                                            })
+                                            dataa.sale_data = sale_data
+                                        }
+                         
+        
+                                    })
+                            })
+        
+        
+                        const myObjStr = JSON.stringify(dataSourceTemp);
+        
+        
+                        console.log("dataSource : " + myObjStr);
+        
+                        this.setState({
+                            dataSource: dataSourceTemp
+                        })
+                       
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+        
+        
+                    .catch((error) => {
+                        console.log(error)
+                    })
+
+                }).done();
+            }).done();
+        }).done();
+    }
+
+
+
+    setCurrentScreen = (id,name) => {
         //0 for region 1 for city 2 for store
         console.log('setCurrentScreen before parent : ' + this.state.parent)
         if (this.state.parent >= 2) {
@@ -306,6 +533,9 @@ export default class DayPage extends Component {
             case 2:
             case '2':
                 AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+                AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
+                console.log("GLOBAL.CITY_NAME_KEY : " + name);
+
                 break;
             case 3:
             case '3':
@@ -367,6 +597,14 @@ export default class DayPage extends Component {
         } catch (error) {
             return (0 + " K");
         }
+    }
+    toTitleCase=(str)=> {
+        return str.replace(
+            /\w\S*/g,
+            function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }
+        );
     }
     renderItemSaleData = ({ item }) => {
         var val = item.total;
@@ -450,6 +688,7 @@ export default class DayPage extends Component {
 
     renderItem11 = ({ item }) => {
         var val = item.current_sale;
+        var str = item.name;
         var rounfFranchise = '0.00';
         console.log('UI refeashing start')
         // if (item.current_sale > item.last_sale) {
@@ -636,7 +875,7 @@ export default class DayPage extends Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (!(item.name == "National")) {
-                                            this.setCurrentScreen(item.id);
+                                            this.setCurrentScreen(item.id,item.name);
                                         }
                                     }}  >
 
@@ -654,20 +893,25 @@ export default class DayPage extends Component {
 
                                     }}>
                                         {
-                                            "" + item.name
+                                            "" + this.toTitleCase(str)
                                         }
                                     </Text>
                                 </TouchableOpacity>
 
                             </View>
-
+                          
+                        
                             <TouchableOpacity
+                           
                                 onPress={() => {
                                     if (!(item.name == "National")) {
-                                        this.setExpandableData(item.id);
+                                        var obj={};
+                                        obj.id=item.id;
+                                        obj.name=item.name;
+                                        this.setExpandableData1(obj);
                                     }
                                 }}  >
-
+                             
                                 <View style={{
                                     backgroundColor: '#FFFFFF',
                                     width: '20%',
@@ -688,8 +932,10 @@ export default class DayPage extends Component {
                                         }} />
 
                                 </View>
+                             
+                           
                             </TouchableOpacity>
-
+                        
 
 
                         </View>
@@ -801,7 +1047,7 @@ export default class DayPage extends Component {
     }
 
 
-    //for date
+    
     customComponentDidMount = () => {
         this.setState({ indeterminate: true });
         this.getDate();
