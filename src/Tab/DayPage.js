@@ -213,78 +213,10 @@ export default class DayPage extends Component {
         )
     }
 
- 
-    setExpandableData = (id) => {
-        this.setState({ indeterminate: true });
-        this.getDate();
-        AsyncStorage.getItem("date_key").then((value) => {
-            console.log(" Getter date" + value);
-            // date= this.state.date;
-            urlPanDate = value;
-            const urlPan = 'http://115.112.224.200:3000/api/getRegionSales'
-            console.log("  url " + urlPan)
-        const URL = 'http://115.112.224.200:3000/v2/get_all_region_sale?filter_type=day&date='+this.state.date+'&region_id=' + id;
-        console.log("data : URL ");
-        return fetch(URL)
-            // .then((res) => res.json()); 
-            .then((response) => response.json())
 
-            .then((responseJson) => {
-                var dataSourceTemp = [];
-                this.setState({ indeterminate: false });
-                console.log("Response data responseJson -> " + responseJson);
-                this.state.dataSource.map((value) => {
-
-                    dataSourceTemp.push({
-                        id: value.id, name: value.name,
-                        current_sale: value.current_sale,
-                        last_sale: value.last_sale, sale_data: []
-                    })
-                }),
-                    console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
-
-                    responseJson.sale_info.map((data) => {
-                        console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
-                            dataSourceTemp.map((dataa) => {
-                                if (id == dataa.id) {
-                                    dataa.sale_data = data.sale_data
-                                }else{
-                                    var sale_data=[]
-                                    sale_data.push({
-                                        name: 'Net Sales', total: dataa.current_sale,
-                                    })
-                                    dataa.sale_data = sale_data
-                                }
-                 
-
-                            })
-                    })
-
-
-                const myObjStr = JSON.stringify(dataSourceTemp);
-
-
-                console.log("dataSource : " + myObjStr);
-
-                this.setState({
-                    dataSource: dataSourceTemp
-                })
-               
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-
-
-            .catch((error) => {
-                console.log(error)
-            })
-        }).done();
-    };
-
-    setExpandableData1 = (obj) => {
-        var id=obj.id;
-        var name=obj.name
+    setExpandableData = (obj) => {
+        var id = obj.id;
+        var name = obj.name
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
@@ -335,9 +267,8 @@ export default class DayPage extends Component {
                             case 0:
                             case '0':
                                 console.log(" value1==true  case 0");
-                                console.log(" region_id= "+id);
-                                // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
-                                urlValue = 'http://115.112.224.200:3000/v2/get_all_region_sale?filter_type=day&date='+urlPanDate+'&region_id=' + id;
+                                console.log(" region_id= " + id);
+                                urlValue = 'get_all_region_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -348,21 +279,16 @@ export default class DayPage extends Component {
                             case 1:
                             case '1':
                                 console.log(" value1==true  case 1");
-                               
-                                console.log(" region_id= "+id);
-                                console.log("city_name= "+name);
-                                urlValue = 'http://115.112.224.200:3000/v2/get_all_city_sale?filter_type=day&date='+urlPanDate+'&region_id='+ regionId+'&city_name='+name;
-                                
+
+                                console.log(" region_id= " + id);
+                                console.log("city_name= " + name);
+                                urlValue = 'get_all_city_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+
                                 break;
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'http://115.112.224.200:3000/v2/get_all_store_sale?filter_type=day&date='+urlPanDate+'&city_name='+cityId+'&store_code='+ id;
-                                // bodyJson = JSON.stringify({
-                                //     date: urlPanDate,
-                                //     filter_type: filter_type,
-                                //     city_id: cityId,
-                                // })
+                                urlValue = 'get_all_store_sale?filter_type=day&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
                                 break;
                             // case 3:
                             // case '3':
@@ -373,29 +299,21 @@ export default class DayPage extends Component {
                         }
                     } else {
                         console.log("else value1==true");
-                        // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
                         switch (parent) {
                             case 0:
                             case '0':
                                 console.log("else value1==true case  0");
-                                console.log(" region_id= "+id);
-                                console.log(" region_id---= "+regionId);
-                                console.log("city_name= "+name);
-                                urlValue = 'http://115.112.224.200:3000/v2/get_all_deputy_manager_sale?filter_type=day&date='+urlPanDate+'&region_id='+1+'&deputy_name='+name;
-                                // bodyJson = JSON.stringify({
-                                //     date: urlPanDate,
-                                //     filter_type: filter_type,
-                                // })
+                                console.log(" region_id= " + id);
+                                console.log(" region_id---= " + regionId);
+                                console.log("city_name= " + name);
+                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + name;
+
                                 break;
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'http://115.112.224.200:3000/v2/get_all_petch_manager_sale?filter_type=day&date='+urlPanDate+'&deputy_name='+regionId+'&petch_name='+id;
-                                // bodyJson = JSON.stringify({
-                                //     date: urlPanDate,
-                                //     filter_type: filter_type,
-                                //     deputy_id: regionId,
-                                // })
+                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+
                                 break;
                             case 2:
                             case '2':
@@ -404,97 +322,66 @@ export default class DayPage extends Component {
 
                         }
                     }
-                    console.log(" Body Request : " + bodyJson)
-                    const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                    const urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
                     console.log("  url " + urlPan)
-                    // fetch(urlPan, {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Accept': 'application/json',
-                    //         'Content-Type': 'application/json'
-                    //     },
-                    //     body: bodyJson
-                    // })
-                    //     .then((response) => response.json())
-                    //     .then((responseJson) => {
-                    //         responseJson.data.map((dataa) => {
-                    //             var sale_data=[]
-                    //             sale_data.push({
-                    //                 name: 'Net Sales', total: dataa.current_sale,
-                    //             })
-                    //             dataa.sale_data = sale_data
-                    //         })
-                    //         // this.setState.dataSource.push( responseJson.sale_info );
-                    //         this.setState({ indeterminate: false });
-                    //         if (responseJson != null) {
-                    //             this.setState({
-                    //                 dataSource: responseJson.data
-                    //             })
-                    //         }
-
-                    //     })
-                    //     .catch((error) => {
-                    //         console.log(error)
-                    //     })
-
-
-                    //     .catch((error) => {
-                    //         console.log(error)
-                    //     })
                     return fetch(urlPan)
-                    // .then((res) => res.json()); 
-                    .then((response) => response.json())
-        
-                    .then((responseJson) => {
-                        var dataSourceTemp = [];
-                        this.setState({ indeterminate: false });
-                        console.log("Response data responseJson -> " + responseJson);
-                        this.state.dataSource.map((value) => {
-        
-                            dataSourceTemp.push({
-                                id: value.id, name: value.name,
-                                current_sale: value.current_sale,
-                                last_sale: value.last_sale, sale_data: []
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            var dataSourceTemp = [];
+                            this.setState({ indeterminate: false });
+                            console.log("Response data responseJson -> " + responseJson);
+                            this.state.dataSource.map((value) => {
+
+                                dataSourceTemp.push({
+                                    id: value.id, name: value.name,
+                                    current_sale: value.current_sale,
+                                    last_sale: value.last_sale, sale_data: []
+                                })
+                            }),
+                                console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
+
+                                responseJson.sale_info.map((data) => {
+                                    console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
+                                        dataSourceTemp.map((dataa) => {
+
+                                            if (id == dataa.id) {
+                                                dataa.hasSaleData = true
+
+                                                dataa.sale_data = data.sale_data
+
+
+
+                                            }
+
+                                            else {
+                                                var sale_data = []
+                                                sale_data.push({
+                                                    name: 'Net Sales', total: dataa.current_sale,
+                                                })
+                                                dataa.hasSaleData = false
+                                                dataa.sale_data = sale_data
+                                            }
+
+                                        })
+                                })
+
+                            const myObjStr = JSON.stringify(dataSourceTemp);
+
+                            console.log("dataSource : " + myObjStr);
+
+                            this.setState({
+                                dataSource: dataSourceTemp
                             })
-                        }),
-                            console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
-        
-                            responseJson.sale_info.map((data) => {
-                                console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
-                                    dataSourceTemp.map((dataa) => {
-                                        if (id == dataa.id) {
-                                            dataa.sale_data = data.sale_data
-                                        }else{
-                                            var sale_data=[]
-                                            sale_data.push({
-                                                name: 'Net Sales', total: dataa.current_sale,
-                                            })
-                                            dataa.sale_data = sale_data
-                                        }
-                         
-        
-                                    })
-                            })
-        
-        
-                        const myObjStr = JSON.stringify(dataSourceTemp);
-        
-        
-                        console.log("dataSource : " + myObjStr);
-        
-                        this.setState({
-                            dataSource: dataSourceTemp
+
                         })
-                       
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    })
-        
-        
-                    .catch((error) => {
-                        console.log(error)
-                    })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+
+
+                        .catch((error) => {
+                            console.log(error)
+                        })
 
                 }).done();
             }).done();
@@ -503,7 +390,7 @@ export default class DayPage extends Component {
 
 
 
-    setCurrentScreen = (id,name) => {
+    setCurrentScreen = (id, name) => {
         //0 for region 1 for city 2 for store
         console.log('setCurrentScreen before parent : ' + this.state.parent)
         if (this.state.parent >= 2) {
@@ -598,14 +485,16 @@ export default class DayPage extends Component {
             return (0 + " K");
         }
     }
-    toTitleCase=(str)=> {
+    //for set string in camel case.
+    toTitleCase = (str) => {
         return str.replace(
             /\w\S*/g,
-            function(txt) {
+            function (txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             }
         );
     }
+    // Rerender data in row on click Expandable button
     renderItemSaleData = ({ item }) => {
         var val = item.total;
         console.log(' renderItemSaleData' + item.name)
@@ -630,7 +519,7 @@ export default class DayPage extends Component {
                                 color: '#000000',
                                 marginLeft: 20,
 
-                                
+
                                 justifyContent: 'center',
                                 //textAlignVertical: "center",
                                 alignItems: 'center',
@@ -639,7 +528,7 @@ export default class DayPage extends Component {
                             > {
 
                                     "" + item.name
-                                } 
+                                }
 
                             </Text>
 
@@ -658,15 +547,15 @@ export default class DayPage extends Component {
                                 color: '#000000',
                                 marginLeft: 50,
 
-                               
+
                                 justifyContent: 'center',
                                 //textAlignVertical: "center",
                                 alignItems: 'center',
 
                             }}> {
-                            //item.current_sale.toFixed(2)
-                            "" + this.totalSaleFormat(val)
-                        }   
+                                    //item.current_sale.toFixed(2)
+                                    "" + this.totalSaleFormat(val)
+                                }
                             </Text>
 
                         </View>
@@ -674,10 +563,10 @@ export default class DayPage extends Component {
                 </View>
 
                 <View style={{
-        backgroundColor: '#FFF',
-        height: 0.5,
+                    backgroundColor: '#F4F5F5',
+                    height: 0.8,
 
-    }} />
+                }} />
 
             </View>
 
@@ -685,134 +574,13 @@ export default class DayPage extends Component {
         )
 
     }
-
+    // Flatlist UI
     renderItem11 = ({ item }) => {
         var val = item.current_sale;
         var str = item.name;
+
         var rounfFranchise = '0.00';
-        console.log('UI refeashing start')
-        // if (item.current_sale > item.last_sale) {
-        //     return (
-
-
-        //         <View style={styless.MainContainer}>
-
-
-        //             <View
-        //                 // cardElevation={2}
-        //                 //cardMaxElevation={2}
-        //                 //cornerRadius={1}
-        //                 //borderRadius={5}
-        //                 // borderColor={'#CE000A'}
-        //                 style={styless.cardViewStyle}
-        //             >
-        //                 {
-        //                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-        //                         <View style={styless.cardViewRow}>
-
-        //                             {/* <TouchableOpacity onPress={() => { this.setCurrentScreen(item.id); }}>
-        //                                 <Text style={{
-        //                                     fontSize: 22,
-
-        //                                     color: '#ffffff',
-
-
-        //                                     justifyContent: 'center',
-        //                                     // textAlignVertical: "center",
-        //                                     alignItems: 'center',
-
-        //                                 }} >
-        //                                     {
-        //                                         "" + item.name
-        //                                     }
-        //                                 </Text>
-        //                             </TouchableOpacity> */}
-        //                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-
-        //                                 <TouchableOpacity
-        //                                     onPress={() => {
-        //                                         /* 1. Navigate to the Details route with params */
-        //                                         this.props.navigation.navigate('SaleDetails', {
-        //                                             itemName: item.name,
-        //                                             itemId: item.id,
-        //                                             parent: this.state.parent,
-        //                                             date: this.state.date,
-        //                                             isGeo: this.state.isGeo,
-        //                                             filter_type: filter_type
-        //                                         });
-        //                                     }} >
-        //                                     <Image
-        //                                         source={require('../images/detail.png')}
-        //                                         style={styless.ImageIconStyle} />
-        //                                 </TouchableOpacity>
-        //                                 <Text style={{
-        //                                     fontSize: 16,
-
-        //                                     color: '#CE000A',
-
-
-        //                                     justifyContent: 'center',
-        //                                     // textAlignVertical: "center",
-        //                                     alignItems: 'center',
-
-        //                                 }} onPress={() => { this.setCurrentScreen(item.id); }} >
-        //                                     {
-        //                                         "" + item.name
-        //                                     }
-        //                                 </Text>
-
-
-        //                             </View>
-        //                         </View>
-
-        //                         {/* <Divider style={{ backgroundColor: 'blue', height: 1 }} /> */}
-
-        //                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
-
-
-
-        //                             <Image
-        //                                 source={require('../images/saleup.png')}
-        //                                 style={styless.ImageIconStyle} />
-        //                             <Text style={{
-        //                                 fontSize: 12,
-        //                                 //width: 150,
-        //                                 color: '#000000',
-
-
-        //                                 justifyContent: 'center',
-        //                                 //textAlignVertical: "center",
-        //                                 alignItems: 'center',
-
-        //                             }}>Net Sales :
-        //                         {
-        //                                     //item.current_sale.toFixed(2)
-        //                                     "" + this.totalSaleFormat(val)
-        //                                 }
-        //                             </Text>
-
-
-        //                         </View>
-
-
-
-
-
-        //                     </View>
-
-
-        //                 }
-
-
-
-        //                 <View style={styless.hairline} />
-        //             </View>
-        //         </View>
-        //     )
-        // }
-
+        // console.log('UI refeashing start')
 
         return (
 
@@ -875,7 +643,7 @@ export default class DayPage extends Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (!(item.name == "National")) {
-                                            this.setCurrentScreen(item.id,item.name);
+                                            this.setCurrentScreen(item.id, item.name);
                                         }
                                     }}  >
 
@@ -899,50 +667,124 @@ export default class DayPage extends Component {
                                 </TouchableOpacity>
 
                             </View>
-                          
-                        
-                            <TouchableOpacity
-                           
-                                onPress={() => {
-                                    if (!(item.name == "National")) {
-                                        var obj={};
-                                        obj.id=item.id;
-                                        obj.name=item.name;
-                                        this.setExpandableData1(obj);
-                                    }
-                                }}  >
-                             
-                                <View style={{
-                                    backgroundColor: '#FFFFFF',
-                                    width: '20%',
-                                }}>
+
+                            {
+                                !item.hasSaleData &&
+                                <TouchableOpacity
+
+                                    onPress={() => {
+                                        console.log("  !item.hasSaleData && : ");
+
+                                        if (!(item.name == "National")) {
+                                            var obj = {};
+                                            obj.id = item.id;
+                                            obj.name = item.name;
+
+                                            this.setExpandableData(obj);
 
 
-                                    <Image
-                                        source={require('../images/down.png')}
-                                        style={{
-                                            width: 14,
-                                            height: 14,
-                                            padding: 10,
-                                            marginLeft: 70,
+                                        }
+                                    }}  >
 
-                                            margin: 5,
-                                            resizeMode: 'stretch',
+                                    <View style={{
+                                        backgroundColor: '#FFFFFF',
+                                        width: '20%',
+                                    }}>
 
-                                        }} />
 
-                                </View>
-                             
-                           
-                            </TouchableOpacity>
-                        
+                                        <Image
+                                            source={require('../images/down.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 10,
+                                                marginLeft: 70,
+
+                                                margin: 5,
+                                                resizeMode: 'stretch',
+
+                                            }} />
+
+                                    </View>
+
+
+                                </TouchableOpacity>
+
+                            }
+
+                            {
+                                item.hasSaleData &&
+                                <TouchableOpacity
+
+                                    onPress={() => {
+                                        console.log("  item.hasSaleData && : ");
+
+                                        if (!(item.name == "National")) {
+
+                                            var dataSourceTemp = []
+                                            this.setState({ indeterminate: true });
+                                            this.state.dataSource.map((value) => {
+                                                dataSourceTemp.push({
+                                                    id: value.id, name: value.name,
+                                                    current_sale: value.current_sale,
+                                                    last_sale: value.last_sale,
+                                                    sale_data: value.sale_data
+                                                })
+
+                                            })
+
+                                            dataSourceTemp.map((data) => {
+                                                if (item.id == data.id) {
+                                                    var sale_data = []
+                                                    sale_data.push({
+                                                        name: 'Net Sales', total: data.current_sale,
+                                                    })
+                                                    data.hasSaleData = false
+                                                    data.sale_data = sale_data
+                                                    this.setState({ indeterminate: false });
+                                                }
+
+
+                                            })
+                                            this.setState({ dataSource: dataSourceTemp });
+                                            // const myObjStr = JSON.stringify(dataSourceTemp);
+                                            // console.log("sale_data in dataSourceTemp : " + myObjStr); 
+                                        }
+
+                                    }}  >
+
+                                    <View style={{
+                                        backgroundColor: '#FFFFFF',
+                                        width: '20%',
+                                    }}>
+
+
+                                        <Image
+                                            source={require('../images/up.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 10,
+                                                marginLeft: 70,
+
+                                                margin: 5,
+                                                resizeMode: 'stretch',
+
+                                            }} />
+
+                                    </View>
+
+
+                                </TouchableOpacity>
+
+                            }
 
 
                         </View>
 
                     </View>
                     <View style={styless.hairline} />
-                    {console.log('sale_data in render item:' + item.sale_data)}
+                    {/* {console.log('sale_data in render item:' + item.sale_data)} */}
 
 
                     {
@@ -1018,12 +860,15 @@ export default class DayPage extends Component {
                 .then((response) => response.json())
 
                 .then((responseJson) => {
+                    this.setState({ indeterminate: false });
+
                     // this.setState.dataSource.push( responseJson.sale_info );
                     responseJson.data.map((dataa) => {
-                        var sale_data=[]
+                        var sale_data = []
                         sale_data.push({
                             name: 'Net Sales', total: dataa.current_sale,
                         })
+                        dataa.hasSaleData = false
                         dataa.sale_data = sale_data
                     })
                     this.setState({
@@ -1047,7 +892,7 @@ export default class DayPage extends Component {
     }
 
 
-    
+
     customComponentDidMount = () => {
         this.setState({ indeterminate: true });
         this.getDate();
@@ -1171,10 +1016,11 @@ export default class DayPage extends Component {
                         .then((response) => response.json())
                         .then((responseJson) => {
                             responseJson.data.map((dataa) => {
-                                var sale_data=[]
+                                var sale_data = []
                                 sale_data.push({
                                     name: 'Net Sales', total: dataa.current_sale,
                                 })
+                                dataa.hasSaleData = false
                                 dataa.sale_data = sale_data
                             })
                             // this.setState.dataSource.push( responseJson.sale_info );
@@ -1315,12 +1161,13 @@ export default class DayPage extends Component {
                 this.setState({ indeterminate: false });
 
                 console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-                
+
                 responseJson.data.map((dataa) => {
-                    var sale_data=[]
+                    var sale_data = []
                     sale_data.push({
                         name: 'Net Sales', total: dataa.current_sale,
                     })
+                    dataa.hasSaleData = false
                     dataa.sale_data = sale_data
                 })
 
@@ -1391,7 +1238,7 @@ export default class DayPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-                 {
+                    {
                         this.state.indeterminate &&
                         <Progress.Bar
                             style={styles.progress}

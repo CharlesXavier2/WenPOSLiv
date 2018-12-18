@@ -174,6 +174,174 @@ export default class WeekPage extends Component {
         )
     }
 
+    // For show Expandable data on click button.
+    setExpandableData = (obj) => {
+        var id=obj.id;
+        var name=obj.name
+        this.setState({ indeterminate: true });
+        this.getDate();
+        var urlPanDate = ''
+        var regionId = ''
+        var cityId = '';
+        // this.getDate();
+        AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+            regionId = regionIdVal
+        }).done()
+        AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
+            cityId = cityIdVal
+        }).done()
+        AsyncStorage.getItem(GLOBAL.CITY_NAME_KEY).then((cityNameVal) => {
+            cityName = cityNameVal
+            console.log("cityName : " + cityName);
+
+        }).done()
+
+        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
+            console.log(" parent_key : " + parent);
+            if (parent == null) {
+                parent = 0
+            }
+            AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
+                console.log(" date_key : " + value);
+                if (value == null || value == '') {
+                    var date = new Date().toDateString();
+                    date = dateFormat(date, "yyyy-mm-dd");
+                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                    value = date;
+                }
+                urlPanDate = value;
+                AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
+                    console.log("1st Is_Geo_key : " + value1);
+                    if (value1 === null) {
+                        value1 = "true";
+                    }
+                    console.log(" Is_Geo_key : " + value1);
+                    var urlValue = ''
+                    var bodyJson = JSON.stringify({
+                        date: urlPanDate,
+                        filter_type: filter_type,
+
+                    })
+                    if (value1 == "true") {
+                        console.log(" value1==true");
+                        switch (parent) {
+                            case 0:
+                            case '0':
+                                console.log(" value1==true  case 0");
+                                console.log(" region_id= "+id);
+                                urlValue = 'get_all_region_sale?filter_type=day&date='+urlPanDate+'&region_id=' + id;
+                                // var cityId=id
+
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                // })
+                                break;
+                            case 1:
+                            case '1':
+                                console.log(" value1==true  case 1");
+                               
+                                console.log(" region_id= "+id);
+                                console.log("city_name= "+name);
+                                urlValue = 'get_all_city_sale?filter_type=day&date='+urlPanDate+'&region_id='+ regionId+'&city_name='+name;
+                                
+                                break;
+                            case 2:
+                            case '2':
+                                console.log(" value1==true  case 2");
+                                urlValue = 'get_all_store_sale?filter_type=day&date='+urlPanDate+'&city_name='+cityId+'&store_code='+ id;
+                                break;
+                            // case 3:
+                            // case '3':
+                            //     console.log(" value1==true  case ");
+                            //     urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                            //     break;
+
+                        }
+                    } else {
+                        console.log("else value1==true");
+                        switch (parent) {
+                            case 0:
+                            case '0':
+                                console.log("else value1==true case  0");
+                                console.log(" region_id= "+id);
+                                console.log(" region_id---= "+regionId);
+                                console.log("city_name= "+name);
+                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date='+urlPanDate+'&deputy_name='+name;
+                                
+                                break;
+                            case 1:
+                            case '1':
+                                console.log("else value1==true case  1");
+                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date='+urlPanDate+'&deputy_name='+regionId+'&petch_name='+id;
+                               
+                                break;
+                            case 2:
+                            case '2':
+                                console.log("else value1==true case  2");
+                                return
+
+                        }
+                    }
+                    const urlPan = 'http://115.112.224.200:3000/v2/'+urlValue;
+                    console.log("  url " + urlPan)
+                    return fetch(urlPan)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        var dataSourceTemp = [];
+                        this.setState({ indeterminate: false });
+                        console.log("Response data responseJson -> " + responseJson);
+                        this.state.dataSource.map((value) => {
+        
+                            dataSourceTemp.push({
+                                id: value.id, name: value.name,
+                                current_sale: value.current_sale,
+                                last_sale: value.last_sale, sale_data: []
+                            })
+                        }),
+                            console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
+        
+                            responseJson.sale_info.map((data) => {
+                                console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
+                                    dataSourceTemp.map((dataa) => {
+                                        if (id == dataa.id) {
+                                            dataa.sale_data = data.sale_data
+                                            dataa.hasSaleData = true
+                                        }else{
+                                            var sale_data=[]
+                                            sale_data.push({
+                                                name: 'Net Sales', total: dataa.current_sale,
+                                            })
+                                            dataa.hasSaleData=false
+                                            dataa.sale_data = sale_data
+                                        }
+                         
+        
+                                    })
+                            })
+        
+                        const myObjStr = JSON.stringify(dataSourceTemp);
+        
+                        console.log("dataSource : " + myObjStr);
+        
+                        this.setState({
+                            dataSource: dataSourceTemp
+                        })
+                       
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+        
+        
+                    .catch((error) => {
+                        console.log(error)
+                    })
+
+                }).done();
+            }).done();
+        }).done();
+    }
 
 
     setCurrentScreen = (id) => {
@@ -369,13 +537,102 @@ export default class WeekPage extends Component {
         }
     }
 
+     //for set string in camel case.
+     toTitleCase=(str)=> {
+        return str.replace(
+            /\w\S*/g,
+            function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }
+        );
+    }
+    // Rerender data in row on click Expandable button
+    renderItemSaleData = ({ item }) => {
+        var val = item.total;
+        console.log(' renderItemSaleData' + item.name)
+        return (
+
+
+            <View>
+
+                <View style={styless.cardViewRow}>
+                    <View style={{
+                        flexDirection: 'row',
+
+                    }}>
+
+
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#000000',
+                                marginLeft: 20,
+
+                                
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > {
+
+                                    "" + item.name
+                                } 
+
+                            </Text>
+
+                        </View>
+
+
+
+
+
+                        <View style={styless.shapeinnerwhite}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#000000',
+                                marginLeft: 50,
+
+                               
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}> {
+                            //item.current_sale.toFixed(2)
+                            "" + this.totalSaleFormat(val)
+                        }   
+                            </Text>
+
+                        </View>
+                    </View>
+                </View>
+
+                <View style={{
+         backgroundColor: '#F4F5F5',
+        height: 0.8,
+
+    }} />
+
+            </View>
+
+
+        )
+
+    }
+    // Flatlist UI
     renderItem = ({ item }) => {
         var val = item.current_sale;
+        var str = item.name;
         var rounfFranchise = '0.00';
-        if (item != null) {
-            this.setState({ indeterminate: false });
-        }
-
+        // console.log('UI refeashing start')
+       
         return (
 
             <View style={styless.MainContainer}>
@@ -402,23 +659,23 @@ export default class WeekPage extends Component {
                                 backgroundColor: '#FFFFFF',
                                 width: '30%',
                             }}>
-                                 <TouchableOpacity
-                                onPress={() => {
-                                    /* 1. Navigate to the Details route with params */
-                                    this.props.navigation.navigate('SaleDetails', {
-                                        itemName: item.name,
-                                        itemId: item.id,
-                                        parent: this.state.parent,
-                                        date: this.state.date,
-                                        isGeo: this.state.isGeo,
-                                        filter_type: filter_type
-                                    });
-                                }} >
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        /* 1. Navigate to the Details route with params */
+                                        this.props.navigation.navigate('SaleDetails', {
+                                            itemName: item.name,
+                                            itemId: item.id,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: filter_type
+                                        });
+                                    }} >
                                     <Image
                                         source={require('../images/list.png')}
                                         style={{
-                                            width: 22,
-                                            height: 20,
+                                            width: 20,
+                                            height: 18,
                                             padding: 10,
                                             marginLeft: 20,
                                             margin: 5,
@@ -434,236 +691,184 @@ export default class WeekPage extends Component {
                                 width: '40%',
                             }}>
 
-                                <Text numberOfLines={1} style={{
-                                    fontSize: 16,
-
-                                    color: '#0000FF',
-
-                                    marginLeft: 50,
-                                    
-                                    justifyContent: 'center',
-                                    // textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>
-                                    {
-                                        "" + item.name
-                                    }
-                                </Text>
-                            </View>
-
-                            <TouchableOpacity
-                                onPress={() => { 
-                                    if(!(item.name=="National")){
-                                    this.setCurrentScreen(item.id); 
-                                    }
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (!(item.name == "National")) {
+                                            this.setCurrentScreen(item.id,item.name);
+                                        }
                                     }}  >
 
-                                <View style={{
-                                    backgroundColor: '#FFFFFF',
-                                    width: '20%',
-                                }}>
+                                    <Text numberOfLines={1} style={{
+                                        fontSize: 16,
+
+                                        // color: '#CE000A',
+                                        color: '#0000FF',
+
+                                        marginLeft: 50,
+
+                                        justifyContent: 'center',
+                                        // textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                        {
+                                            "" + this.toTitleCase(str)
+                                        }
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                          
+                        
+                            {
+                                !item.hasSaleData &&
+                                <TouchableOpacity
+
+                                    onPress={() => {
+                                        console.log("  !item.hasSaleData && : ");
+
+                                        if (!(item.name == "National")) {
+                                            var obj = {};
+                                            obj.id = item.id;
+                                            obj.name = item.name;
+
+                                            this.setExpandableData(obj);
 
 
-                                    <Image
-                                        source={require('../images/next.png')}
-                                        style={{
-                                            width: 25,
-                                            height: 20,
-                                            padding: 10,
-                                            marginLeft: 70,
+                                        }
+                                    }}  >
 
-                                            margin: 5,
-                                            resizeMode: 'stretch',
+                                    <View style={{
+                                        backgroundColor: '#FFFFFF',
+                                        width: '20%',
+                                    }}>
 
-                                        }} />
 
-                                </View>
-                            </TouchableOpacity>
+                                        <Image
+                                            source={require('../images/down.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 10,
+                                                marginLeft: 70,
 
+                                                margin: 5,
+                                                resizeMode: 'stretch',
+
+                                            }} />
+
+                                    </View>
+
+
+                                </TouchableOpacity>
+
+                            }
+
+                            {
+                                item.hasSaleData &&
+                                <TouchableOpacity
+
+                                    onPress={() => {
+                                        console.log("  item.hasSaleData && : ");
+
+                                        if (!(item.name == "National")) {
+
+                                            var dataSourceTemp = []
+                                            this.setState({ indeterminate: true });
+                                            this.state.dataSource.map((value) => {
+                                                dataSourceTemp.push({
+                                                    id: value.id, name: value.name,
+                                                    current_sale: value.current_sale,
+                                                    last_sale: value.last_sale,
+                                                    sale_data: value.sale_data
+                                                })
+
+                                            })
+
+                                            dataSourceTemp.map((data) => {
+                                                if (item.id == data.id) {
+                                                    var sale_data = []
+                                                    sale_data.push({
+                                                        name: 'Net Sales', total: data.current_sale,
+                                                    })
+                                                    data.hasSaleData = false
+                                                    data.sale_data = sale_data
+                                                    this.setState({ indeterminate: false });
+                                                }
+
+
+                                            })
+                                            this.setState({ dataSource: dataSourceTemp });
+                                            // const myObjStr = JSON.stringify(dataSourceTemp);
+                                            // console.log("sale_data in dataSourceTemp : " + myObjStr); 
+                                        }
+
+                                    }}  >
+
+                                    <View style={{
+                                        backgroundColor: '#FFFFFF',
+                                        width: '20%',
+                                    }}>
+
+
+                                        <Image
+                                            source={require('../images/up.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 10,
+                                                marginLeft: 70,
+
+                                                margin: 5,
+                                                resizeMode: 'stretch',
+
+                                            }} />
+
+                                    </View>
+
+
+                                </TouchableOpacity>
+
+                            }
+                        
 
 
                         </View>
 
                     </View>
                     <View style={styless.hairline} />
+                    {/* {console.log('sale_data in render item:' + item.sale_data)} */}
 
 
+                    {
+                        item.sale_data != null &&
+                        <FlatList
+
+                            data={item.sale_data}
+                            renderItem={
+                                this.renderItemSaleData
+                            }
 
 
+                        />
 
-                    <View style={styless.cardViewRow}>
-                        <View style={{
-                            flexDirection: 'row',
-
-                        }}>
-                            <View style={styless.shapeyellow}>
-
-
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 20,
-
-                                    fontWeight: 'bold',
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>Net Sales
-    
-                              </Text>
-
-                            </View>
-
-
-
-
-
-                            <View style={styless.shapeinnerwhite}>
-
-
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 50,
-
-                                    fontWeight: 'bold',
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>
-                                    {
-                                        //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val)
-                                    }
-                                </Text>
-
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styless.hairline} />
-
-                    <View style={styless.cardViewRow}>
-                        <View style={{
-                            flexDirection: 'row',
-
-                        }}>
-                            <View style={styless.shapeyellow}>
-
-
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 20,
-
-
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>Average Sales
-    
-                              </Text>
-
-                            </View>
-
-
-
-
-
-                            <View style={styless.shapeinnerwhite}>
-
-
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 50,
-
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>
-                                    {
-                                        //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val)
-                                    }
-                                </Text>
-
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styless.hairline} />
-
-
-                    <View style={styless.cardViewRow}>
-                        <View style={{
-                            flexDirection: 'row',
-
-                        }}>
-                            <View style={styless.shapeyellow}>
-
-
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 20,
-
-
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>SSSG %
-    
-                              </Text>
-
-                            </View>
-
-
-
-
-
-                            <View style={styless.shapeinnerwhite}>
-
-
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 50,
-
-
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}>
-                                    {
-                                        //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val)
-                                    }
-                                </Text>
-
-                            </View>
-                        </View>
-                    </View>
+                    }
 
 
                 </View>
+
+
             </View>
+
         )
 
 
 
+
+
     }
+
+    
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
@@ -710,6 +915,19 @@ export default class WeekPage extends Component {
                 .then((response) => response.json())
 
                 .then((responseJson) => {
+                    this.setState({ indeterminate: false });
+
+                console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
+                
+                responseJson.data.map((dataa) => {
+                    var sale_data=[]
+                    sale_data.push({
+                        name: 'Net Sales', total: dataa.current_sale,
+                    })
+                    dataa.hasSaleData=false
+
+                    dataa.sale_data = sale_data
+                })
                     // this.setState.dataSource.push( responseJson.sale_info );
                     this.setState({
                         dataSource: responseJson.data
@@ -869,8 +1087,19 @@ export default class WeekPage extends Component {
                     })
                         .then((response) => response.json())
                         .then((responseJson) => {
-                            // this.setState.dataSource.push( responseJson.sale_info );
+                            this.setState({ indeterminate: false });
 
+                            console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
+                            
+                            responseJson.data.map((dataa) => {
+                                var sale_data=[]
+                                sale_data.push({
+                                    name: 'Net Sales', total: dataa.current_sale,
+                                })
+                                dataa.hasSaleData=false
+
+                                dataa.sale_data = sale_data
+                            })
 
                             if (responseJson != null) {
                                 this.setState({
@@ -1007,7 +1236,19 @@ export default class WeekPage extends Component {
             body: bodyData,
         }).then((response) => response.json())
             .then((responseJson) => {
+                this.setState({ indeterminate: false });
+
                 console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
+                
+                responseJson.data.map((dataa) => {
+                    var sale_data=[]
+                    sale_data.push({
+                        name: 'Net Sales', total: dataa.current_sale,
+                    })
+                    dataa.hasSaleData=false
+
+                    dataa.sale_data = sale_data
+                })
                 // this.setState.dataSource.push(responseJson.sale_info);
                 // this.setState({
                 //     indeterminate=false
@@ -1037,6 +1278,20 @@ export default class WeekPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
+
+                     {
+                        this.state.indeterminate &&
+                        <Progress.Bar
+                            style={styles.progress}
+                            progress={this.state.progress}
+                            indeterminate={this.state.indeterminate}
+                            width={380}
+                            borderColor={'#FAC209'}
+                            borderRadius={0}
+                            color={'rgb(250, 194, 9)'}
+                            marginTop={1}
+                        />
+                    }
                     {
                             this.state.parent > 0 &&
                     <View style={styless.categries}>
@@ -1626,7 +1881,7 @@ const styless = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
         width: '90%',
-        height: 105,
+        // height: 105,
         // borderRadius: 1,
         borderColor: '#000',
         backgroundColor: '#FFFFFF',
