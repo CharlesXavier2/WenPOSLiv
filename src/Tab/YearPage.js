@@ -52,6 +52,8 @@ export default class YearPage extends Component {
             storeId: 0,
             isGeo: "true",
             isLoading: true,
+            filter_type: 'year'
+
         }
         this.onBackPress = this.onBackPress.bind(this);
         props.navigation.setParams({
@@ -77,7 +79,7 @@ export default class YearPage extends Component {
 
             // }} />,
 
-            swipeEnabled:false,
+            swipeEnabled: false,
             tabBarOnPress: ({ navigation, defaultHandler }) => {
                 // perform your logic here
                 // this is mandatory to perform the actual switch
@@ -175,10 +177,10 @@ export default class YearPage extends Component {
     }
 
 
-     // For show Expandable data on click button.
-     setExpandableData = (obj) => {
-        var id=obj.id;
-        var name=obj.name
+    // For show Expandable data on click button.
+    setExpandableData = (obj) => {
+        var id = obj.id;
+        var name = obj.name
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
@@ -229,8 +231,8 @@ export default class YearPage extends Component {
                             case 0:
                             case '0':
                                 console.log(" value1==true  case 0");
-                                console.log(" region_id= "+id);
-                                urlValue = 'get_all_region_sale?filter_type=day&date='+urlPanDate+'&region_id=' + id;
+                                console.log(" region_id= " + id);
+                                urlValue = 'get_all_region_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -241,16 +243,16 @@ export default class YearPage extends Component {
                             case 1:
                             case '1':
                                 console.log(" value1==true  case 1");
-                               
-                                console.log(" region_id= "+id);
-                                console.log("city_name= "+name);
-                                urlValue = 'get_all_city_sale?filter_type=day&date='+urlPanDate+'&region_id='+ regionId+'&city_name='+name;
-                                
+
+                                console.log(" region_id= " + id);
+                                console.log("city_name= " + name);
+                                urlValue = 'get_all_city_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+
                                 break;
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'get_all_store_sale?filter_type=day&date='+urlPanDate+'&city_name='+cityId+'&store_code='+ id;
+                                urlValue = 'get_all_store_sale?filter_type=day&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
                                 break;
                             // case 3:
                             // case '3':
@@ -265,17 +267,17 @@ export default class YearPage extends Component {
                             case 0:
                             case '0':
                                 console.log("else value1==true case  0");
-                                console.log(" region_id= "+id);
-                                console.log(" region_id---= "+regionId);
-                                console.log("city_name= "+name);
-                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date='+urlPanDate+'&deputy_name='+name;
-                                
+                                console.log(" region_id= " + id);
+                                console.log(" region_id---= " + regionId);
+                                console.log("city_name= " + name);
+                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + name;
+
                                 break;
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date='+urlPanDate+'&deputy_name='+regionId+'&petch_name='+id;
-                               
+                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+
                                 break;
                             case 2:
                             case '2':
@@ -284,60 +286,60 @@ export default class YearPage extends Component {
 
                         }
                     }
-                    const urlPan = 'http://115.112.224.200:3000/v2/'+urlValue;
+                    const urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
                     console.log("  url " + urlPan)
                     return fetch(urlPan)
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        var dataSourceTemp = [];
-                        this.setState({ indeterminate: false });
-                        console.log("Response data responseJson -> " + responseJson);
-                        this.state.dataSource.map((value) => {
-        
-                            dataSourceTemp.push({
-                                id: value.id, name: value.name,
-                                current_sale: value.current_sale,
-                                last_sale: value.last_sale, sale_data: []
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            var dataSourceTemp = [];
+                            this.setState({ indeterminate: false });
+                            console.log("Response data responseJson -> " + responseJson);
+                            this.state.dataSource.map((value) => {
+
+                                dataSourceTemp.push({
+                                    id: value.id, name: value.name,
+                                    current_sale: value.current_sale,
+                                    last_sale: value.last_sale, sale_data: []
+                                })
+                            }),
+                                console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
+
+                                responseJson.sale_info.map((data) => {
+                                    console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
+                                        dataSourceTemp.map((dataa) => {
+                                            if (id == dataa.id) {
+                                                dataa.hasSaleData = true
+                                                dataa.sale_data = data.sale_data
+                                            } else {
+                                                var sale_data = []
+                                                sale_data.push({
+                                                    name: 'Net Sales', total: dataa.current_sale,
+                                                })
+                                                dataa.hasSaleData = false
+                                                dataa.sale_data = sale_data
+                                            }
+
+
+                                        })
+                                })
+
+                            const myObjStr = JSON.stringify(dataSourceTemp);
+
+                            console.log("dataSource : " + myObjStr);
+
+                            this.setState({
+                                dataSource: dataSourceTemp
                             })
-                        }),
-                            console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
-        
-                            responseJson.sale_info.map((data) => {
-                                console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
-                                    dataSourceTemp.map((dataa) => {
-                                        if (id == dataa.id) {
-                                            dataa.hasSaleData=true
-                                            dataa.sale_data = data.sale_data
-                                        }else{
-                                            var sale_data=[]
-                                            sale_data.push({
-                                                name: 'Net Sales', total: dataa.current_sale,
-                                            })
-                                            dataa.hasSaleData=false
-                                            dataa.sale_data = sale_data
-                                        }
-                         
-        
-                                    })
-                            })
-        
-                        const myObjStr = JSON.stringify(dataSourceTemp);
-        
-                        console.log("dataSource : " + myObjStr);
-        
-                        this.setState({
-                            dataSource: dataSourceTemp
+
                         })
-                       
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    })
-        
-        
-                    .catch((error) => {
-                        console.log(error)
-                    })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+
+
+                        .catch((error) => {
+                            console.log(error)
+                        })
 
                 }).done();
             }).done();
@@ -346,7 +348,7 @@ export default class YearPage extends Component {
 
     setCurrentScreen = (id) => {
         //0 for region 1 for city 2 for store
-        var isGeoVal="true"
+        var isGeoVal = "true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
             isGeoVal = value
@@ -539,11 +541,11 @@ export default class YearPage extends Component {
         }
     }
 
-     //for set string in camel case.
-     toTitleCase=(str)=> {
+    //for set string in camel case.
+    toTitleCase = (str) => {
         return str.replace(
             /\w\S*/g,
-            function(txt) {
+            function (txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             }
         );
@@ -556,6 +558,12 @@ export default class YearPage extends Component {
 
 
             <View>
+                <View style={{
+                    marginLeft: -30,
+                    backgroundColor: '#F4F5F5',
+                    height: 0.8,
+
+                }} />
 
                 <View style={styless.cardViewRow}>
                     <View style={{
@@ -571,9 +579,9 @@ export default class YearPage extends Component {
                                 fontSize: 12,
                                 //width: 150,
                                 color: '#000000',
-                                marginLeft: 20,
+                                marginLeft: 30,
 
-                                
+
                                 justifyContent: 'center',
                                 //textAlignVertical: "center",
                                 alignItems: 'center',
@@ -582,7 +590,7 @@ export default class YearPage extends Component {
                             > {
 
                                     "" + item.name
-                                } 
+                                }
 
                             </Text>
 
@@ -599,28 +607,29 @@ export default class YearPage extends Component {
                                 fontSize: 12,
                                 //width: 150,
                                 color: '#000000',
-                                marginLeft: 50,
+                                marginLeft: 70,
 
-                               
+
                                 justifyContent: 'center',
                                 //textAlignVertical: "center",
                                 alignItems: 'center',
 
                             }}> {
-                            //item.current_sale.toFixed(2)
-                            "" + this.totalSaleFormat(val)
-                        }   
+                                    //item.current_sale.toFixed(2)
+                                    "" + this.totalSaleFormat(val)
+                                }
                             </Text>
 
                         </View>
                     </View>
                 </View>
 
-                <View style={{
-           backgroundColor: '#F4F5F5',
-         height: 0.8,
+                {/* <View style={{
+                    marginLeft:-30,
+                    backgroundColor: '#F4F5F5',
+                    height: 0.8,
 
-    }} />
+                }} /> */}
 
             </View>
 
@@ -634,7 +643,7 @@ export default class YearPage extends Component {
         var str = item.name;
         var rounfFranchise = '0.00';
         // console.log('UI refeashing start')
-       
+
         return (
 
             <View style={styless.MainContainer}>
@@ -664,20 +673,21 @@ export default class YearPage extends Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
-                                        this.props.navigation.navigate('SaleDetails', {
-                                            itemName: item.name,
+                                        this.props.navigation.navigate('DetailPage', {
+                                            itemName: this.toTitleCase(str),
+                                            sales: this.totalSaleFormat(item.current_sale),
                                             itemId: item.id,
                                             parent: this.state.parent,
                                             date: this.state.date,
                                             isGeo: this.state.isGeo,
-                                            filter_type: filter_type
+                                            filter_type: this.state.filter_type
                                         });
                                     }} >
                                     <Image
                                         source={require('../images/list.png')}
                                         style={{
-                                            width: 20,
-                                            height: 18,
+                                            width: 14,
+                                            height: 14,
                                             padding: 10,
                                             marginLeft: 20,
                                             margin: 5,
@@ -696,18 +706,18 @@ export default class YearPage extends Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (!(item.name == "National")) {
-                                            this.setCurrentScreen(item.id,item.name);
+                                            this.setCurrentScreen(item.id, item.name);
                                         }
                                     }}  >
 
                                     <Text numberOfLines={1} style={{
-                                        fontSize: 16,
+                                        fontSize: 12,
 
                                         // color: '#CE000A',
                                         color: '#0000FF',
 
-                                        marginLeft: 50,
-
+                                        marginLeft: 60,
+                                        marginTop: 5,
                                         justifyContent: 'center',
                                         // textAlignVertical: "center",
                                         alignItems: 'center',
@@ -720,8 +730,8 @@ export default class YearPage extends Component {
                                 </TouchableOpacity>
 
                             </View>
-                          
-                        
+
+
                             {
                                 !item.hasSaleData &&
                                 <TouchableOpacity
@@ -740,26 +750,42 @@ export default class YearPage extends Component {
                                         }
                                     }}  >
 
-                                    <View style={{
-                                        backgroundColor: '#FFFFFF',
-                                        width: '20%',
-                                    }}>
+                                    {(!(item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
 
 
-                                        <Image
-                                            source={require('../images/down.png')}
-                                            style={{
-                                                width: 14,
-                                                height: 14,
-                                                padding: 10,
-                                                marginLeft: 70,
+                                            <Image
+                                                source={require('../images/down.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 10,
+                                                    marginLeft: 70,
 
-                                                margin: 5,
-                                                resizeMode: 'stretch',
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
 
-                                            }} />
+                                                }} />
 
-                                    </View>
+                                        </View>
+
+                                    }
+                                    {((item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
+
+
+
+                                        </View>
+
+                                    }
 
 
                                 </TouchableOpacity>
@@ -807,38 +833,54 @@ export default class YearPage extends Component {
 
                                     }}  >
 
-                                    <View style={{
-                                        backgroundColor: '#FFFFFF',
-                                        width: '20%',
-                                    }}>
+                                    {(!(item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
 
 
-                                        <Image
-                                            source={require('../images/up.png')}
-                                            style={{
-                                                width: 14,
-                                                height: 14,
-                                                padding: 10,
-                                                marginLeft: 70,
+                                            <Image
+                                                source={require('../images/up.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 10,
+                                                    marginLeft: 70,
 
-                                                margin: 5,
-                                                resizeMode: 'stretch',
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
 
-                                            }} />
+                                                }} />
 
-                                    </View>
+                                        </View>
+
+                                    }
+                                    {((item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
+
+
+
+                                        </View>
+
+                                    }
 
 
                                 </TouchableOpacity>
 
                             }
-                        
+
 
 
                         </View>
 
                     </View>
-                    <View style={styless.hairline} />
+
                     {/* {console.log('sale_data in render item:' + item.sale_data)} */}
 
 
@@ -917,16 +959,16 @@ export default class YearPage extends Component {
                 .then((responseJson) => {
                     this.setState({ indeterminate: false });
 
-                            console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-                            
-                            responseJson.data.map((dataa) => {
-                                var sale_data=[]
-                                sale_data.push({
-                                    name: 'Net Sales', total: dataa.current_sale,
-                                })
-                                dataa.hasSaleData=false
-                                dataa.sale_data = sale_data
-                            })
+                    console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
+
+                    responseJson.data.map((dataa) => {
+                        var sale_data = []
+                        sale_data.push({
+                            name: 'Net Sales', total: dataa.current_sale,
+                        })
+                        dataa.hasSaleData = false
+                        dataa.sale_data = sale_data
+                    })
                     // this.setState.dataSource.push( responseJson.sale_info );
                     this.setState({
                         dataSource: responseJson.data
@@ -1089,13 +1131,13 @@ export default class YearPage extends Component {
                             this.setState({ indeterminate: false });
 
                             console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-                            
+
                             responseJson.data.map((dataa) => {
-                                var sale_data=[]
+                                var sale_data = []
                                 sale_data.push({
                                     name: 'Net Sales', total: dataa.current_sale,
                                 })
-                                dataa.hasSaleData=false
+                                dataa.hasSaleData = false
                                 dataa.sale_data = sale_data
                             })
                             // this.setState.dataSource.push( responseJson.sale_info );
@@ -1238,16 +1280,16 @@ export default class YearPage extends Component {
             .then((responseJson) => {
                 this.setState({ indeterminate: false });
 
-                            console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-                            
-                            responseJson.data.map((dataa) => {
-                                var sale_data=[]
-                                sale_data.push({
-                                    name: 'Net Sales', total: dataa.current_sale,
-                                })
-                                dataa.hasSaleData=false
-                                dataa.sale_data = sale_data
-                            })
+                console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
+
+                responseJson.data.map((dataa) => {
+                    var sale_data = []
+                    sale_data.push({
+                        name: 'Net Sales', total: dataa.current_sale,
+                    })
+                    dataa.hasSaleData = false
+                    dataa.sale_data = sale_data
+                })
                 // this.setState.dataSource.push(responseJson.sale_info);
                 // this.setState({
                 //     indeterminate=false
@@ -1277,7 +1319,7 @@ export default class YearPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-                     {
+                    {
                         this.state.indeterminate &&
                         <Progress.Bar
                             style={styles.progress}
@@ -1291,9 +1333,9 @@ export default class YearPage extends Component {
                         />
                     }
                     {
-                            this.state.parent > 0 &&
-                    <View style={styless.categries}>
-                   
+                        this.state.parent > 0 &&
+                        <View style={styless.categries}>
+
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -1328,197 +1370,199 @@ export default class YearPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                       
-                        <View style={{
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginLeft: 60,
-                        }}>
-                            <DatePicker
 
-                                date={this.state.date}
-                                placeholder="placeholder"
+                            <View style={{
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 60,
+                            }}>
+                                <DatePicker
 
-                                mode="date"
-                                format="YYYY-MM-DD"
-                                minDate="2016-05-01"
-                                maxDate="2021-06-01"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                iconSource={require('../images/calendar.png')}
-                                onDateChange={(date) => {
-                                    this.setState({  date });
-                                    AsyncStorage.setItem("date_key", date);
-                                    this.customComponentDidMount();
-                                }}
+                                    date={this.state.date}
+                                    placeholder="placeholder"
 
-                            />
-                            <Text style={styless.instructions}>{this.state.date}</Text>
-                        </View>
+                                    mode="date"
+                                    format="YYYY-MM-DD"
+                                    minDate="2016-05-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    iconSource={require('../images/calendar.png')}
+                                    onDateChange={(date) => {
+                                        this.setState({ date });
+                                        AsyncStorage.setItem("date_key", date);
+                                        this.customComponentDidMount();
+                                    }}
 
-
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-
-                        }}>
+                                />
+                                <Text style={styless.instructions}>{this.state.date}</Text>
+                            </View>
 
 
-                            {
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+
+                            }}>
 
 
-                                this.state.isGeo &&
+                                {
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.openDialog()
-                                    }}>
-                                    <Image
-                                        source={require('../images/people.png')}
-                                        style={{
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 40,
 
-                                            justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                    this.state.isGeo &&
 
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                            }
-                            {
-                                !this.state.isGeo &&
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.openDialog()
-                                    }}>
-                                    <Image
-                                        source={require('../images/geo.png')
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                         source={require('../images/geo.png')
                                         }
-                                        style={{
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 40,
+                                           
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
 
-                                            justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
 
-                                        }}
-                                        onPress={() => this.openDialog()}
-                                    />
-                                </TouchableOpacity>
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    !this.state.isGeo &&
 
-                            }
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                            source={require('../images/people.png')}
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                    </TouchableOpacity>
+
+                                }
 
 
 
+
+                            </View>
+
+                        </View>
+                    }
+
+                    {
+                        this.state.parent == 0 &&
+                        <View style={styless.categries}>
+
+
+
+                            <View style={{
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 25,
+                            }}>
+                                <DatePicker
+
+                                    date={this.state.date}
+                                    placeholder="placeholder"
+
+                                    mode="date"
+                                    format="YYYY-MM-DD"
+                                    minDate="2016-05-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    iconSource={require('../images/calendar.png')}
+                                    onDateChange={(date) => {
+                                        this.setState({ date });
+                                        AsyncStorage.setItem("date_key", date);
+                                        this.customComponentDidMount();
+                                    }}
+
+                                />
+                                <Text style={styless.instructions}>{this.state.date}</Text>
+                            </View>
+
+
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+
+                            }}>
+
+
+                                {
+
+
+                                    this.state.isGeo &&
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                            source={require('../images/geo.png')
+                                        }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 130,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    !this.state.isGeo &&
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                         source={require('../images/people.png')}
+                                           
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 130,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                    </TouchableOpacity>
+
+                                }
+
+
+
+
+                            </View>
 
                         </View>
 
-                    </View>
-                  }
-
-  {
-   this.state.parent == 0 &&
-<View style={styless.categries}>
-
-    
-
-<View style={{
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 25,
-}}>
-    <DatePicker
-
-        date={this.state.date}
-        placeholder="placeholder"
-
-        mode="date"
-        format="YYYY-MM-DD"
-        minDate="2016-05-01"
-        maxDate="2021-06-01"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        iconSource={require('../images/calendar.png')}
-        onDateChange={(date) => {
-            this.setState({  date });
-            AsyncStorage.setItem("date_key", date);
-            this.customComponentDidMount();
-        }}
-
-    />
-    <Text style={styless.instructions}>{this.state.date}</Text>
-</View>
-
-
-<View style={{
-    flexDirection: 'row',
-    alignItems: 'center',
-
-}}>
-
-
-    {
-
-
-        this.state.isGeo &&
-
-        <TouchableOpacity
-            onPress={() => {
-                this.openDialog()
-            }}>
-            <Image
-                source={require('../images/people.png')}
-                style={{
-                    padding: 10,
-                    margin: 5,
-                    marginLeft: 130,
-
-                    justifyContent: 'center',
-                    resizeMode: 'stretch',
-
-                }}
-            />
-        </TouchableOpacity>
-    }
-    {
-        !this.state.isGeo &&
-
-        <TouchableOpacity
-            onPress={() => {
-                this.openDialog()
-            }}>
-            <Image
-                source={require('../images/geo.png')
-                }
-                style={{
-                    padding: 10,
-                    margin: 5,
-                    marginLeft: 130,
-
-                    justifyContent: 'center',
-                    resizeMode: 'stretch',
-
-                }}
-                onPress={() => this.openDialog()}
-            />
-        </TouchableOpacity>
-
-    }
-
-
-
-
-</View>
-
-</View>
-
-}
+                    }
 
                     <FlatList
                         data={this.state.dataSource}
@@ -1550,10 +1594,10 @@ export default class YearPage extends Component {
                             marginTop={1}
                         />
                     }
-                     {
-                            this.state.parent > 0 &&
-                    <View style={styless.categries}>
-                       
+                    {
+                        this.state.parent > 0 &&
+                        <View style={styless.categries}>
+
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -1588,102 +1632,103 @@ export default class YearPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                       
-                        <View style={{
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginLeft: 60,
-                        }}>
-                            <DatePicker
 
-                                date={this.state.date}
-                                placeholder="placeholder"
+                            <View style={{
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 60,
+                            }}>
+                                <DatePicker
 
-                                mode="date"
-                                format="YYYY-MM-DD"
-                                minDate="2016-05-01"
-                                maxDate="2021-06-01"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                iconSource={require('../images/calendar.png')}
-                                onDateChange={(date) => {
-                                    this.setState({  date });
-                                    AsyncStorage.setItem("date_key", date);
-                                    this.customComponentDidMount();
-                                }}
+                                    date={this.state.date}
+                                    placeholder="placeholder"
 
-                            />
-                            <Text style={styless.instructions}>{this.state.date}</Text>
-                        </View>
+                                    mode="date"
+                                    format="YYYY-MM-DD"
+                                    minDate="2016-05-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    iconSource={require('../images/calendar.png')}
+                                    onDateChange={(date) => {
+                                        this.setState({ date });
+                                        AsyncStorage.setItem("date_key", date);
+                                        this.customComponentDidMount();
+                                    }}
 
-
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-
-                        }}>
+                                />
+                                <Text style={styless.instructions}>{this.state.date}</Text>
+                            </View>
 
 
-                            {
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+
+                            }}>
 
 
-                                this.state.isGeo &&
+                                {
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.openDialog()
-                                    }}>
-                                    <Image
-                                        source={require('../images/people.png')}
-                                        style={{
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 40,
 
-                                            justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                    this.state.isGeo &&
 
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                            }
-                            {
-                                !this.state.isGeo &&
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.openDialog()
-                                    }}>
-                                    <Image
-                                        source={require('../images/geo.png')
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                           source={require('../images/geo.png')
                                         }
-                                        style={{
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 40,
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
 
-                                            justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
 
-                                        }}
-                                        onPress={() => this.openDialog()}
-                                    />
-                                </TouchableOpacity>
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    !this.state.isGeo &&
 
-                            }
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                         source={require('../images/people.png')}
+                                            
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                    </TouchableOpacity>
+
+                                }
 
 
 
+
+                            </View>
 
                         </View>
+                    }
+                    {
+                        !this.state.parent > 0 &&
+                        <View style={styless.categries}>
 
-                    </View>
- }
- {
-                           ! this.state.parent > 0 &&
-                    <View style={styless.categries}>
-                       
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
@@ -1718,98 +1763,99 @@ export default class YearPage extends Component {
                                 }}>Back</Text>
 
                             </View>
-                       
-                        <View style={{
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginLeft: 60,
-                        }}>
-                            <DatePicker
 
-                                date={this.state.date}
-                                placeholder="placeholder"
+                            <View style={{
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 60,
+                            }}>
+                                <DatePicker
 
-                                mode="date"
-                                format="YYYY-MM-DD"
-                                minDate="2016-05-01"
-                                maxDate="2021-06-01"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                iconSource={require('../images/calendar.png')}
-                                onDateChange={(date) => {
-                                    this.setState({  date });
-                                    AsyncStorage.setItem("date_key", date);
-                                    this.customComponentDidMount();
-                                }}
+                                    date={this.state.date}
+                                    placeholder="placeholder"
 
-                            />
-                            <Text style={styless.instructions}>{this.state.date}</Text>
-                        </View>
+                                    mode="date"
+                                    format="YYYY-MM-DD"
+                                    minDate="2016-05-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    iconSource={require('../images/calendar.png')}
+                                    onDateChange={(date) => {
+                                        this.setState({ date });
+                                        AsyncStorage.setItem("date_key", date);
+                                        this.customComponentDidMount();
+                                    }}
 
-
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-
-                        }}>
+                                />
+                                <Text style={styless.instructions}>{this.state.date}</Text>
+                            </View>
 
 
-                            {
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+
+                            }}>
 
 
-                                this.state.isGeo &&
+                                {
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.openDialog()
-                                    }}>
-                                    <Image
-                                        source={require('../images/people.png')}
-                                        style={{
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 40,
 
-                                            justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                    this.state.isGeo &&
 
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                            }
-                            {
-                                !this.state.isGeo &&
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.openDialog()
-                                    }}>
-                                    <Image
-                                        source={require('../images/geo.png')
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                            source={require('../images/geo.png')
                                         }
-                                        style={{
-                                            padding: 10,
-                                            margin: 5,
-                                            marginLeft: 40,
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
 
-                                            justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
 
-                                        }}
-                                        onPress={() => this.openDialog()}
-                                    />
-                                </TouchableOpacity>
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    !this.state.isGeo &&
 
-                            }
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        <Image
+                                         source={require('../images/people.png')}
+                                           
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                    </TouchableOpacity>
+
+                                }
 
 
 
+
+                            </View>
 
                         </View>
-
-                    </View>
- }
+                    }
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={
@@ -1828,7 +1874,7 @@ export default class YearPage extends Component {
 
             //Put All Your Code Here, Which You Want To Execute After Some Delay Time.
             // Alert.alert("Alert Shows After 5 Seconds of Delay.")
-           
+
         }, 1000);
 
 
@@ -1881,11 +1927,11 @@ const styless = StyleSheet.create({
         width: '90%',
         // height: 105,
         // borderRadius: 1,
-        borderColor: '#000',
+        borderColor: '#F4F5F5',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
         marginBottom: 5,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderRadius: 1,
 
         //     marginLeft: 10,
@@ -1893,7 +1939,7 @@ const styless = StyleSheet.create({
     },
     cardViewRowHeader: {
         flexDirection: 'column',
-        height: 40,
+        height: 30,
 
         //backgroundColor: '#fff',
         justifyContent: 'center',
@@ -1959,8 +2005,9 @@ const styless = StyleSheet.create({
     },
     shapeyellow: {
         backgroundColor: '#FBE028',
-        width: '35%',
-        height: 19.6,
+        marginLeft: -30,
+        width: '45%',
+        height: 21,
 
     },
     shapewhite: {

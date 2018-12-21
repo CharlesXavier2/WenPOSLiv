@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
     Platform,
@@ -24,13 +18,13 @@ import DatePicker from '../utils/datepicker.js';
 var dataSource1 = []
 var dateFormat = require('dateformat');
 
-export default class SaleDetails extends Component {
+export default class DetailPage extends Component {
 
 
     static navigationOptions = ({ navigation }) => {
         return {
-            headerTitle: 'Total Net Sales',
-            headerTitleStyle: { alignSelf: 'center' }
+            headerTitle: navigation.state.params.itemName + '',
+            headerTitleStyle: { alignSelf: 'center', upperCaseLabel: false, }
         }
     }
 
@@ -43,6 +37,12 @@ export default class SaleDetails extends Component {
             refreshing: true,
             date: '',
             itemName: '',
+            parent: '',
+            isGeo:true,
+            filter_type: '',
+            itemId: '',
+            sales: ''
+
         }
 
     }
@@ -68,17 +68,26 @@ export default class SaleDetails extends Component {
         date = dateFormat(date, "yyyy-mm-dd");
         const itemId = navigation.getParam('itemId', 'Undefined');
         const parent = navigation.getParam('parent', '0');
-        const isGeo = navigation.getParam('isGeo', '0');
+        const isGeo = navigation.getParam('isGeo',false);
         const date11 = navigation.getParam('date', date);
         const filter_type = navigation.getParam('filter_type', date);
         const title = navigation.getParam('itemName', "McDLiv")
+        const sales = navigation.getParam('sales', '0 K')
+
+        this.setState({ itemId: itemId });
+        this.setState({ parent: parent });
+        this.setState({ isGeo: isGeo });
+        this.setState({ date: date11 });
+        this.setState({ filter_type: filter_type });
         this.setState({ itemName: title });
-        console.log(" SaleDetails");
+        this.setState({ sales: sales });
+        console.log(" DetailPage");
         console.log(" itemId --" + itemId);
         console.log(" parent --" + parent);
         console.log(" isGeo --" + isGeo);
         console.log(" date --" + date11);
         console.log(" filter_type --" + filter_type);
+        console.log(" Total Net sales --" + sales);
         this.customComponentDidMount(itemId, parent, isGeo, date11, filter_type)
     }
 
@@ -260,78 +269,68 @@ export default class SaleDetails extends Component {
 
 
     renderItem = ({ item }) => {
-        var val = item.current_sale;
-        var rounfFranchise = '0.00';
+        // var val = item.current_sale;
+        // var rounfFranchise = '0.00';
 
+        // if (item.current_sale > item.last_sale) {
+        //     return (
+        //         <View style={styless.MainContainer}>
+        //             <CardView
+        //                 cardElevation={2}
+        //                 cardMaxElevation={2}
+        //                 cornerRadius={1}
+        //                 style={styless.cardViewStyle}
+        //             >
+        //                 {
+        //                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
 
+        //                         <View style={styless.cardViewRow}>
+
+        //                             <TouchableOpacity
+        //                             //  onPress={() => { this.setCurrentScreen(item.id); }}
+        //                             >
+        //                                 <Text style={{
+        //                                     fontSize: 22,
+        //                                     color: '#ffffff',
+        //                                     justifyContent: 'center',
+        //                                     // textAlignVertical: "center",
+        //                                     alignItems: 'center',
+        //                                 }} >
+        //                                     {
+        //                                         "" + item.name
+        //                                     }
+        //                                 </Text>
+        //                             </TouchableOpacity>
+
+        //                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+        //                                 <Image
+        //                                     source={require('../images/saleup.png')}
+        //                                     style={styless.ImageIconStyle} />
+        //                                 <Text style={{
+        //                                     fontSize: 16,
+        //                                     //width: 150,
+        //                                     color: '#ffffff',
+        //                                     justifyContent: 'center',
+        //                                     //textAlignVertical: "center",
+        //                                     alignItems: 'center',
+
+        //                                 }}>Total Sale :
+        //                         {
+        //                             //item.current_sale.toFixed(2)
+        //                                         "" + this.totalSaleFormat(val)
+        //                                     }
+        //                                 </Text>
+        //                             </View>
+        //                         </View>
+        //                     </View>
+        //                 }
+        //                 <View style={styless.hairline} />
+        //             </CardView>
+        //         </View>
+        //     )
+        // }
 
         return (
-
-            //             <View style={styless.MainContainer}>
-            //     <View  > 
-            //    <View style={styless.cardViewRow}>
-            //                         <View style={{
-            //                             flexDirection: 'row',width: '100%',
-
-            //                         }}>
-            //                             <View style={styless.shapeyellow}>
-
-
-            //                                 <Text style={{
-            //                                     fontSize: 12,
-            //                                     //width: 150,
-            //                                     color: '#000000',
-            //                                     marginLeft: 20,
-
-            //                                     // fontWeight: 'bold',
-            //                                     justifyContent: 'center',
-            //                                     //textAlignVertical: "center",
-            //                                     alignItems: 'center',
-
-            //                                 }}>{
-            //                                     item.name
-            //                                 }
-
-            //                               </Text>
-
-            //                             </View>
-
-            //                             <View style={styless.shapeinnerwhite}>
-
-
-            //                                 <Text style={{
-            //                                     fontSize: 12,
-            //                                     //width: 150,
-            //                                     color: '#000000',
-            //                                     marginLeft: 50,
-
-            //                                     // fontWeight: 'bold',
-            //                                     justifyContent: 'center',
-            //                                     //textAlignVertical: "center",
-            //                                     alignItems: 'center',
-
-            //                                 }}>
-            //                                     {
-            //                                         //item.current_sale.toFixed(2)
-            //                                         "" + this.totalSaleFormat(val)
-            //                                     }
-            //                                 </Text>
-
-            //                             </View>
-
-            //                         </View>
-
-            //                     </View>
-
-            //                     <View style={{
-            //                     backgroundColor: '#F4F5F5',
-            //                     height: 0.8,
-
-            //                 }} />
-
-            //             </View>
-
-            //             </View>
 
             <View style={styless.MainContainer}>
                 <View style={{
@@ -361,80 +360,116 @@ export default class SaleDetails extends Component {
                                         alignItems: 'center',
 
                                     }}>{
-                                            item.name
+                                            item.key
                                         }
 
                                     </Text>
                                 </TouchableOpacity>
 
                             </View>
+                            {
+                                item.key == "Total Net Sales" &&
+                                <View style={styless.shapeinnerwhite}>
 
-                            <View style={styless.shapeinnerwhite}>
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                        {
+                                            this.state.sales
+                                            //item.current_sale.toFixed(2)
+                                            // "" + this.totalSaleFormat(val)
+                                        }
+                                    </Text>
+
+                                </View>
+                            }
+                            {
+                                item.key != "Total Net Sales" &&
+                                <View style={styless.shapeinnerwhite}>
 
 
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 50,
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
 
-                                    // fontWeight: 'bold',
-                                    justifyContent: 'flex-end',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
 
-                                }}>
-                                    {
+                                    }}>0 K
+                                    {/* {
+                                        this.state.sales
                                         //item.current_sale.toFixed(2)
                                         "" + this.totalSaleFormat(val)
-                                    }
-                                </Text>
+                                    } */}
+                                    </Text>
 
-                            </View>
-                            {/* <View style={styless.shapewhite}>
+                                </View>
+                            }
+
+                            {
+                                item.key == "Total Net Sales" &&
                                 <TouchableOpacity
 
-                                // onPress={() => {
+                                onPress={() => {
 
-                                //     if ((item.key == "Total Net Sales")) {
-
-
-                                //         this.props.navigation.navigate('SaleDetails', {
-                                //             itemName: this.state.itemName,
-                                //             itemId: this.state.itemId,
-                                //             parent: this.state.parent,
-                                //             date: this.state.date,
-                                //             isGeo: this.state.isGeo,
-                                //             filter_type: this.state.filter_type
-                                //         });
+                                    // if ((item.key == "Total Net Sales")) {
 
 
-                                //     }
-                                // }} 
-                                >
-
-                                    <View >
-
-
-                                        <Image
-                                            source={require('../images/nxt.png')}
-                                            style={{
-                                                width: 12,
-                                                height: 12,
-                                                margin: 5,
-                                                marginLeft: 50,
-                                                justifyContent: 'center',
-
-                                                resizeMode: 'stretch',
-
-                                            }} />
-
-                                    </View>
+                                        this.props.navigation.navigate('SaleDetails', {
+                                            itemName: this.state.itemName,
+                                            itemId: this.state.itemId,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: this.state.filter_type
+                                        });
 
 
-                                </TouchableOpacity>
-                            </View> */}
+                                    // }
+                                }}  >
+                                <View style={styless.shapewhite}>
+                                   
 
+                                        <View >
+                                            <Image
+                                                source={require('../images/nxt.png')}
+                                                style={{
+                                                    width: 12,
+                                                    height: 12,
+                                                    margin: 5,
+                                                    marginLeft: 70,
+                                                    justifyContent: 'center',
+
+                                                    resizeMode: 'stretch',
+
+                                                }} />
+
+                                        </View>
+
+
+                                      </View>
+                                    </TouchableOpacity>
+                                
+                            }
+                            {
+                                item.key != "Total Net Sales" &&
+                                <View style={styless.shapewhite} />
+
+                            }
                         </View>
                     </View>
 
@@ -448,7 +483,15 @@ export default class SaleDetails extends Component {
 
     render() {
 
-      
+        // const { navigate } = this.props.navigation;
+
+
+
+        // console.log('Parent : '+parent)
+        /* 2. Read the params from the navigation state */
+        // const { params } = this.props.navigation.state;
+        //const itemId = params ? params.itemId : null;
+        // const filterType = params ? params.filterType : null;
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
 
             return (
@@ -468,19 +511,81 @@ export default class SaleDetails extends Component {
                         />
                     }
 
+                    {/* <View
+                    // cardElevation={2}
+                    // cardMaxElevation={2}
+                    // cornerRadius={1}
+                    // borderRadius={5}
+                    // borderColor={'#CE000A'}
+
+                    //shadowRadius={'#CE000A'}
+                    style={styless.cardViewStyle}
+                > */}
+                    {/* <View style={styless.cardViewRowHeader}>
+
+<View style={{
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    // textAlignVertical: "center",
+    alignItems: 'center',
+    flexDirection: 'row',
+}}>
+
+    <Text numberOfLines={1} style={{
+        fontSize: 20,
+
+        color: '#0000FF',
+
+       
+        
+        justifyContent: 'center',
+        // textAlignVertical: "center",
+        alignItems: 'center',
+
+    }}>
+     {this.state.itemName} 
+        
+    </Text>
+</View>
+
+</View> */}
+
+                    {/* <View style={styless.hairline} /> */}
+
+
+
+
+
+
+
+
+
                     <View
                         style={{
                             marginTop: 30,
 
                         }} >
-
                         <FlatList
-                            data={this.state.dataSource}
+
+                            data={[
+                                { key: 'Total Net Sales' },
+                                { key: 'APC' },
+                                { key: 'Total Collections' },
+                                { key: 'Promotions' },
+                                { key: 'Discounts' },
+                                { key: 'Voids' },
+                                { key: 'Refunds' },
+
+
+                            ]}
+                            //   const dataSet={this.state.dataSource}
+
                             renderItem={
                                 this.renderItem
                             }
                         />
-                    </View>
+                    </View >
+                    {/* </View>    */}
                 </View >
 
 
@@ -504,19 +609,73 @@ export default class SaleDetails extends Component {
                         />
                     }
 
-                    <View
+
+                    {/* <View
+                    // cardElevation={2}
+                    // cardMaxElevation={2}
+                    // cornerRadius={1}
+                    // borderRadius={5}
+                    // borderColor={'#CE000A'}
+
+                    //shadowRadius={'#CE000A'}
+                    style={styless.cardViewStyle}
+                >
+                  <View style={styless.cardViewRowHeader}> */}
+
+                    {/* <View style={{
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    // textAlignVertical: "center",
+    alignItems: 'center',
+    flexDirection: 'row',
+}}>
+
+    <Text numberOfLines={1} style={{
+        fontSize: 20,
+
+        color: '#0000FF',
+
+       
+        
+        justifyContent: 'center',
+        // textAlignVertical: "center",
+        alignItems: 'center',
+
+    }}> {this.state.itemName} 
+        
+    </Text>
+</View> */}
+                    {/* <View style={styless.hairline} /> */}
+                    {/* </View> */}
+                    {/* </View> */}
+
+
+                 
+                 <View
                         style={{
                             marginTop: 30,
 
                         }} >
-                      
                         <FlatList
-                            data={this.state.dataSource}
+
+                            data={[
+                                { key: 'Total Net Sales' },
+                                { key: 'APC' },
+                                { key: 'Total Collections' },
+                                { key: 'Promotions' },
+                                { key: 'Discounts' },
+                                { key: 'Voids' },
+                                { key: 'Refunds' },
+
+
+                            ]}
+                            //   const dataSet={this.state.dataSource}
+
                             renderItem={
                                 this.renderItem
                             }
                         />
-                    </View>
+                    </View >
                 </View>
             )
         }
@@ -661,7 +820,7 @@ const styless = StyleSheet.create({
     },
     shapewhite: {
         backgroundColor: '#FFFFFF',
-        width: '15%',
+        width: '10%',
         marginTop: 7,
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -670,7 +829,7 @@ const styless = StyleSheet.create({
     },
     shapeinnerwhite: {
         backgroundColor: '#FFFFFF',
-        width: '45%',
+        width: '35%',
         marginTop: 7,
         alignItems: 'center',
         justifyContent: 'center',

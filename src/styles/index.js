@@ -27,5 +27,12 @@ export default styles = StyleSheet.create({
         padding: 10,
         borderWidth: 0.2,
         borderColor: '#d6d7da'
-    }
+    },
+    CircleShapeView: {
+        //To make Circle Shape
+        width: 80,
+        height: 80,
+        borderRadius: 150 / 2,
+        backgroundColor: '#FFFFFF',
+      },
 });

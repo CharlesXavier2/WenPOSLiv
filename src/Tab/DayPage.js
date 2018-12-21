@@ -68,6 +68,7 @@ export default class DayPage extends Component {
             storeId: 0,
             isGeo: "true",
             isLoading: true,
+            filter_type: 'day'
         }
         this.onBackPress = this.onBackPress.bind(this);
         props.navigation.setParams({
@@ -502,6 +503,12 @@ export default class DayPage extends Component {
 
 
             <View>
+                <View style={{
+                    marginLeft: -30,
+                    backgroundColor: '#F4F5F5',
+                    height: 0.8,
+
+                }} />
 
                 <View style={styless.cardViewRow}>
                     <View style={{
@@ -517,7 +524,7 @@ export default class DayPage extends Component {
                                 fontSize: 12,
                                 //width: 150,
                                 color: '#000000',
-                                marginLeft: 20,
+                                marginLeft: 30,
 
 
                                 justifyContent: 'center',
@@ -545,7 +552,7 @@ export default class DayPage extends Component {
                                 fontSize: 12,
                                 //width: 150,
                                 color: '#000000',
-                                marginLeft: 50,
+                                marginLeft: 70,
 
 
                                 justifyContent: 'center',
@@ -562,11 +569,7 @@ export default class DayPage extends Component {
                     </View>
                 </View>
 
-                <View style={{
-                    backgroundColor: '#F4F5F5',
-                    height: 0.8,
 
-                }} />
 
             </View>
 
@@ -611,20 +614,21 @@ export default class DayPage extends Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
-                                        this.props.navigation.navigate('SaleDetails', {
-                                            itemName: item.name,
+                                        this.props.navigation.navigate('DetailPage', {
+                                            itemName: this.toTitleCase(str),
                                             itemId: item.id,
+                                            sales: this.totalSaleFormat(item.current_sale),
                                             parent: this.state.parent,
                                             date: this.state.date,
                                             isGeo: this.state.isGeo,
-                                            filter_type: filter_type
+                                            filter_type: this.state.filter_type
                                         });
                                     }} >
                                     <Image
                                         source={require('../images/list.png')}
                                         style={{
-                                            width: 20,
-                                            height: 18,
+                                            width: 14,
+                                            height: 14,
                                             padding: 10,
                                             marginLeft: 20,
                                             margin: 5,
@@ -648,12 +652,12 @@ export default class DayPage extends Component {
                                     }}  >
 
                                     <Text numberOfLines={1} style={{
-                                        fontSize: 16,
+                                        fontSize: 12,
 
                                         // color: '#CE000A',
                                         color: '#0000FF',
-
-                                        marginLeft: 50,
+                                        marginTop: 5,
+                                        marginLeft: 60,
 
                                         justifyContent: 'center',
                                         // textAlignVertical: "center",
@@ -686,26 +690,42 @@ export default class DayPage extends Component {
                                         }
                                     }}  >
 
-                                    <View style={{
-                                        backgroundColor: '#FFFFFF',
-                                        width: '20%',
-                                    }}>
+                                    {(!(item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
 
 
-                                        <Image
-                                            source={require('../images/down.png')}
-                                            style={{
-                                                width: 14,
-                                                height: 14,
-                                                padding: 10,
-                                                marginLeft: 70,
+                                            <Image
+                                                source={require('../images/down.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 10,
+                                                    marginLeft: 70,
 
-                                                margin: 5,
-                                                resizeMode: 'stretch',
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
 
-                                            }} />
+                                                }} />
 
-                                    </View>
+                                        </View>
+
+                                    }
+                                    {((item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
+
+
+
+                                        </View>
+
+                                    }
 
 
                                 </TouchableOpacity>
@@ -719,62 +739,75 @@ export default class DayPage extends Component {
                                     onPress={() => {
                                         console.log("  item.hasSaleData && : ");
 
-                                        if (!(item.name == "National")) {
 
-                                            var dataSourceTemp = []
-                                            this.setState({ indeterminate: true });
-                                            this.state.dataSource.map((value) => {
-                                                dataSourceTemp.push({
-                                                    id: value.id, name: value.name,
-                                                    current_sale: value.current_sale,
-                                                    last_sale: value.last_sale,
-                                                    sale_data: value.sale_data
+                                        var dataSourceTemp = []
+                                        this.setState({ indeterminate: true });
+                                        this.state.dataSource.map((value) => {
+                                            dataSourceTemp.push({
+                                                id: value.id, name: value.name,
+                                                current_sale: value.current_sale,
+                                                last_sale: value.last_sale,
+                                                sale_data: value.sale_data
+                                            })
+
+                                        })
+
+                                        dataSourceTemp.map((data) => {
+                                            if (item.id == data.id) {
+                                                var sale_data = []
+                                                sale_data.push({
+                                                    name: 'Net Sales', total: data.current_sale,
                                                 })
-
-                                            })
-
-                                            dataSourceTemp.map((data) => {
-                                                if (item.id == data.id) {
-                                                    var sale_data = []
-                                                    sale_data.push({
-                                                        name: 'Net Sales', total: data.current_sale,
-                                                    })
-                                                    data.hasSaleData = false
-                                                    data.sale_data = sale_data
-                                                    this.setState({ indeterminate: false });
-                                                }
+                                                data.hasSaleData = false
+                                                data.sale_data = sale_data
+                                                this.setState({ indeterminate: false });
+                                            }
 
 
-                                            })
-                                            this.setState({ dataSource: dataSourceTemp });
-                                            // const myObjStr = JSON.stringify(dataSourceTemp);
-                                            // console.log("sale_data in dataSourceTemp : " + myObjStr); 
-                                        }
+                                        })
+                                        this.setState({ dataSource: dataSourceTemp });
+                                        // const myObjStr = JSON.stringify(dataSourceTemp);
+                                        // console.log("sale_data in dataSourceTemp : " + myObjStr); 
+
 
                                     }}  >
 
-                                    <View style={{
-                                        backgroundColor: '#FFFFFF',
-                                        width: '20%',
-                                    }}>
+                                    {(!(item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
 
 
-                                        <Image
-                                            source={require('../images/up.png')}
-                                            style={{
-                                                width: 14,
-                                                height: 14,
-                                                padding: 10,
-                                                marginLeft: 70,
+                                            <Image
+                                                source={require('../images/up.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 10,
+                                                    marginLeft: 70,
 
-                                                margin: 5,
-                                                resizeMode: 'stretch',
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
 
-                                            }} />
+                                                }} />
 
-                                    </View>
+                                        </View>
+
+                                    }
+                                    {((item.name == "National")) &&
+
+                                        <View style={{
+                                            backgroundColor: '#FFFFFF',
+                                            width: '20%',
+                                        }}>
 
 
+
+                                        </View>
+
+                                    }
                                 </TouchableOpacity>
 
                             }
@@ -783,7 +816,7 @@ export default class DayPage extends Component {
                         </View>
 
                     </View>
-                    <View style={styless.hairline} />
+
                     {/* {console.log('sale_data in render item:' + item.sale_data)} */}
 
 
@@ -1341,7 +1374,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/people.png')}
+                                             source={require('../images/geo.png')
+                                            }
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1362,8 +1396,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/geo.png')
-                                            }
+                                         source={require('../images/people.png')}
+                                          
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1443,7 +1477,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/people.png')}
+                                            source={require('../images/geo.png')
+                                        }
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1464,8 +1499,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/geo.png')
-                                            }
+                                         source={require('../images/people.png')}
+                                           
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1613,7 +1648,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/people.png')}
+                                           source={require('../images/geo.png')
+                                        }
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1634,8 +1670,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/geo.png')
-                                            }
+                                         source={require('../images/people.png')}
+                                            
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1710,7 +1746,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/people.png')}
+                                            source={require('../images/geo.png')
+                                        }
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1731,8 +1768,8 @@ export default class DayPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                            source={require('../images/geo.png')
-                                            }
+                                         source={require('../images/people.png')}
+                                           
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1763,7 +1800,7 @@ export default class DayPage extends Component {
 
                         data={this.state.dataSource}
                         renderItem={
-                            this.renderItem
+                            this.renderItem11
                         }
 
 
@@ -1829,11 +1866,11 @@ const styless = StyleSheet.create({
         width: '90%',
         // height: 105,
         // borderRadius: 1,
-        borderColor: '#000',
+        borderColor: '#F4F5F5',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
         marginBottom: 5,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderRadius: 1,
 
         //     marginLeft: 10,
@@ -1841,7 +1878,7 @@ const styless = StyleSheet.create({
     },
     cardViewRowHeader: {
         flexDirection: 'column',
-        height: 40,
+        height: 30,
 
         //backgroundColor: '#fff',
         justifyContent: 'center',
@@ -1907,8 +1944,9 @@ const styless = StyleSheet.create({
     },
     shapeyellow: {
         backgroundColor: '#FBE028',
-        width: '35%',
-        height: 19.6,
+        marginLeft: -30,
+        width: '45%',
+        height: 21,
 
     },
     shapewhite: {
@@ -1918,7 +1956,7 @@ const styless = StyleSheet.create({
     shapeinnerwhite: {
         backgroundColor: '#FFFFFF',
         width: '55%',
-        height: 19.6,
+        height: 19.9,
 
     },
     hairline: {

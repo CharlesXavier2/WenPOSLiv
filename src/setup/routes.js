@@ -14,6 +14,7 @@ import LoginPage from '../components/LoginPage';
 import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
+import DetailPage from '../components/DetailPage';
 import LogoutScreen from '../components/LogoutScreen.js'
 const GLOBAL = require('../constant/Globals.js');
 //import DatePicker from '../components/DateSelector';
@@ -245,6 +246,23 @@ const RootNavigator = createStackNavigator({
     LoginPage: { screen: LoginPage },
     DrawerNavigator: { screen: DrawerNavigator },
     DatePicker: { screen: DatePicker },
+    DetailPage: {
+        screen: DetailPage,
+        navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
+            //title: 'National',
+            headerLeft: <HeaderBackButton style={{ overlayColor:'#000000'}} onPress={() => navigation.goBack(null)} />,
+            headerStyle: {
+                backgroundColor: '#CE000A',
+                position: 'absolute',
+            },
+            headerTintColor: '#FAC209',
+            headerTitleStyle: {
+                fontStyle: 'normal',
+                width: '100%',
+                upperCaseLabel: false,
+            },
+        })
+    },   
     SaleDetails:
     {
         screen: SaleDetails,
@@ -259,6 +277,7 @@ const RootNavigator = createStackNavigator({
             headerTitleStyle: {
                 fontStyle: 'normal',
                 width: '100%',
+                upperCaseLabel: false,
             },
         })
     },

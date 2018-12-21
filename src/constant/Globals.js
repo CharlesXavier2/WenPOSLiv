@@ -6,6 +6,7 @@ module.exports = {
     CITY_NAME_KEY:'city_name',
     STORE_ID_KEY: 'store_id', // BM Mgr
     DATE_KEY:"date_key",
+    FILTER_TYPE:'filter_type',
     
     BASE_URL: 'http://115.112.181.53:3000/api/',
     COLOR: {
