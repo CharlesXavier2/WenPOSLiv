@@ -5,6 +5,7 @@
  */
 
 import React, { Component } from 'react';
+import { EventRegister } from 'react-native-event-listeners'
 const GLOBAL = require('../constant/Globals.js');
 import {
     Platform,
@@ -95,8 +96,15 @@ export default class YearPage extends Component {
     _myHomeFunction = () => {
         alert('Here is home tab!');
     }
+    
     componentWillMount() {
+        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
+            this.customComponentDidMount()
+        })
+    }
 
+    componentWillUnmount() {
+        EventRegister.removeEventListener(this.listener)
     }
 
     componentWillReceiveProps(newProps) {

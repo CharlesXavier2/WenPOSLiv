@@ -7,6 +7,7 @@
  */
 
 import React, { Component } from 'react';
+import { EventRegister } from 'react-native-event-listeners'
 const GLOBAL = require('../constant/Globals.js');
 import {
 
@@ -55,6 +56,7 @@ export default class DayPage extends Component {
 
         super(props)
         this.state = {
+            title: "McD",
             dataSource: [],
             checkData: [],
             progress: 0,
@@ -78,6 +80,9 @@ export default class DayPage extends Component {
     // static navigationOptions= ({navigation}) => {
     //     return {title: navigation.state.params.itemId}
     //   }
+    static navigationOptions = ({navigations}) =>({
+        title: this.state.title
+    });
 
     static navigationOptions = ({ navigation }) => (
         {
@@ -99,12 +104,11 @@ export default class DayPage extends Component {
                 // perform your logic here
                 // this is mandatory to perform the actual switch
                 // don't call this if you want to prevent focus
-
                 navigation.state.params.onTabFocus();
                 defaultHandler();
             },
 
-
+           
         });
 
     _myHomeFunction = () => {
@@ -122,7 +126,13 @@ export default class DayPage extends Component {
 
 
     componentWillMount() {
+        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
+            this.customComponentDidMount()
+        })
+    }
 
+    componentWillUnmount() {
+        EventRegister.removeEventListener(this.listener)
     }
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
@@ -646,6 +656,7 @@ export default class DayPage extends Component {
 
                                 <TouchableOpacity
                                     onPress={() => {
+                                    
                                         if (!(item.name == "National")) {
                                             this.setCurrentScreen(item.id, item.name);
                                         }
@@ -1344,6 +1355,7 @@ export default class DayPage extends Component {
                                     iconSource={require('../images/calendar.png')}
                                     onDateChange={(date) => {
                                         this.setState({ date });
+                                        this.setState({ title:date });
                                         AsyncStorage.setItem("date_key", date);
                                         // AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
                                         console.log("  constant={(GLOBAL.DATE_KEY) => " + this.state.date)

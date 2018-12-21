@@ -6,6 +6,8 @@ import {
     AsyncStorage, Alert,
     StatusBar
 } from 'react-native';
+
+import { EventRegister } from 'react-native-event-listeners'
 import DayPage from '../Tab/DayPage';
 import WeekPage from '../Tab/WeekPage';
 import MonthPage from '../Tab/MonthPage';
@@ -175,7 +177,10 @@ export const CalenderMenu = ({ navigation }) => {
     />
 }
 
+
+  
 export const CustomHeader = ({ title, subtitle }) => (
+    
     <View >
         <Text style={{ fontSize: 16, color: '#000' }}>{title}</Text>
         <Text style={{ fontSize: 16, color: '#000' }}>{subtitle}</Text>
@@ -287,8 +292,9 @@ const RootNavigator = createStackNavigator({
         navigationOptions: ({ navigation, title, subtitle }) => {
             const { navigate } = navigation
             return {
-
-                title: 'McDLiv',  // Title to appear in status bar
+                title: 'McDLiv',
+                 // Title to appear in status bar
+                //  headerTitle: <CustomHeader title={navigation.state.params.title} subtitle={navigation.state.params.friend.companyName}/>,
                 // headerTitle: <CustomHeader title='McDa' 
                 // subtitle={}/>,
                 //    headerLeft: (
@@ -340,49 +346,27 @@ const RootNavigator = createStackNavigator({
                         <MenuImage style="styles.bar" navigation={navigation} />
                     </TouchableOpacity>
                 ,
-                // headerRight:
-                //     <TouchableOpacity>
-                //         <DatePicker
-                //             // date={this.state.date}
-                //             placeholder="placeholder"
+                headerRight:
+                    <TouchableOpacity>
+                        <DatePicker
+                            // date={this.state.date}
+                            placeholder="placeholder"
 
-                //             mode="date"
-                //             format="YYYY-MM-DD"
-                //             minDate="2016-05-01"
-                //             maxDate="2021-06-01"
-                //             confirmBtnText="Confirm"
-                //             cancelBtnText="Cancel"
-                //             iconSource={require('../images/calendar.png')}
-                //             onDateChange={(date) => {
-                //                 // this.setState({ date: date });
-                //                 console.log('Date ->  '+date);
-                //                 AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                //                 // this.customComponentDidMount();
-                //                 // const resetAction = NavigationActions.reset({
-                //                 //     index: 0,
-                //                 //     actions: [
-                //                 //       NavigationActions.navigate({ routeName: 'DayPage'})
-                //                 //     ] })
-                //                 // this.props.navigation.dispatch(resetAction);
-                //                 // navigation.navigate("DayPage")
+                            mode="date"
+                            format="YYYY-MM-DD"
+                            minDate="2016-05-01"
+                            maxDate="2021-06-01"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            iconSource={require('../images/calendar.png')}
+                            onDateChange={(date) => {
+                                console.log('Date ->  '+date);
+                                AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                                EventRegister.emit('myCustomEvent', 'it works!!!')
+                            }}
 
-                //                 this.props.navigation.navigate('DayPage', {
-                //                                                                 refresh: "item.name",
-                //                                                             });
-                //             }}
-
-                //         />
-                //     </TouchableOpacity>,
-                //     <TouchableOpacity  onPress={() => {
-                //         navigation.navigate('LogoutScreen')
-                //         DayPage._myHomeFunction()
-                //         // DayPage.this._myHomeFunction
-                //     } 
-
-                //         }>
-                //         <CalenderMenu style="styles.bar" navigation={navigation}/>
-                //     </TouchableOpacity>
-                // ,
+                        />
+                    </TouchableOpacity>,
                 headerStyle: {
                     backgroundColor: '#CE000A',
                     position: 'absolute',
