@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
-import { ScrollView, Text, View, Image,FlatList } from 'react-native';
+import { ScrollView, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import { DrawerActions } from 'react-navigation';
 import styles from '../styles/index';
 
@@ -16,27 +16,56 @@ class DrawerScreen extends Component {
 
   renderItem = ({ item }) => {
     return (
-    <View >
-      <View style={{ flexDirection: 'row', }}>
-        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          <View style={styles.CircleShapeView}>
-            <Image style={{ marginLeft: 10, }} source={require('../images/sales.png')}></Image>
+      <View >
+        <View style={{ flexDirection: 'row', marginTop: 20 }}>
+          <View style={{ flexDirection: 'column', alignItems: 'center', marginLeft: 10, marginRight: 10, }} >
 
-          </View>
-          <Text style={{ marginLeft: 10, fontSize: 12, color: '#FFFFFF' }}>
-            {item.key}
-        </Text>
-        </View>
-       
+            <View style={styles.CircleShapeView} >
+            {item.key == 'SALES' && 
+              <TouchableOpacity
+                 
+                onPress={this.navigateToScreen('DayPage')} >
+                <Image style={{
+                  justifyContent: 'center',
+                  padding: 10,
+                  width: 18,
+                  height: 18
+                }} onPress={this.navigateToScreen('DayPage')}
+                  source={item.image}></Image>
+              </TouchableOpacity>
+              }
+               {
+                 item.key != 'SALES' && 
              
-            </View >
-            </View >
+                <Image style={{
+                  justifyContent: 'center',
+                  padding: 10,
+                  width: 18,
+                  height: 18
+                }} onPress={this.navigateToScreen('DayPage')}
+                  source={item.image}></Image>
+              
+              }
+            </View>
+            <Text style={{
+              justifyContent: 'center',
+              alignItems: 'center', fontSize: 10, color: '#FFFFFF'
+            }}
+
+            >
+              {item.key}
+            </Text>
+          </View>
+
+
+        </View >
+      </View >
 
 
 
-           
 
-    ) 
+
+    )
 
   }
 
@@ -46,22 +75,23 @@ class DrawerScreen extends Component {
         flex: 1, justifyContent: 'center',
         alignItems: 'center'
       }}>
-         <FlatList
-                        data={[
-                          { key: 'SALES' },
-                          { key: 'INVENTORY' },
-                          { key: 'LABOUR' },
-                          { key: 'SYNC HISTORY' },
-                          { key: 'SETTINGS' },
-                          { key: 'LOGOUT' },
-                         
+        <FlatList
+          data={[
 
-                      ]}
-                        renderItem={
-                            this.renderItem
-                        }
-                        numColumns={2}
-                    />
+            { key: "SALES", image: require("../images/ic_sales.png") },
+            { key: 'INVENTORY', image: require("../images/ic_inventory.png") },
+            { key: 'LABOUR', image: require("../images/ic_labour.png") },
+            { key: 'SYNC HISTORY', image: require("../images/ic_sync.png") },
+            { key: 'SETTINGS', image: require("../images/ic_setting.png") },
+            { key: 'LOGOUT', image: require("../images/ic_logout.png") },
+
+
+          ]}
+          renderItem={
+            this.renderItem
+          }
+          numColumns={2}
+        />
         {/* <ScrollView >
           <View style={{
             flex: 1, justifyContent: 'center',

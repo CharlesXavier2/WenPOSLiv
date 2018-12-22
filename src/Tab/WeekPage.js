@@ -52,7 +52,8 @@ export default class WeekPage extends Component {
             storeId: 0,
             isGeo: "true",
             isLoading: true,
-            filter_type: 'week'
+            filter_type: 'week',
+            netSales: ' '
         }
         props.navigation.setParams({
             onTabFocus: this.tabClick
@@ -153,11 +154,11 @@ export default class WeekPage extends Component {
                             console.log(" Is_Geo_key : " + value);
                             if (value == "true") {
                                 AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
-                                this.setState({ isGeo: false })
+                                this.setState({ isGeo: true })
 
                             } else {
                                 AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
-                                this.setState({ isGeo: true })
+                                this.setState({ isGeo: false })
 
                             }
                             console.log("State value Is_Geo_key : " + this.state.isGeo);
@@ -214,7 +215,7 @@ export default class WeekPage extends Component {
                 AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
                     console.log("1st Is_Geo_key : " + value1);
                     if (value1 === null) {
-                        value1 = "true";
+                        value1 = true;
                     }
                     console.log(" Is_Geo_key : " + value1);
                     var urlValue = ''
@@ -224,6 +225,7 @@ export default class WeekPage extends Component {
 
                     })
                     if (value1 == "true") {
+                        this.setState({isGeo:true})
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -260,6 +262,7 @@ export default class WeekPage extends Component {
 
                         }
                     } else {
+                        this.setState({isGeo:false})
                         console.log("else value1==true");
                         switch (parent) {
                             case 0:
@@ -345,11 +348,11 @@ export default class WeekPage extends Component {
     }
 
 
-    setCurrentScreen = (id) => {
+    setCurrentScreen = (id, name) => {
         //0 for region 1 for city 2 for store
         var isGeoVal = "true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
-        AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((value) => {
+        AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
         if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
@@ -379,6 +382,8 @@ export default class WeekPage extends Component {
             case 2:
             case '2':
                 AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+                AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
+                console.log("GLOBAL.CITY_NAME_KEY : " + name);
                 break;
             case 3:
             case '3':
@@ -634,6 +639,11 @@ export default class WeekPage extends Component {
         var val = item.current_sale;
         var str = item.name;
         var rounfFranchise = '0.00';
+        if(item.name == "National"){
+            var netsale= this.totalSaleFormat(item.current_sale)
+            this.setState({ netSales:netsale });
+
+        }
         // console.log('UI refeashing start')
 
         return (
@@ -660,15 +670,17 @@ export default class WeekPage extends Component {
 
                             <View style={{
                                 backgroundColor: '#FFFFFF',
-                                width: '30%',
+                                width: '25%',
                             }}>
+                               {
+                               !( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) )  &&
                                 <TouchableOpacity
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
                                         this.props.navigation.navigate('DetailPage', {
                                             itemName: this.toTitleCase(str),
-                                            sales: this.totalSaleFormat(item.current_sale),
                                             itemId: item.id,
+                                            sales: this.totalSaleFormat(item.current_sale),
                                             parent: this.state.parent,
                                             date: this.state.date,
                                             isGeo: this.state.isGeo,
@@ -688,16 +700,80 @@ export default class WeekPage extends Component {
 
                                         }} />
                                 </TouchableOpacity>
+                                 }
+                                  {
+                                       ( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) ) &&
+                              
+                                  <View style={{ flexDirection: 'column',alignItems: 'center', justifyContent: 'center',marginTop:5}}>
+                                   <Text
+                                       
+                                       style={{
+                                          fontSize:8,
+                                          marginLeft: 20,
+                                          
+                                           color:'#0000FF',
+                                           alignItems: 'center', justifyContent: 'center',
+                                          
+
+                                       }} >
+                                       {
+                                         this.state.date  
+                                       }
+                                       </Text>
+                                    <Text
+                                       
+                                        style={{
+                                           fontSize:8,
+                                            
+                                            marginLeft: 25,
+                                           
+                                            color:'#0000FF',
+                                            alignItems: 'center', justifyContent: 'center',
+                                           
+
+                                        }} >
+                                          14:31
+                                        </Text>
+                                       
+                                        </View>
+                                 }
                             </View>
 
                             <View style={{
                                 backgroundColor: '#FFFFFF',
-                                width: '40%',
+                                width: '60%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                             }}>
 
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (!(item.name == "National")) {
+                                        
+                                         if(this.state.parent==2 && this.state.isGeo){
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
+                                        }
+                                        else if(this.state.parent==1 && !this.state.isGeo){
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
+                                        }
+                                        else if (!(item.name == "National")) {
                                             this.setCurrentScreen(item.id, item.name);
                                         }
                                     }}  >
@@ -707,8 +783,8 @@ export default class WeekPage extends Component {
 
                                         // color: '#CE000A',
                                         color: '#0000FF',
-                                        marginTop: 5,
-                                        marginLeft: 60,
+                                       
+                                        marginLeft: 50,
 
                                         justifyContent: 'center',
                                         // textAlignVertical: "center",
@@ -722,7 +798,6 @@ export default class WeekPage extends Component {
                                 </TouchableOpacity>
 
                             </View>
-
 
                             {
                                 !item.hasSaleData &&
@@ -746,7 +821,8 @@ export default class WeekPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%', 
+                                           
                                         }}>
 
 
@@ -756,7 +832,7 @@ export default class WeekPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 10,
-                                                    marginLeft: 70,
+                                                    marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -770,7 +846,8 @@ export default class WeekPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%',
+                                          
                                         }}>
 
 
@@ -791,37 +868,36 @@ export default class WeekPage extends Component {
                                     onPress={() => {
                                         console.log("  item.hasSaleData && : ");
 
-                                        if (!(item.name == "National")) {
 
-                                            var dataSourceTemp = []
-                                            this.setState({ indeterminate: true });
-                                            this.state.dataSource.map((value) => {
-                                                dataSourceTemp.push({
-                                                    id: value.id, name: value.name,
-                                                    current_sale: value.current_sale,
-                                                    last_sale: value.last_sale,
-                                                    sale_data: value.sale_data
+                                        var dataSourceTemp = []
+                                        this.setState({ indeterminate: true });
+                                        this.state.dataSource.map((value) => {
+                                            dataSourceTemp.push({
+                                                id: value.id, name: value.name,
+                                                current_sale: value.current_sale,
+                                                last_sale: value.last_sale,
+                                                sale_data: value.sale_data
+                                            })
+
+                                        })
+
+                                        dataSourceTemp.map((data) => {
+                                            if (item.id == data.id) {
+                                                var sale_data = []
+                                                sale_data.push({
+                                                    name: 'Net Sales', total: data.current_sale,
                                                 })
-
-                                            })
-
-                                            dataSourceTemp.map((data) => {
-                                                if (item.id == data.id) {
-                                                    var sale_data = []
-                                                    sale_data.push({
-                                                        name: 'Net Sales', total: data.current_sale,
-                                                    })
-                                                    data.hasSaleData = false
-                                                    data.sale_data = sale_data
-                                                    this.setState({ indeterminate: false });
-                                                }
+                                                data.hasSaleData = false
+                                                data.sale_data = sale_data
+                                                this.setState({ indeterminate: false });
+                                            }
 
 
-                                            })
-                                            this.setState({ dataSource: dataSourceTemp });
-                                            // const myObjStr = JSON.stringify(dataSourceTemp);
-                                            // console.log("sale_data in dataSourceTemp : " + myObjStr); 
-                                        }
+                                        })
+                                        this.setState({ dataSource: dataSourceTemp });
+                                        // const myObjStr = JSON.stringify(dataSourceTemp);
+                                        // console.log("sale_data in dataSourceTemp : " + myObjStr); 
+
 
                                     }}  >
 
@@ -829,7 +905,8 @@ export default class WeekPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%',
+                                           
                                         }}>
 
 
@@ -839,7 +916,7 @@ export default class WeekPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 10,
-                                                    marginLeft: 70,
+                                                     marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -853,7 +930,8 @@ export default class WeekPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%',
+                                           
                                         }}>
 
 
@@ -861,23 +939,15 @@ export default class WeekPage extends Component {
                                         </View>
 
                                     }
-
-
                                 </TouchableOpacity>
 
                             }
 
 
-
                         </View>
 
                     </View>
-                    {/* <View style={{
-                    marginLeft:-30,
-                    backgroundColor: '#F4F5F5',
-                    height: 0.5,
 
-                }} /> */}
                     {/* {console.log('sale_data in render item:' + item.sale_data)} */}
 
 
@@ -902,6 +972,7 @@ export default class WeekPage extends Component {
             </View>
 
         )
+
 
 
 
@@ -1046,6 +1117,7 @@ export default class WeekPage extends Component {
 
                     })
                     if (value1 == "true") {
+                        this.setState({isGeo:true})
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -1085,6 +1157,7 @@ export default class WeekPage extends Component {
 
                         }
                     } else {
+                        this.setState({isGeo:false})
                         console.log("else value1==true");
                         // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
                         switch (parent) {
@@ -1176,7 +1249,9 @@ export default class WeekPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((isGeoVal) => {
             console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
+            this.setState({isGeo:isGeoVal})
             if (isGeo == "true") {
+                this.setState({isGeo:true})
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1216,6 +1291,7 @@ export default class WeekPage extends Component {
                         break;
                 }
             } else {
+                this.setState({isGeo:false})
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1319,7 +1395,6 @@ export default class WeekPage extends Component {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-
                     {
                         this.state.indeterminate &&
                         <Progress.Bar
@@ -1372,13 +1447,16 @@ export default class WeekPage extends Component {
 
                             </View>
 
+
                             <View style={{
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginLeft: 60,
                             }}>
-                                <DatePicker
+                             <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                {/* <DatePicker
 
                                     date={this.state.date}
                                     placeholder="placeholder"
@@ -1393,15 +1471,402 @@ export default class WeekPage extends Component {
                                     onDateChange={(date) => {
                                         this.setState({ date });
                                         AsyncStorage.setItem("date_key", date);
+                                        // AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                        console.log("  constant={(GLOBAL.DATE_KEY) => " + this.state.date)
                                         this.customComponentDidMount();
                                     }}
 
                                 />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
+                                <Text style={styless.instructions}>{this.state.date}</Text> */}
                             </View>
 
 
+
+
                             <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginLeft: 20,
+
+                            }}>
+
+
+                                {
+
+
+                                    this.state.isGeo &&
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        {/* <Image
+                                             source={require('../images/geo.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> */}
+                                         <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                        <Image
+                                             source={require('../images/yellow_geo.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                         <Image
+                                             source={require('../images/select_people.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                        </View>
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    !this.state.isGeo &&
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                         <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                         <Image
+                                         source={require('../images/select_geo.png')}
+                                          
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                 marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                        <Image
+                                         source={require('../images/yellow_people.png')}
+                                          
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                         </View>
+                                    </TouchableOpacity>
+
+                                }
+
+
+
+
+                            </View>
+
+                        </View>
+
+                    }
+
+                    {
+                       this.state.parent == 0 &&
+                        <View style={styless.categries}>
+
+
+
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 100,
+                            }}>
+                                {/* <DatePicker
+
+                                    date={this.state.date}
+                                    placeholder="placeholder"
+
+                                    mode="date"
+                                    format="YYYY-MM-DD"
+                                    minDate="2016-05-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    iconSource={require('../images/calendar.png')}
+                                    onDateChange={(date) => {
+                                        this.setState({ date });
+                                        AsyncStorage.setItem("date_key", date);
+                                        // AsyncStorage.setItem(GLOBAL.DATE_KEY, this.state.date);
+                                        console.log("  constant={(GLOBAL.DATE_KEY) => " + this.state.date)
+                                        this.customComponentDidMount();
+                                    }}
+
+                                /> */}
+                                 <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+                            </View>
+
+
+
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginLeft:20
+
+                            }}>
+
+
+                                {
+
+
+                                    this.state.isGeo &&
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                        {/* <Image
+                                             source={require('../images/geo.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 40,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> */}
+                                        <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                        <Image
+                                             source={require('../images/yellow_geo.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                         <Image
+                                             source={require('../images/select_people.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                        </View>
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    !this.state.isGeo &&
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.openDialog()
+                                        }}>
+                                         <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                         <Image
+                                         source={require('../images/select_geo.png')}
+                                          
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                 marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                        <Image
+                                         source={require('../images/yellow_people.png')}
+                                          
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                        </View>
+                                        
+                                    </TouchableOpacity>
+
+                                }
+
+
+
+
+                            </View>
+
+                        </View>
+
+                    }
+
+
+                    <FlatList
+
+                        data={this.state.dataSource}
+                        renderItem={
+                            this.renderItem
+                        }
+
+
+                    />
+
+
+
+                </View >
+
+
+
+            );
+        }
+        else {
+            return (
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
+                    {
+                        this.state.indeterminate &&
+                        <Progress.Bar
+                            style={styles.progress}
+                            progress={this.state.progress}
+                            indeterminate={this.state.indeterminate}
+                            width={380}
+                            borderColor={'#FAC209'}
+                            borderRadius={0}
+                            color={'rgb(250, 194, 9)'}
+                            marginTop={1}
+                        />
+                    }
+
+
+                    {
+                        this.state.parent > 0 &&
+                        <View style={styless.categries}>
+
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
+
+                                <Image
+                                    source={require('../images/back.png')}
+                                    style={{
+                                        paddingLeft: 10,
+                                        paddingTop: 10,
+                                        paddingBottom: 10,
+                                        marginLeft: 10,
+                                        resizeMode: 'stretch',
+
+                                    }}
+                                />
+                                <Text style={{
+                                    fontSize: 14,
+
+                                    color: '#ffffff',
+                                    // paddingLeft: 40,
+
+
+                                    //justifyContent: 'center',
+                                    textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }} onPress={() => {
+
+                                    this.setBackStackScreen();
+
+                                }}>Back</Text>
+
+                            </View>
+
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 60,
+                            }}>
+                                {/* <DatePicker
+
+                                    date={this.state.date}
+                                    placeholder="placeholder"
+
+                                    mode="date"
+                                    format="YYYY-MM-DD"
+                                    minDate="2016-05-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    iconSource={require('../images/calendar.png')}
+                                    onDateChange={(date) => {
+                                        console.log("  onDateChange={(date) => " + date)
+                                        this.setState({ date });
+                                        AsyncStorage.setItem("date_key", date);
+                                        this.customComponentDidMount();
+                                    }}
+
+                                /> */}
+                                <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+                            </View>
+
+
+                            {/* <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
 
@@ -1418,9 +1883,8 @@ export default class WeekPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                        source={require('../images/geo.png')
-                                    }
-                                           
+                                           source={require('../images/geo.png')
+                                        }
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1441,7 +1905,8 @@ export default class WeekPage extends Component {
                                             this.openDialog()
                                         }}>
                                         <Image
-                                             source={require('../images/people.png')}
+                                         source={require('../images/people.png')}
+                                            
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
@@ -1460,11 +1925,10 @@ export default class WeekPage extends Component {
 
 
 
-                            </View>
+                            </View> */}
 
                         </View>
                     }
-
                     {
                         this.state.parent == 0 &&
                         <View style={styless.categries}>
@@ -1472,12 +1936,14 @@ export default class WeekPage extends Component {
 
 
                             <View style={{
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginLeft: 25,
                             }}>
-                                <DatePicker
+                             <Text style={styless.instructions}>Net Sales </Text>
+                             <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                {/* <DatePicker
 
                                     date={this.state.date}
                                     placeholder="placeholder"
@@ -1496,11 +1962,11 @@ export default class WeekPage extends Component {
                                     }}
 
                                 />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
+                                <Text style={styless.instructions}>{this.state.date}</Text> */}
                             </View>
 
 
-                            <View style={{
+                            {/* <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
 
@@ -1559,310 +2025,26 @@ export default class WeekPage extends Component {
 
 
 
-                            </View>
+                            </View> */}
 
                         </View>
-
                     }
 
+
+
+
                     <FlatList
+
                         data={this.state.dataSource}
                         renderItem={
                             this.renderItem
                         }
+
+
                     />
 
 
-                </View >
 
-
-
-            );
-        }
-        else {
-            return (
-                <View style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-                    {
-                        this.state.indeterminate &&
-                        <Progress.Bar
-                            style={styles.progress}
-                            progress={this.state.progress}
-                            indeterminate={this.state.indeterminate}
-                            width={380}
-                            borderColor={'#FAC209'}
-                            borderRadius={0}
-                            color={'rgb(250, 194, 9)'}
-                            marginTop={1}
-                        />
-                    }
-                    {
-                        this.state.parent > 0 &&
-                        <View style={styless.categries}>
-
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                            }}>
-
-                                <Image
-                                    source={require('../images/back.png')}
-                                    style={{
-                                        paddingLeft: 10,
-                                        paddingTop: 10,
-                                        paddingBottom: 10,
-                                        marginLeft: 10,
-                                        resizeMode: 'stretch',
-
-                                    }}
-                                />
-                                <Text style={{
-                                    fontSize: 14,
-
-                                    color: '#ffffff',
-                                    // paddingLeft: 40,
-
-
-                                    //justifyContent: 'center',
-                                    textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }} onPress={() => {
-
-                                    this.setBackStackScreen();
-
-                                }}>Back</Text>
-
-                            </View>
-
-                            <View style={{
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginLeft: 60,
-                            }}>
-                                <DatePicker
-
-                                    date={this.state.date}
-                                    placeholder="placeholder"
-
-                                    mode="date"
-                                    format="YYYY-MM-DD"
-                                    minDate="2016-05-01"
-                                    maxDate="2021-06-01"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    iconSource={require('../images/calendar.png')}
-                                    onDateChange={(date) => {
-                                        this.setState({ date });
-                                        AsyncStorage.setItem("date_key", date);
-                                        this.customComponentDidMount();
-                                    }}
-
-                                />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
-                            </View>
-
-
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-
-                            }}>
-
-
-                                {
-
-
-                                    this.state.isGeo &&
-
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.openDialog()
-                                        }}>
-                                        <Image
-                                             source={require('../images/geo.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 40,
-
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
-
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                }
-                                {
-                                    !this.state.isGeo &&
-
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.openDialog()
-                                        }}>
-                                        <Image
-                                        source={require('../images/people.png')}
-                                           
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 40,
-
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
-
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                    </TouchableOpacity>
-
-                                }
-
-
-
-
-                            </View>
-
-                        </View>
-                    }
-                    {
-                        !this.state.parent > 0 &&
-                        <View style={styless.categries}>
-
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                            }}>
-
-                                <Image
-                                    source={require('../images/back.png')}
-                                    style={{
-                                        paddingLeft: 10,
-                                        paddingTop: 10,
-                                        paddingBottom: 10,
-                                        marginLeft: 10,
-                                        resizeMode: 'stretch',
-
-                                    }}
-                                />
-                                <Text style={{
-                                    fontSize: 14,
-
-                                    color: '#ffffff',
-                                    // paddingLeft: 40,
-
-
-                                    //justifyContent: 'center',
-                                    textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }} onPress={() => {
-
-                                    this.setBackStackScreen();
-
-                                }}>Back</Text>
-
-                            </View>
-
-                            <View style={{
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginLeft: 60,
-                            }}>
-                                <DatePicker
-
-                                    date={this.state.date}
-                                    placeholder="placeholder"
-
-                                    mode="date"
-                                    format="YYYY-MM-DD"
-                                    minDate="2016-05-01"
-                                    maxDate="2021-06-01"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    iconSource={require('../images/calendar.png')}
-                                    onDateChange={(date) => {
-                                        this.setState({ date });
-                                        AsyncStorage.setItem("date_key", date);
-                                        this.customComponentDidMount();
-                                    }}
-
-                                />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
-                            </View>
-
-
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-
-                            }}>
-
-
-                                {
-
-
-                                    this.state.isGeo &&
-
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.openDialog()
-                                        }}>
-                                        <Image
-                                            source={require('../images/geo.png')
-                                        }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 40,
-
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
-
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                }
-                                {
-                                    !this.state.isGeo &&
-
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.openDialog()
-                                        }}>
-                                        
-                                        <Image
-                                            source={require('../images/people.png')}
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 40,
-
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
-
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                    </TouchableOpacity>
-
-                                }
-
-
-
-
-                            </View>
-
-                        </View>
-                    }
-                    <FlatList
-                        data={this.state.dataSource}
-                        renderItem={
-                            this.renderItem
-                        }
-                    />
 
                 </View>
             );

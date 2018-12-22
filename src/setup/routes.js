@@ -135,7 +135,7 @@ export const DrawerNavigator = createDrawerNavigator({
         initialRouteName: 'DayPage',
         contentComponent: DrawerScreen,
         drawerWidth: 250,
-        drawerBackgroundColor: '#313131',
+        drawerBackgroundColor: '#CE000A',
     },
 );
 
@@ -151,14 +151,14 @@ export const MenuImage = ({ navigation }) => {
         />
     }
     else {
-        return <Image source={require('../images/left-arrow.png')}
+        return <Image source={require('../images/navback.png')}
        
             style={{
                 width: 30,
                 height: 30,
                 padding: 10,
                 margin: 5,
-                backgroundColor: '#313131',
+                // backgroundColor: '#313131',
                 //marginLeft:15,
                 resizeMode: 'stretch',
 

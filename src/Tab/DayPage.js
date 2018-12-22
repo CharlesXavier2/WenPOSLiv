@@ -68,7 +68,8 @@ export default class DayPage extends Component {
             storeId: 0,
             isGeo: "true",
             isLoading: true,
-            filter_type: 'day'
+            filter_type: 'day',
+            netSales: ' '
         }
         this.onBackPress = this.onBackPress.bind(this);
         props.navigation.setParams({
@@ -192,11 +193,11 @@ export default class DayPage extends Component {
                             console.log(" Is_Geo_key : " + value);
                             if (value == "true") {
                                 AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
-                                this.setState({ isGeo: false })
+                                this.setState({ isGeo: true })
 
                             } else {
                                 AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
-                                this.setState({ isGeo: true })
+                                this.setState({ isGeo: false })
 
                             }
                             console.log("State value Is_Geo_key : " + this.state.isGeo);
@@ -263,6 +264,7 @@ export default class DayPage extends Component {
 
                     })
                     if (value1 == "true") {
+                        this.setState({isGeo:true})
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -299,6 +301,7 @@ export default class DayPage extends Component {
 
                         }
                     } else {
+                        this.setState({isGeo:false})
                         console.log("else value1==true");
                         switch (parent) {
                             case 0:
@@ -393,8 +396,12 @@ export default class DayPage extends Component {
 
     setCurrentScreen = (id, name) => {
         //0 for region 1 for city 2 for store
+        var isGeoVal = "true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
-        if (this.state.parent >= 2) {
+        AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
+            isGeoVal = value
+        }).done()
+        if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -581,6 +588,12 @@ export default class DayPage extends Component {
     renderItem11 = ({ item }) => {
         var val = item.current_sale;
         var str = item.name;
+        if(item.name == "National"){
+            var netsale= this.totalSaleFormat(item.current_sale)
+            this.setState({ netSales:netsale });
+
+        }
+        
 
         var rounfFranchise = '0.00';
         // console.log('UI refeashing start')
@@ -609,8 +622,10 @@ export default class DayPage extends Component {
 
                             <View style={{
                                 backgroundColor: '#FFFFFF',
-                                width: '30%',
+                                width: '25%',
                             }}>
+                               {
+                               !( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) )  &&
                                 <TouchableOpacity
                                     onPress={() => {
                                         /* 1. Navigate to the Details route with params */
@@ -637,16 +652,80 @@ export default class DayPage extends Component {
 
                                         }} />
                                 </TouchableOpacity>
+                                 }
+                                  {
+                                       ( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) ) &&
+                              
+                                  <View style={{ flexDirection: 'column',alignItems: 'center', justifyContent: 'center',marginTop:5}}>
+                                   <Text
+                                       
+                                       style={{
+                                          fontSize:8,
+                                          marginLeft: 20,
+                                          
+                                           color:'#0000FF',
+                                           alignItems: 'center', justifyContent: 'center',
+                                          
+
+                                       }} >
+                                       {
+                                         this.state.date  
+                                       }
+                                       </Text>
+                                    <Text
+                                       
+                                        style={{
+                                           fontSize:8,
+                                            
+                                            marginLeft: 25,
+                                           
+                                            color:'#0000FF',
+                                            alignItems: 'center', justifyContent: 'center',
+                                           
+
+                                        }} >
+                                          14:31
+                                        </Text>
+                                       
+                                        </View>
+                                 }
                             </View>
 
                             <View style={{
                                 backgroundColor: '#FFFFFF',
-                                width: '40%',
+                                width: '60%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                             }}>
 
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (!(item.name == "National")) {
+                                        
+                                         if(this.state.parent==2 && this.state.isGeo){
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
+                                        }
+                                        else if(this.state.parent==1 && !this.state.isGeo){
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
+                                        }
+                                        else if (!(item.name == "National")) {
                                             this.setCurrentScreen(item.id, item.name);
                                         }
                                     }}  >
@@ -656,8 +735,8 @@ export default class DayPage extends Component {
 
                                         // color: '#CE000A',
                                         color: '#0000FF',
-                                        marginTop: 5,
-                                        marginLeft: 60,
+                                       
+                                        marginLeft: 50,
 
                                         justifyContent: 'center',
                                         // textAlignVertical: "center",
@@ -694,7 +773,8 @@ export default class DayPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%', 
+                                           
                                         }}>
 
 
@@ -704,7 +784,7 @@ export default class DayPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 10,
-                                                    marginLeft: 70,
+                                                    marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -718,7 +798,8 @@ export default class DayPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%',
+                                          
                                         }}>
 
 
@@ -776,7 +857,8 @@ export default class DayPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%',
+                                           
                                         }}>
 
 
@@ -786,7 +868,7 @@ export default class DayPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 10,
-                                                    marginLeft: 70,
+                                                     marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -800,7 +882,8 @@ export default class DayPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '20%',
+                                            width: '15%',
+                                           
                                         }}>
 
 
@@ -967,6 +1050,7 @@ export default class DayPage extends Component {
 
                     })
                     if (value1 == "true") {
+                        this.setState({isGeo:true})
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -1006,6 +1090,7 @@ export default class DayPage extends Component {
 
                         }
                     } else {
+                        this.setState({isGeo:false})
                         console.log("else value1==true");
                         // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
                         switch (parent) {
@@ -1091,6 +1176,7 @@ export default class DayPage extends Component {
             console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
             if (isGeo == "true") {
+                this.setState({isGeo:true})
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1130,6 +1216,7 @@ export default class DayPage extends Component {
                         break;
                 }
             } else {
+                this.setState({isGeo:false})
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1325,12 +1412,14 @@ export default class DayPage extends Component {
 
 
                             <View style={{
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginLeft: 60,
                             }}>
-                                <DatePicker
+                             <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                {/* <DatePicker
 
                                     date={this.state.date}
                                     placeholder="placeholder"
@@ -1351,7 +1440,7 @@ export default class DayPage extends Component {
                                     }}
 
                                 />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
+                                <Text style={styless.instructions}>{this.state.date}</Text> */}
                             </View>
 
 
@@ -1360,6 +1449,7 @@ export default class DayPage extends Component {
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
+                                marginLeft: 20,
 
                             }}>
 
@@ -1373,7 +1463,7 @@ export default class DayPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                        <Image
+                                        {/* <Image
                                              source={require('../images/geo.png')
                                             }
                                             style={{
@@ -1385,7 +1475,39 @@ export default class DayPage extends Component {
                                                 resizeMode: 'stretch',
 
                                             }}
-                                        />
+                                        /> */}
+                                         <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                        <Image
+                                             source={require('../images/yellow_geo.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                         <Image
+                                             source={require('../images/select_people.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                        </View>
                                     </TouchableOpacity>
                                 }
                                 {
@@ -1395,13 +1517,18 @@ export default class DayPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                        <Image
-                                         source={require('../images/people.png')}
+                                         <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                         <Image
+                                         source={require('../images/select_geo.png')}
                                           
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
-                                                marginLeft: 40,
+                                                 marginLeft: 10,
 
                                                 justifyContent: 'center',
                                                 resizeMode: 'stretch',
@@ -1409,6 +1536,21 @@ export default class DayPage extends Component {
                                             }}
                                             onPress={() => this.openDialog()}
                                         />
+                                        <Image
+                                         source={require('../images/yellow_people.png')}
+                                          
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                         </View>
                                     </TouchableOpacity>
 
                                 }
@@ -1423,18 +1565,18 @@ export default class DayPage extends Component {
                     }
 
                     {
-                        !this.state.parent > 0 &&
+                        this.state.parent == 0 &&
                         <View style={styless.categries}>
 
 
 
                             <View style={{
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                marginLeft: 25,
+                                marginLeft: 100,
                             }}>
-                                <DatePicker
+                                {/* <DatePicker
 
                                     date={this.state.date}
                                     placeholder="placeholder"
@@ -1454,8 +1596,9 @@ export default class DayPage extends Component {
                                         this.customComponentDidMount();
                                     }}
 
-                                />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
+                                /> */}
+                                 <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
 
 
@@ -1463,6 +1606,7 @@ export default class DayPage extends Component {
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
+                                marginLeft:20
 
                             }}>
 
@@ -1476,19 +1620,51 @@ export default class DayPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                        <Image
-                                            source={require('../images/geo.png')
-                                        }
+                                        {/* <Image
+                                             source={require('../images/geo.png')
+                                            }
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
-                                                marginLeft: 130,
+                                                marginLeft: 40,
 
                                                 justifyContent: 'center',
                                                 resizeMode: 'stretch',
 
                                             }}
-                                        />
+                                        /> */}
+                                        <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                        <Image
+                                             source={require('../images/yellow_geo.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                         <Image
+                                             source={require('../images/select_people.png')
+                                            }
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                        /> 
+                                        </View>
                                     </TouchableOpacity>
                                 }
                                 {
@@ -1498,13 +1674,18 @@ export default class DayPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                        <Image
-                                         source={require('../images/people.png')}
-                                           
+                                         <View style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+
+                                            }}>
+                                         <Image
+                                         source={require('../images/select_geo.png')}
+                                          
                                             style={{
                                                 padding: 10,
                                                 margin: 5,
-                                                marginLeft: 130,
+                                                 marginLeft: 10,
 
                                                 justifyContent: 'center',
                                                 resizeMode: 'stretch',
@@ -1512,6 +1693,22 @@ export default class DayPage extends Component {
                                             }}
                                             onPress={() => this.openDialog()}
                                         />
+                                        <Image
+                                         source={require('../images/yellow_people.png')}
+                                          
+                                            style={{
+                                                padding: 10,
+                                                margin: 5,
+                                                marginLeft: 10,
+
+                                                justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }}
+                                            onPress={() => this.openDialog()}
+                                        />
+                                        </View>
+                                        
                                     </TouchableOpacity>
 
                                 }
@@ -1602,12 +1799,12 @@ export default class DayPage extends Component {
                             </View>
 
                             <View style={{
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginLeft: 60,
                             }}>
-                                <DatePicker
+                                {/* <DatePicker
 
                                     date={this.state.date}
                                     placeholder="placeholder"
@@ -1626,12 +1823,13 @@ export default class DayPage extends Component {
                                         this.customComponentDidMount();
                                     }}
 
-                                />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
+                                /> */}
+                                <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
 
 
-                            <View style={{
+                            {/* <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
 
@@ -1690,23 +1888,25 @@ export default class DayPage extends Component {
 
 
 
-                            </View>
+                            </View> */}
 
                         </View>
                     }
                     {
-                        !this.state.parent > 0 &&
+                         this.state.parent == 0 &&
                         <View style={styless.categries}>
 
 
 
                             <View style={{
-                                flexDirection: 'column',
+                                flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginLeft: 25,
                             }}>
-                                <DatePicker
+                             <Text style={styless.instructions}>Net Sales </Text>
+                             <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                {/* <DatePicker
 
                                     date={this.state.date}
                                     placeholder="placeholder"
@@ -1725,11 +1925,11 @@ export default class DayPage extends Component {
                                     }}
 
                                 />
-                                <Text style={styless.instructions}>{this.state.date}</Text>
+                                <Text style={styless.instructions}>{this.state.date}</Text> */}
                             </View>
 
 
-                            <View style={{
+                            {/* <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
 
@@ -1788,7 +1988,7 @@ export default class DayPage extends Component {
 
 
 
-                            </View>
+                            </View> */}
 
                         </View>
                     }
@@ -1979,7 +2179,7 @@ const styless = StyleSheet.create({
     instructions: {
         //justifyContent: 'center',
         textAlignVertical: "center",
-        fontSize: 12,
+        fontSize: 14,
         textAlign: 'center',
         color: '#fff',
     },
