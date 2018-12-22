@@ -20,6 +20,7 @@
     "react-native-datepicker": "^1.7.2",
     "react-native-datepicker-dialog": "0.0.9",
     "react-native-divider": "^1.0.3",
+    "react-native-event-listeners": "^1.0.3",
     "react-native-progress": "^3.5.0",
     "react-native-simple-dialogs": "^1.0.0",
     "react-navigation": "^2.17.0"
