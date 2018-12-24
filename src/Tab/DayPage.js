@@ -78,15 +78,15 @@ export default class DayPage extends Component {
             onTabFocus: this.tabClick
         });
     }
-    // static navigationOptions= ({navigation}) => {
-    //     return {title: navigation.state.params.itemId}
+    // static navigationOptions= ({navigation,title, subtitle}) => {
+    //     return {
+    //         //   headerTitle: <CustomHeader title={'Hello'} subtitle={'Raj'}/>,
+           
+    // }
     //   }
-    static navigationOptions = ({navigations}) =>({
-        title: this.state.title
-    });
-
-    static navigationOptions = ({ navigation }) => (
-        {
+   
+    static navigationOptions = ({ navigation,title, subtitle }) => (
+       {
             // tabBarOnPress: e => {
             // //   Alert.alert("Test", "Tab selected"); // Here
             // //   e.jumpToIndex(e.scene.index);
@@ -100,7 +100,7 @@ export default class DayPage extends Component {
 
             // }} />,
 
-
+          
             tabBarOnPress: ({ navigation, defaultHandler }) => {
                 // perform your logic here
                 // this is mandatory to perform the actual switch
@@ -125,7 +125,8 @@ export default class DayPage extends Component {
         this.customComponentDidMount()
     }
 
-
+   
+    
     componentWillMount() {
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             this.customComponentDidMount()
@@ -2038,6 +2039,12 @@ export default class DayPage extends Component {
 
 
 }
+const CustomHeader = ({ title, subtitle }) => (
+    <View >
+      <Text style={{ fontSize: 16, color: '#000' }}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#000' }}>{subtitle}</Text>
+    </View>
+  );
 
 
 const styless = StyleSheet.create({

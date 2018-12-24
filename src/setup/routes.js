@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { createStackNavigator, createDrawerNavigator, createMaterialTopTabNavigator, StackNavigator, HeaderBackButton } from 'react-navigation';
-import { DrawerActions,StackActions, NavigationActions } from 'react-navigation';
+import { DrawerActions, StackActions, NavigationActions } from 'react-navigation';
 import {
     View, Text, StyleSheet, Platform, TouchableOpacity, Image,
     AsyncStorage, Alert,
@@ -28,7 +28,7 @@ export const Tabs = createMaterialTopTabNavigator({
     Year: YearPage
 }, {
         tabBarOptions: {
-        upperCaseLabel: false,
+            upperCaseLabel: false,
             backgroundColor: '#CE000A',
             activeTintColor: '#fff',
             inactiveTintColor: 'yellow',
@@ -133,7 +133,7 @@ export const DrawerNavigator = createDrawerNavigator({
 
 },
     {
-        drawerPosition: 'rights',
+        drawerPosition: (Platform.OS === 'ios') ? 'right' : 'left',
         initialRouteName: 'DayPage',
         contentComponent: DrawerScreen,
         drawerWidth: 250,
@@ -154,7 +154,7 @@ export const MenuImage = ({ navigation }) => {
     }
     else {
         return <Image source={require('../images/navback.png')}
-       
+
             style={{
                 width: 30,
                 height: 30,
@@ -177,15 +177,13 @@ export const CalenderMenu = ({ navigation }) => {
     />
 }
 
-
-  
-export const CustomHeader = ({ title, subtitle }) => (
-    
+const CustomHeader = ({ title, subtitle }) => (
     <View >
-        <Text style={{ fontSize: 16, color: '#000' }}>{title}</Text>
-        <Text style={{ fontSize: 16, color: '#000' }}>{subtitle}</Text>
+      <Text style={{ fontSize: 16, color: '#FAC209' }}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#FAC209' }}>{subtitle}</Text>
     </View>
-);
+  );
+
 
 
 //   export const SaleDetails = StackNavigator({
@@ -222,27 +220,56 @@ export const CustomHeader = ({ title, subtitle }) => (
 
 
 
-class MyButton extends React.Component {
-    _myHomeFunction = () => {
+// export default class MyButton extends Component {
+//     constructor(props) {
 
-        alert('Here is home tab!');
+//         super(props)
+//         this.state = {
+           
+           
+//             date: '',
+//             check:'done'
+           
+           
+           
+//         }
+//         // this.onBackPress = this.onBackPress.bind(this);
+       
+//     }
+//     componentDidMount() {
+        
+       
+     
+//             this.setState({
+              
+//               check: 'hello'
+//             })
+       
+        
+//       }
+    
+    
+//     render() {
+//         return <RootNavigator check={this.state.check} {...this.props}  />;
+//     }
 
-    }
-    render() {
-        return (
-            <View>
-                <Text
-                    onPress={() => {
-                        this.props.navigation.navigate('DayPage')
-                        // navigate.navigate("LogoutScreen")
-                        //   this._myHomeFunction() 
-                    }}>
-                    {this.props.label}
-                </Text>
-            </View>
-        )
-    }
-}
+
+// getDate = () => {
+//     AsyncStorage.getItem("date_key").then((value) => {
+//         console.log(" Getter date" + value);
+//         if (value == null || value == '') {
+//             var date = new Date().toDateString();
+//             date = dateFormat(date, "yyyy-mm-dd");
+//             this.setState({ date });
+//             AsyncStorage.setItem("date_key", date);
+//         } else {
+//             this.setState({ date: value });
+//         }
+//     })
+// };
+// }
+
+
 
 const RootNavigator = createStackNavigator({
 
@@ -255,7 +282,7 @@ const RootNavigator = createStackNavigator({
         screen: DetailPage,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton style={{ overlayColor:'#000000'}} onPress={() => navigation.goBack(null)} />,
+            headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
                 backgroundColor: '#CE000A',
                 position: 'absolute',
@@ -267,13 +294,13 @@ const RootNavigator = createStackNavigator({
                 upperCaseLabel: false,
             },
         })
-    },   
+    },
     SaleDetails:
     {
         screen: SaleDetails,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton style={{ overlayColor:'#000000'}} onPress={() => navigation.goBack(null)} />,
+            headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
                 backgroundColor: '#CE000A',
                 position: 'absolute',
@@ -292,11 +319,9 @@ const RootNavigator = createStackNavigator({
         navigationOptions: ({ navigation, title, subtitle }) => {
             const { navigate } = navigation
             return {
-                title: 'McDLiv',
-                 // Title to appear in status bar
-                //  headerTitle: <CustomHeader title={navigation.state.params.title} subtitle={navigation.state.params.friend.companyName}/>,
-                // headerTitle: <CustomHeader title='McDa' 
-                // subtitle={}/>,
+                headerTitle: <CustomHeader title={'McDLiv'} subtitle={'2016-05-01'}/>,
+                // title: 'McDLiv',
+              
                 //    headerLeft: (
                 //         <TouchableOpacity  >
 
@@ -321,16 +346,8 @@ const RootNavigator = createStackNavigator({
                 // headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
 
                 // ,
-                // Day:
-                // { 
-                //     screen: DayPage, 
-                //     navigationOptions: ({navigation}) => ({ //don't forget parentheses around the object notation
-                //       //title: 'National',
-                //       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
-                //     })
-                //   },
-
-                headerLeft:
+               
+                headerLeft: (Platform.OS === 'android') ?
 
                     //     <TouchableOpacity>
                     //     <MyButton label="Press me!" />
@@ -345,28 +362,99 @@ const RootNavigator = createStackNavigator({
                     }>
                         <MenuImage style="styles.bar" navigation={navigation} />
                     </TouchableOpacity>
+                    : null
+                // :  AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
+                //       if(parent==0) 
+                //       null
+                //       else
+                //       ''
+
+                //        } 
+
                 ,
-                headerRight:
-                    <TouchableOpacity>
-                        <DatePicker
-                            // date={this.state.date}
-                            placeholder="placeholder"
+                headerRight: (Platform.OS === 'android') ?
+                    <View style={{ flexDirection: 'row', }}>
+                        <TouchableOpacity>
+                            <DatePicker
+                                // date={this.state.date}
+                                placeholder="placeholder"
 
-                            mode="date"
-                            format="YYYY-MM-DD"
-                            minDate="2016-05-01"
-                            maxDate="2021-06-01"
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            iconSource={require('../images/calendar.png')}
-                            onDateChange={(date) => {
-                                console.log('Date ->  '+date);
-                                AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                                EventRegister.emit('myCustomEvent', 'it works!!!')
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    console.log('Date ->  ' + date);
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                                    this.setState({ date: date });
+                                    EventRegister.emit('myCustomEvent', 'it works!!!')
+                                }}
+
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                /* 1. home icon click */
+
+                            }} >
+                            <Image
+                                source={require('../images/home.png')}
+                            style={{
+                                width: 14,
+                                height: 14,
+                                padding: 10,
+                                marginRight: 10,
+                               
+                                alignItems: 'center', justifyContent: 'center',
+                                resizeMode: 'stretch',
+
                             }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    :
+                    <View style={{ flexDirection: 'row', }}>
 
-                        />
-                    </TouchableOpacity>,
+
+                        <TouchableOpacity>
+                            <DatePicker
+                                // date={this.state.date}
+                                placeholder="placeholder"
+
+                                mode="date"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2021-06-01"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../images/calendar.png')}
+                                onDateChange={(date) => {
+                                    console.log('Date ->  ' + date);
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                                    this.setState({ date: date });
+                                    EventRegister.emit('myCustomEvent', 'it works!!!')
+                                }}
+
+                            />
+
+                        </TouchableOpacity>
+                        <View style={{ marginRight: 10 }}>
+                            <TouchableOpacity onPress={() => {
+                                navigation.dispatch(DrawerActions.toggleDrawer())
+                                // this.props.navigation.navigate('DayPage')
+                                // DayPage._myHomeFunction()
+                                // DayPage.this._myHomeFunction
+                            }
+
+                            }>
+                                <MenuImage style="styles.bar" navigation={navigation} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>,
+
                 headerStyle: {
                     backgroundColor: '#CE000A',
                     position: 'absolute',
@@ -378,22 +466,6 @@ const RootNavigator = createStackNavigator({
                 },
 
 
-                // headerStyle: {
-                //     backgroundColor: '#CE000A',
-                //     position: 'absolute',
-                //     height: 50,
-                //     top: 0,
-                //     left: 80,
-                //     right: 0,
-                //     },
-
-                //     headerTitleStyle:{
-                //     alignSelf:'center',
-                //     textAlign: 'center',
-                //     width: '100%',
-                //     },
-                //     headerTintColor: '#fff',
-                    
 
 
 
