@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { ScrollView, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import { DrawerActions } from 'react-navigation';
 import styles from '../styles/index';
+import LogoutScreen from '../components/LogoutScreen';
 
 class DrawerScreen extends Component {
   navigateToScreen = (route) => () => {
@@ -23,7 +24,6 @@ class DrawerScreen extends Component {
             <View style={styles.CircleShapeView} >
             {item.key == 'SALES' && 
               <TouchableOpacity
-                 
                 onPress={this.navigateToScreen('DayPage')} >
                 <Image style={{
                   justifyContent: 'center',
@@ -34,18 +34,34 @@ class DrawerScreen extends Component {
                   source={item.image}></Image>
               </TouchableOpacity>
               }
-               {
-                 item.key != 'SALES' && 
-             
+            {item.key == 'LOGOUT' && 
+              <TouchableOpacity
+                onPress={this.navigateToScreen('LogoutScreen')} >
                 <Image style={{
                   justifyContent: 'center',
                   padding: 10,
                   width: 18,
                   height: 18
-                }} onPress={this.navigateToScreen('DayPage')}
+                }} onPress={this.navigateToScreen('LogoutScreen')}
+                  source={item.image}></Image>
+              </TouchableOpacity>
+              }
+              
+              
+               {
+                    !(item.key == 'LOGOUT' || item.key == 'SALES') && 
+                <Image style={{
+                  justifyContent: 'center',
+                  padding: 10,
+                  width: 18,
+                  height: 18
+                }} 
+                // onPress={this.navigateToScreen('LogoutScreen')}
                   source={item.image}></Image>
               
               }
+              
+              
             </View>
             <Text style={{
               justifyContent: 'center',

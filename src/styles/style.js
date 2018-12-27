@@ -68,6 +68,7 @@ let style = StyleSheet.create({
     borderTopColor: '#ccc',
     borderTopWidth: 1
   },
+  
   disabled: {
     backgroundColor: '#eee'
   }

@@ -17,8 +17,12 @@ import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
 import DetailPage from '../components/DetailPage';
-import LogoutScreen from '../components/LogoutScreen.js'
 const GLOBAL = require('../constant/Globals.js');
+import OrderMode from '../Tab/OrderMode';
+import Hour from '../Tab/Hour';
+import DayPart from '../Tab/DayPart';
+import Pmix from '../Tab/Pmix';
+import LogoutScreen from '../components/LogoutScreen';
 //import DatePicker from '../components/DateSelector';
 
 export const Tabs = createMaterialTopTabNavigator({
@@ -45,79 +49,50 @@ export const Tabs = createMaterialTopTabNavigator({
             },
             swipeEnabled: false,
 
-        }, // navigationOptions: ({ navigation }) => ({
-        //     // tabBarOnPress: (scene, jumpToIndex) => {
-        //     //     console.log('onPress:', scene.route);
-        //     //     jumpToIndex(scene.index);
-        //     // },
-        //     tabBarOnPress: (scene, jumpToIndex) => {
-
-        //          console.log('test tab bar press overview');
-        //          console.log('onPress:', scene.route);
-        //             jumpToIndex(scene.index); },
-        // }),
-        // navigationOptions:({screenProps}) =>({
-        //     tabBarOnPress: (scene, jumpToIndex) => {
-        //         // You can use sceneProps.previousScreen here
-        //         console.log('onPress:', scene.route);
-        //         console.log('test tab bar press overview');
-        //         // jumpToIndex(scene.index);
-        //     }
-        // }),
-        //}
-        // tabBarComponent: ({ jumpToIndex, ...props}) => (
-        //     <TabBarTop
-        //        {...props}
-        //        jumpToIndex={(index) => {
-        //          if(props.navigation.state.index === index) {
-        //             console.log(index);
-        //         // props.navigation.clickButton(); //----> pass props params (code processes)
-        //        }
-        //        else {
-        //          jumpToIndex(index);
-        //        }
-        //      }
-        //    }
-        //  />
-        // )
-
-
-        // navigationOptions: ({ navigation }) => {
-        //     return {
-        //         // tabBarOnPress: (tab) => {
-        //         //     // onTabPress stuff here..
-        //         //     console.log('tabBarOnPress test tab bar press overview'+(tab));
-        //         // },
-
-        //         tabBarOnPress: ({ scene, jumpToIndex }) => {
-        //             // navigation.state.params.setCurrentScreen(scene);
-        //             console.log('tabBarOnPress test tab bar press overview');
-        //             // if (!scene.focused) {
-        //             //   jumpToIndex(scene.index);
-        //             // }
-        //           },
-        //         }
-        //     }
-
-        //   tabBarOnPress({ navigation, defaultHandler }) {
-        //     console.log('test tab bar press overview'+navigation);
-        //     if (navigation.isFocused()) {
-        //       // same tab was tapped twice
-        //       // reset inner state
-        //       return;
-        //     }
-        //     // tab was not previously focused
-        //     defaultHandler();
-        //   }
-
+        }, 
+       
+     
     });
+    export const TabOrderDetail = createMaterialTopTabNavigator({
+        
+        Hour: Hour,
+        DayPart: DayPart,
+        Pmix: Pmix,
+        OrderMode: OrderMode,
+       
+    }, {
+        
+            tabBarOptions: {
+                upperCaseLabel: false,
+                backgroundColor: '#CE000A',
+                activeTintColor: '#fff',
+                inactiveTintColor: 'yellow',
+                labelStyle: {
+                    fontSize: 12,
+                    margin: 0,
+                    padding: 0,
+                },
+                style: {
+                   
+                    backgroundColor: '#CE000A',
+                },
+                indicatorStyle: {
+                    backgroundColor: '#fff',
+                },
+    
+                tabBarOnPress: (scene, jumpToIndex) => {
+                    console.log('onPress:', scene.route);
+                    jumpToIndex(scene.index);
+                },
+                swipeEnabled: false,
+            }, 
+            
+        });
 
 export const DrawerNavigator = createDrawerNavigator({
     DayPage: {
         screen: Tabs
     },
-
-
 
     WeekPage: {
         screen: WeekPage,
@@ -146,7 +121,8 @@ export const MenuImage = ({ navigation }) => {
         return <Image source={require('../images/drawer.png')}
             style={{
 
-                marginLeft: 15,
+               marginRight:10,
+               padding:10
 
 
             }}
@@ -179,12 +155,10 @@ export const CalenderMenu = ({ navigation }) => {
 
 const CustomHeader = ({ title, subtitle }) => (
     <View >
-      <Text style={{ fontSize: 16, color: '#FAC209' }}>{title}</Text>
-      <Text style={{ fontSize: 10, color: '#FAC209' }}>{subtitle}</Text>
+      <Text style={{ fontSize: 16, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
     </View>
   );
-
-
 
 //   export const SaleDetails = StackNavigator({
 //     SaleDetails: {
@@ -278,6 +252,7 @@ const RootNavigator = createStackNavigator({
     LoginPage: { screen: LoginPage },
     DrawerNavigator: { screen: DrawerNavigator },
     DatePicker: { screen: DatePicker },
+    LogoutScreen:{ screen: LogoutScreen },
     DetailPage: {
         screen: DetailPage,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
@@ -290,6 +265,24 @@ const RootNavigator = createStackNavigator({
             headerTintColor: '#FAC209',
             headerTitleStyle: {
                 fontStyle: 'normal',
+                width: '100%',
+                upperCaseLabel: false,
+            },
+        })
+    },
+    Hour: {
+        screen: TabOrderDetail,
+        navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
+            //title: 'National',
+            headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
+            headerStyle: {
+                backgroundColor: '#CE000A',
+                position: 'absolute',
+            },
+            headerTintColor: '#FAC209',
+            headerTitleStyle: {
+                fontStyle: 'normal',
+               
                 width: '100%',
                 upperCaseLabel: false,
             },
@@ -319,7 +312,7 @@ const RootNavigator = createStackNavigator({
         navigationOptions: ({ navigation, title, subtitle }) => {
             const { navigate } = navigation
             return {
-                headerTitle: <CustomHeader title={'McDLiv'} subtitle={'2016-05-01'}/>,
+                headerTitle: <CustomHeader title={'McDLiv'} subtitle={'25 Dec 2018 04:48 pm'}/>,
                 // title: 'McDLiv',
               
                 //    headerLeft: (
@@ -386,6 +379,16 @@ const RootNavigator = createStackNavigator({
                                 confirmBtnText="Confirm"
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
+                                style={{
+                                    width: 14,
+                                    height: 14,
+                                    padding: 10,
+                                    marginRight: 10,
+                                   
+                                    alignItems: 'center', justifyContent: 'center',
+                                    resizeMode: 'stretch',
+    
+                                }}
                                 onDateChange={(date) => {
                                     console.log('Date ->  ' + date);
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
@@ -396,17 +399,20 @@ const RootNavigator = createStackNavigator({
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => {
+                            onPress={() => 
                                 /* 1. home icon click */
+                                navigation.navigate('DayPage')
 
-                            }} >
+
+                            } >
+                            {/* onPress={() => navigation.goBack(null)} */}
                             <Image
                                 source={require('../images/home.png')}
                             style={{
                                 width: 14,
                                 height: 14,
                                 padding: 10,
-                                marginRight: 10,
+                                marginRight: 15,
                                
                                 alignItems: 'center', justifyContent: 'center',
                                 resizeMode: 'stretch',
@@ -431,6 +437,16 @@ const RootNavigator = createStackNavigator({
                                 confirmBtnText="Confirm"
                                 cancelBtnText="Cancel"
                                 iconSource={require('../images/calendar.png')}
+                                style={{
+                                    width: 14,
+                                    height: 14,
+                                    padding: 10,
+                                    marginTop:5,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    resizeMode: 'stretch',
+    
+                                }}
                                 onDateChange={(date) => {
                                     console.log('Date ->  ' + date);
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
@@ -441,7 +457,7 @@ const RootNavigator = createStackNavigator({
                             />
 
                         </TouchableOpacity>
-                        <View style={{ marginRight: 10 }}>
+                        <View >
                             <TouchableOpacity onPress={() => {
                                 navigation.dispatch(DrawerActions.toggleDrawer())
                                 // this.props.navigation.navigate('DayPage')

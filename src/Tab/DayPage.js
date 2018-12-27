@@ -85,7 +85,7 @@ export default class DayPage extends Component {
     // }
     //   }
    
-    static navigationOptions = ({ navigation,title, subtitle }) => (
+    static navigationOptions = ({ navigation}) => (
        {
             // tabBarOnPress: e => {
             // //   Alert.alert("Test", "Tab selected"); // Here
@@ -127,15 +127,7 @@ export default class DayPage extends Component {
 
    
     
-    componentWillMount() {
-        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
-            this.customComponentDidMount()
-        })
-    }
-
-    componentWillUnmount() {
-        EventRegister.removeEventListener(this.listener)
-    }
+   
     componentWillReceiveProps(newProps) {
         // this._myHomeFunction();
         try {
@@ -673,12 +665,9 @@ export default class DayPage extends Component {
                                        style={{
                                           fontSize:8,
                                           marginLeft: 20,
-                                          
-                                           color:'#0000FF',
-                                           alignItems: 'center', justifyContent: 'center',
-                                          
-
-                                       }} >
+                                          color:'#0000FF',
+                                          alignItems: 'center', justifyContent: 'center',
+                                         }} >
                                        {
                                          this.state.date  
                                        }
@@ -687,9 +676,7 @@ export default class DayPage extends Component {
                                        
                                         style={{
                                            fontSize:8,
-                                            
                                             marginLeft: 25,
-                                           
                                             color:'#0000FF',
                                             alignItems: 'center', justifyContent: 'center',
                                            
@@ -942,13 +929,24 @@ export default class DayPage extends Component {
 
     }
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
+    componentWillMount() {
+      
+        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
+            this.customComponentDidMount()
+        })
     }
+
+    componentWillUnmount() {
+        EventRegister.removeEventListener(this.listener)
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+  
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+      
         // const { navigation } = this.props;
         // const parent = navigation.getParam('parent', '0');
         // const tabPosition = navigation.getParam('tabPosition', '0');
@@ -1322,7 +1320,8 @@ export default class DayPage extends Component {
     // for back stack navigation
     onBackPress = () => {
         console.log('onBackPress function  this.state.parent  : ' + this.state.parent)
-
+        console.log(" back button " );
+       
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
             console.log(" parent_key : " + parent);
             if (this.state.parent == 0) {
@@ -1348,6 +1347,7 @@ export default class DayPage extends Component {
                 this.setBackStackScreen();
             }
         }).done()
+        
         return true;
     }
 
@@ -1415,7 +1415,7 @@ export default class DayPage extends Component {
 
                                 }} onPress={() => {
 
-                                    this.setBackStackScreen();
+                                    this.onBackPress();
 
                                 }}>Back</Text>
 
@@ -1804,7 +1804,7 @@ export default class DayPage extends Component {
 
                                 }} onPress={() => {
 
-                                    this.setBackStackScreen();
+                                    this.onBackPress();
 
                                 }}>Back</Text>
 
@@ -2039,12 +2039,6 @@ export default class DayPage extends Component {
 
 
 }
-const CustomHeader = ({ title, subtitle }) => (
-    <View >
-      <Text style={{ fontSize: 16, color: '#000' }}>{title}</Text>
-      <Text style={{ fontSize: 10, color: '#000' }}>{subtitle}</Text>
-    </View>
-  );
 
 
 const styless = StyleSheet.create({

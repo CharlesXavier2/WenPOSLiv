@@ -23,8 +23,9 @@ export default class DetailPage extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            headerTitle: navigation.state.params.itemName + '',
-            headerTitleStyle: { alignSelf: 'center', upperCaseLabel: false, }
+            // headerTitle: navigation.state.params.itemName + '',
+            headerTitle: <CustomHeader title={navigation.state.params.itemName + ''} subtitle={'25 Dec 2018 04:48 pm, Tue'}/>,
+            headerTitleStyle: { alignSelf: 'center', upperCaseLabel: false, justifyContent: (Platform.OS === 'ios') ? 'center' : 'flex-start' }
         }
     }
 
@@ -425,11 +426,8 @@ export default class DetailPage extends Component {
                                 <TouchableOpacity
 
                                 onPress={() => {
-
-                                    // if ((item.key == "Total Net Sales")) {
-
-
-                                        this.props.navigation.navigate('SaleDetails', {
+                                     // if ((item.key == "Total Net Sales")) {
+                                            this.props.navigation.navigate('SaleDetails', {
                                             itemName: this.state.itemName,
                                             itemId: this.state.itemId,
                                             parent: this.state.parent,
@@ -682,7 +680,12 @@ export default class DetailPage extends Component {
     }
 }
 
-
+const CustomHeader = ({ title, subtitle }) => (
+    <View >
+      <Text style={{ fontSize: 16, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
+    </View>
+  );
 const styless = StyleSheet.create({
 
     MainContainer: {

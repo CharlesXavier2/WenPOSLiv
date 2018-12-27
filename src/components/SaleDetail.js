@@ -29,8 +29,9 @@ export default class SaleDetails extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            headerTitle: 'Total Net Sales',
-            headerTitleStyle: { alignSelf: 'center' }
+            // headerTitle: navigation.state.params.itemName + '',
+            headerTitle: <CustomHeader title={navigation.state.params.itemName + ''} subtitle={'25 Dec 2018 04:48 pm'}/>,
+            headerTitleStyle: { alignSelf: 'center', upperCaseLabel: false, justifyContent: (Platform.OS === 'ios') ? 'center' : 'flex-start' }
         }
     }
 
@@ -74,10 +75,7 @@ export default class SaleDetails extends Component {
         const title = navigation.getParam('itemName', "McDLiv")
         this.setState({ itemName: title });
         console.log(" SaleDetails");
-        console.log(" itemId --" + itemId);
-        console.log(" parent --" + parent);
-        console.log(" isGeo --" + isGeo);
-        console.log(" date --" + date11);
+       
         console.log(" filter_type --" + filter_type);
         this.customComponentDidMount(itemId, parent, isGeo, date11, filter_type)
     }
@@ -376,10 +374,10 @@ export default class SaleDetails extends Component {
                                     fontSize: 12,
                                     //width: 150,
                                     color: '#000000',
-                                    marginLeft: 50,
+                                    marginLeft: 20,
 
                                     // fontWeight: 'bold',
-                                    justifyContent: 'flex-end',
+                                    justifyContent: 'center',
                                     //textAlignVertical: "center",
                                     alignItems: 'center',
 
@@ -391,53 +389,50 @@ export default class SaleDetails extends Component {
                                 </Text>
 
                             </View>
-                            {/* <View style={styless.shapewhite}>
-                                <TouchableOpacity
 
-                                // onPress={() => {
+                            {
+                                item.name == "All" &&
+                                <View style={styless.shapewhite}>
+                                    <TouchableOpacity
 
-                                //     if ((item.key == "Total Net Sales")) {
-
-
-                                //         this.props.navigation.navigate('SaleDetails', {
-                                //             itemName: this.state.itemName,
-                                //             itemId: this.state.itemId,
-                                //             parent: this.state.parent,
-                                //             date: this.state.date,
-                                //             isGeo: this.state.isGeo,
-                                //             filter_type: this.state.filter_type
-                                //         });
+                                        onPress={() => {
+                                            this.props.navigation.navigate('Hour', {
+                                                itemName: this.state.itemName,
+                                            });
 
 
-                                //     }
-                                // }} 
-                                >
+                                        }
+                                        }
+                                    >
 
-                                    <View >
-
-
-                                        <Image
-                                            source={require('../images/nxt.png')}
-                                            style={{
-                                                width: 12,
-                                                height: 12,
-                                                margin: 5,
-                                                marginLeft: 50,
-                                                justifyContent: 'center',
-
-                                                resizeMode: 'stretch',
-
-                                            }} />
-
-                                    </View>
+                                        <View >
 
 
-                                </TouchableOpacity>
-                            </View> */}
+                                            <Image
+                                                source={require('../images/nxt.png')}
+                                                style={{
+                                                    width: 12,
+                                                    height: 12,
+                                                    margin: 5,
+                                                     marginLeft: 100,
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
+                                                }} />
+
+                                        </View>
+
+
+                                    </TouchableOpacity>
+                                </View>
+                            }
+                            {
+                                item.name != "All" &&
+                                <View style={styless.shapewhite} />
+
+                            }
                         </View>
                     </View>
-
 
                 </View>
             </View>
@@ -448,7 +443,7 @@ export default class SaleDetails extends Component {
 
     render() {
 
-      
+
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
 
             return (
@@ -483,8 +478,6 @@ export default class SaleDetails extends Component {
                     </View>
                 </View >
 
-
-
             );
         }
         else {
@@ -509,13 +502,13 @@ export default class SaleDetails extends Component {
                             marginTop: 30,
 
                         }} >
-                      
-                        <FlatList
+
+                        {/* <FlatList
                             data={this.state.dataSource}
                             renderItem={
                                 this.renderItem
                             }
-                        />
+                        /> */}
                     </View>
                 </View>
             )
@@ -523,7 +516,12 @@ export default class SaleDetails extends Component {
     }
 }
 
-
+const CustomHeader = ({ title, subtitle }) => (
+    <View >
+      <Text style={{ fontSize: 16, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
+    </View>
+  );
 const styless = StyleSheet.create({
 
     MainContainer: {
@@ -647,7 +645,7 @@ const styless = StyleSheet.create({
     },
     shapeyellow: {
         backgroundColor: '#FBE028',
-        width: '55%',
+        width: '50%',
         marginLeft: -30,
 
         height: 30,
@@ -661,16 +659,16 @@ const styless = StyleSheet.create({
     },
     shapewhite: {
         backgroundColor: '#FFFFFF',
-        width: '15%',
+        width: '25%',
         marginTop: 7,
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
 
 
     },
     shapeinnerwhite: {
         backgroundColor: '#FFFFFF',
-        width: '45%',
+        width: '25%',
         marginTop: 7,
         alignItems: 'center',
         justifyContent: 'center',
