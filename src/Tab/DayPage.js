@@ -2008,15 +2008,7 @@ export default class DayPage extends Component {
 
 
 
-                    <FlatList
-
-                        data={this.state.dataSource}
-                        renderItem={
-                            this.renderItem11
-                        }
-
-
-                    />
+                  
 
 
 

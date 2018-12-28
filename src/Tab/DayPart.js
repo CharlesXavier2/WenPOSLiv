@@ -417,7 +417,7 @@ export default class DayPart extends Component {
                             marginTop: 30,
 
                         }} >
-                        <Text>Data not found </Text>
+                        {/* <Text>Data not found </Text> */}
                         {/* <FlatList
                         data={this.state.dataSource}
                         renderItem={

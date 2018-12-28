@@ -2042,7 +2042,7 @@ export default class YearPage extends Component {
 
 
 
-                    <FlatList
+                    {/* <FlatList
 
                         data={this.state.dataSource}
                         renderItem={
@@ -2050,7 +2050,7 @@ export default class YearPage extends Component {
                         }
 
 
-                    />
+                    /> */}
 
 
 
