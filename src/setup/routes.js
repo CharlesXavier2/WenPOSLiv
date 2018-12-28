@@ -392,7 +392,7 @@ const RootNavigator = createStackNavigator({
                                 onDateChange={(date) => {
                                     console.log('Date ->  ' + date);
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                                    this.setState({ date: date });
+                                    // this.setState({ date: date });
                                     EventRegister.emit('myCustomEvent', 'it works!!!')
                                 }}
 
@@ -450,7 +450,7 @@ const RootNavigator = createStackNavigator({
                                 onDateChange={(date) => {
                                     console.log('Date ->  ' + date);
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                                    this.setState({ date: date });
+                                    // this.setState({ date: date });
                                     EventRegister.emit('myCustomEvent', 'it works!!!')
                                 }}
 
