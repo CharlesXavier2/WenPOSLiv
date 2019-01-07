@@ -18,7 +18,7 @@ import Moment from 'moment';
 
 const FORMATS = {
   'date': 'YYYY-MM-DD',
-  'datetime': 'YYYY-MM-DD HH:mm',
+  'datetime': 'DD ',
   'time': 'HH:mm'
 };
 

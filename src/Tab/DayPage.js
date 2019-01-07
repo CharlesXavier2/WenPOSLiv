@@ -10,7 +10,6 @@ import React, { Component } from 'react';
 import { EventRegister } from 'react-native-event-listeners'
 const GLOBAL = require('../constant/Globals.js');
 import {
-
     StyleSheet,
     Text,
     View,
@@ -23,8 +22,6 @@ import {
     Alert,
     exitApp,
     Platform,
-
-
 } from 'react-native';
 import CardView from 'react-native-cardview';
 import styles from '../styles';
@@ -73,10 +70,10 @@ export default class DayPage extends Component {
             filter_type: 'day',
             netSales: ' '
         }
-        this.onBackPress = this.onBackPress.bind(this);
         props.navigation.setParams({
             onTabFocus: this.tabClick
         });
+        this.backButtonClick = this.backButtonClick.bind(this);
     }
     // static navigationOptions= ({navigation,title, subtitle}) => {
     //     return {
@@ -87,6 +84,12 @@ export default class DayPage extends Component {
    
     static navigationOptions = ({ navigation}) => (
        {
+        headerTitle: (
+            <View>
+              <Text>{navigation.param}</Text>
+              <Text>{navigation.param}</Text>
+            </View>
+          ),
             // tabBarOnPress: e => {
             // //   Alert.alert("Test", "Tab selected"); // Here
             // //   e.jumpToIndex(e.scene.index);
@@ -933,14 +936,31 @@ export default class DayPage extends Component {
     componentWillMount() {
       
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
+          
             this.customComponentDidMount()
-        })
-    }
+        }),
 
-    componentWillUnmount() {
-        EventRegister.removeEventListener(this.listener)
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+        BackHandler.addEventListener('hardwareBackPress', this.backButtonClick);
     }
+    backButtonClick(){
+        if(this.props.navigation && this.props.navigation.goBack){
+          this.props.navigation.goBack(null);
+          return false;
+        }
+        return true;
+      }
+    componentWillUnmount() {
+        EventRegister.removeEventListener(this.listener);
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress.bind(this));
+    }
+       
+      onBackPress () {
+        Alert.alert("Backpress")
+        if (activeRoute.index === 0) {
+          return false;
+        }
+        return true;
+      }
 
   
     componentDidMount() {

@@ -23,7 +23,8 @@ import Hour from '../Tab/Hour';
 import DayPart from '../Tab/DayPart';
 import Pmix from '../Tab/Pmix';
 import LogoutScreen from '../components/LogoutScreen';
-//import DatePicker from '../components/DateSelector';
+import CustomHeader from '../utils/CustomHeader';
+
 
 export const Tabs = createMaterialTopTabNavigator({
     Day: DayPage,
@@ -153,13 +154,6 @@ export const CalenderMenu = ({ navigation }) => {
     />
 }
 
-const CustomHeader = ({ title, subtitle }) => (
-    <View >
-      <Text style={{ fontSize: 16, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
-      <Text style={{ fontSize: 10, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
-    </View>
-  );
-
 //   export const SaleDetails = StackNavigator({
 //     SaleDetails: {
 //       screen: SaleDetails,
@@ -192,61 +186,7 @@ const CustomHeader = ({ title, subtitle }) => (
 //     );
 //   };
 
-
-
-// export default class MyButton extends Component {
-//     constructor(props) {
-
-//         super(props)
-//         this.state = {
-           
-           
-//             date: '',
-//             check:'done'
-           
-           
-           
-//         }
-//         // this.onBackPress = this.onBackPress.bind(this);
-       
-//     }
-//     componentDidMount() {
-        
-       
-     
-//             this.setState({
-              
-//               check: 'hello'
-//             })
-       
-        
-//       }
-    
-    
-//     render() {
-//         return <RootNavigator check={this.state.check} {...this.props}  />;
-//     }
-
-
-// getDate = () => {
-//     AsyncStorage.getItem("date_key").then((value) => {
-//         console.log(" Getter date" + value);
-//         if (value == null || value == '') {
-//             var date = new Date().toDateString();
-//             date = dateFormat(date, "yyyy-mm-dd");
-//             this.setState({ date });
-//             AsyncStorage.setItem("date_key", date);
-//         } else {
-//             this.setState({ date: value });
-//         }
-//     })
-// };
-// }
-
-
-
 const RootNavigator = createStackNavigator({
-
 
     //important: key and screen name (i.e. DrawerNavigator) should be same while using the drawer navigator inside stack navigator.
     LoginPage: { screen: LoginPage },
@@ -312,7 +252,7 @@ const RootNavigator = createStackNavigator({
         navigationOptions: ({ navigation, title, subtitle }) => {
             const { navigate } = navigation
             return {
-                headerTitle: <CustomHeader title={'McDLiv'} subtitle={'25 Dec 2018 04:48 pm'}/>,
+                headerTitle: <CustomHeader/>,
                 // title: 'McDLiv',
               
                 //    headerLeft: (
@@ -389,9 +329,10 @@ const RootNavigator = createStackNavigator({
                                     resizeMode: 'stretch',
     
                                 }}
-                                onDateChange={(date) => {
+                                onDateChange={(date,datetime,time) => {
                                     console.log('Date ->  ' + date);
-                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
+                                    AsyncStorage.setItem(GLOBAL.DATE_KEY, date),
+                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, datetime),
                                     // this.setState({ date: date });
                                     EventRegister.emit('myCustomEvent', 'it works!!!')
                                 }}
@@ -447,11 +388,12 @@ const RootNavigator = createStackNavigator({
                                     resizeMode: 'stretch',
     
                                 }}
-                                onDateChange={(date) => {
+                                onDateChange={(date,datetime,time) => {
                                     console.log('Date ->  ' + date);
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                                    // this.setState({ date: date });
+                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, date+" "+time),
                                     EventRegister.emit('myCustomEvent', 'it works!!!')
+                                    
                                 }}
 
                             />
