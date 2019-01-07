@@ -647,7 +647,7 @@ export default class DayPage extends Component {
                                         style={{
                                             width: 14,
                                             height: 14,
-                                            padding: 10,
+                                            padding: 8,
                                             marginLeft: 20,
                                             margin: 5,
                                             alignItems: 'center', justifyContent: 'center',
@@ -781,7 +781,7 @@ export default class DayPage extends Component {
                                                 style={{
                                                     width: 14,
                                                     height: 14,
-                                                    padding: 10,
+                                                    padding: 3,
                                                     marginLeft: 20,
 
                                                     margin: 5,
@@ -865,7 +865,7 @@ export default class DayPage extends Component {
                                                 style={{
                                                     width: 14,
                                                     height: 14,
-                                                    padding: 10,
+                                                    padding: 3,
                                                      marginLeft: 20,
 
                                                     margin: 5,

@@ -233,7 +233,7 @@ export default class WeekPage extends Component {
 
                     })
                     if (value1 == "true") {
-                        this.setState({isGeo:true})
+                        this.setState({ isGeo: true })
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -270,7 +270,7 @@ export default class WeekPage extends Component {
 
                         }
                     } else {
-                        this.setState({isGeo:false})
+                        this.setState({ isGeo: false })
                         console.log("else value1==true");
                         switch (parent) {
                             case 0:
@@ -647,9 +647,9 @@ export default class WeekPage extends Component {
         var val = item.current_sale;
         var str = item.name;
         var rounfFranchise = '0.00';
-        if(item.name == "National"){
-            var netsale= this.totalSaleFormat(item.current_sale)
-            this.setState({ netSales:netsale });
+        if (item.name == "National") {
+            var netsale = this.totalSaleFormat(item.current_sale)
+            this.setState({ netSales: netsale });
 
         }
         // console.log('UI refeashing start')
@@ -680,71 +680,71 @@ export default class WeekPage extends Component {
                                 backgroundColor: '#FFFFFF',
                                 width: '25%',
                             }}>
-                               {
-                               !( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) )  &&
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        /* 1. Navigate to the Details route with params */
-                                        this.props.navigation.navigate('DetailPage', {
-                                            itemName: this.toTitleCase(str),
-                                            itemId: item.id,
-                                            sales: this.totalSaleFormat(item.current_sale),
-                                            parent: this.state.parent,
-                                            date: this.state.date,
-                                            isGeo: this.state.isGeo,
-                                            filter_type: this.state.filter_type
-                                        });
-                                    }} >
-                                    <Image
+                                {
+                                    !((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
+                                        }} >
+                                      <Image
                                         source={require('../images/list.png')}
                                         style={{
                                             width: 14,
                                             height: 14,
-                                            padding: 10,
+                                            padding: 8,
                                             marginLeft: 20,
                                             margin: 5,
                                             alignItems: 'center', justifyContent: 'center',
                                             resizeMode: 'stretch',
 
                                         }} />
-                                </TouchableOpacity>
-                                 }
-                                  {
-                                       ( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) ) &&
-                              
-                                  <View style={{ flexDirection: 'column',alignItems: 'center', justifyContent: 'center',marginTop:5}}>
-                                   <Text
-                                       
-                                       style={{
-                                          fontSize:8,
-                                          marginLeft: 20,
-                                          
-                                           color:'#0000FF',
-                                           alignItems: 'center', justifyContent: 'center',
-                                          
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    ((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
 
-                                       }} >
-                                       {
-                                         this.state.date  
-                                       }
-                                       </Text>
-                                    <Text
-                                       
-                                        style={{
-                                           fontSize:8,
-                                            
-                                            marginLeft: 25,
-                                           
-                                            color:'#0000FF',
-                                            alignItems: 'center', justifyContent: 'center',
-                                           
+                                    <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+                                        <Text
 
-                                        }} >
-                                          14:31
+                                            style={{
+                                                fontSize: 8,
+                                                marginLeft: 20,
+
+                                                color: '#0000FF',
+                                                alignItems: 'center', justifyContent: 'center',
+
+
+                                            }} >
+                                            {
+                                                this.state.date
+                                            }
                                         </Text>
-                                       
-                                        </View>
-                                 }
+                                        <Text
+
+                                            style={{
+                                                fontSize: 8,
+
+                                                marginLeft: 25,
+
+                                                color: '#0000FF',
+                                                alignItems: 'center', justifyContent: 'center',
+
+
+                                            }} >
+                                            14:31
+                                        </Text>
+
+                                    </View>
+                                }
                             </View>
 
                             <View style={{
@@ -756,8 +756,8 @@ export default class WeekPage extends Component {
 
                                 <TouchableOpacity
                                     onPress={() => {
-                                        
-                                         if(this.state.parent==2 && this.state.isGeo){
+
+                                        if (this.state.parent == 2 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
                                                 itemName: this.toTitleCase(str),
@@ -769,7 +769,7 @@ export default class WeekPage extends Component {
                                                 filter_type: this.state.filter_type
                                             });
                                         }
-                                        else if(this.state.parent==1 && !this.state.isGeo){
+                                        else if (this.state.parent == 1 && !this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
                                                 itemName: this.toTitleCase(str),
@@ -791,7 +791,7 @@ export default class WeekPage extends Component {
 
                                         // color: '#CE000A',
                                         color: '#0000FF',
-                                       
+
                                         marginLeft: 50,
 
                                         justifyContent: 'center',
@@ -829,8 +829,8 @@ export default class WeekPage extends Component {
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '15%', 
-                                           
+                                            width: '15%',
+
                                         }}>
 
 
@@ -839,7 +839,7 @@ export default class WeekPage extends Component {
                                                 style={{
                                                     width: 14,
                                                     height: 14,
-                                                    padding: 10,
+                                                    padding: 3,
                                                     marginLeft: 20,
 
                                                     margin: 5,
@@ -855,7 +855,7 @@ export default class WeekPage extends Component {
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
                                             width: '15%',
-                                          
+
                                         }}>
 
 
@@ -914,7 +914,7 @@ export default class WeekPage extends Component {
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
                                             width: '15%',
-                                           
+
                                         }}>
 
 
@@ -923,7 +923,7 @@ export default class WeekPage extends Component {
                                                 style={{
                                                     width: 14,
                                                     height: 14,
-                                                    padding: 10,
+                                                    padding: 3,
                                                      marginLeft: 20,
 
                                                     margin: 5,
@@ -939,7 +939,7 @@ export default class WeekPage extends Component {
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
                                             width: '15%',
-                                           
+
                                         }}>
 
 
@@ -1125,7 +1125,7 @@ export default class WeekPage extends Component {
 
                     })
                     if (value1 == "true") {
-                        this.setState({isGeo:true})
+                        this.setState({ isGeo: true })
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -1165,7 +1165,7 @@ export default class WeekPage extends Component {
 
                         }
                     } else {
-                        this.setState({isGeo:false})
+                        this.setState({ isGeo: false })
                         console.log("else value1==true");
                         // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
                         switch (parent) {
@@ -1257,9 +1257,9 @@ export default class WeekPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((isGeoVal) => {
             console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
-            this.setState({isGeo:isGeoVal})
+            this.setState({ isGeo: isGeoVal })
             if (isGeo == "true") {
-                this.setState({isGeo:true})
+                this.setState({ isGeo: true })
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1299,7 +1299,7 @@ export default class WeekPage extends Component {
                         break;
                 }
             } else {
-                this.setState({isGeo:false})
+                this.setState({ isGeo: false })
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1462,7 +1462,7 @@ export default class WeekPage extends Component {
                                 justifyContent: 'center',
                                 marginLeft: 60,
                             }}>
-                             <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                                 {/* <DatePicker
 
@@ -1521,37 +1521,37 @@ export default class WeekPage extends Component {
 
                                             }}
                                         /> */}
-                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                        <Image
-                                             source={require('../images/yellow_geo.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/yellow_geo.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
-                                         <Image
-                                             source={require('../images/select_people.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                }}
+                                            />
+                                            <Image
+                                                source={require('../images/select_people.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
+                                                }}
+                                            />
                                         </View>
                                     </TouchableOpacity>
                                 }
@@ -1562,40 +1562,40 @@ export default class WeekPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                         <Image
-                                         source={require('../images/select_geo.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                 marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/select_geo.png')}
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                        <Image
-                                         source={require('../images/yellow_people.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
+                                            <Image
+                                                source={require('../images/yellow_people.png')}
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                         </View>
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
+
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
+
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
+                                        </View>
                                     </TouchableOpacity>
 
                                 }
@@ -1610,7 +1610,7 @@ export default class WeekPage extends Component {
                     }
 
                     {
-                       this.state.parent == 0 &&
+                        this.state.parent == 0 &&
                         <View style={styless.categries}>
 
 
@@ -1642,7 +1642,7 @@ export default class WeekPage extends Component {
                                     }}
 
                                 /> */}
-                                 <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
 
@@ -1651,7 +1651,7 @@ export default class WeekPage extends Component {
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
-                                marginLeft:20
+                                marginLeft: 20
 
                             }}>
 
@@ -1679,36 +1679,36 @@ export default class WeekPage extends Component {
                                             }}
                                         /> */}
                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                        <Image
-                                             source={require('../images/yellow_geo.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/yellow_geo.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
-                                         <Image
-                                             source={require('../images/select_people.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                }}
+                                            />
+                                            <Image
+                                                source={require('../images/select_people.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
+                                                }}
+                                            />
                                         </View>
                                     </TouchableOpacity>
                                 }
@@ -1719,41 +1719,41 @@ export default class WeekPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                         <Image
-                                         source={require('../images/select_geo.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                 marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/select_geo.png')}
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                        <Image
-                                         source={require('../images/yellow_people.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
+                                            <Image
+                                                source={require('../images/yellow_people.png')}
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
+
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
+
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
                                         </View>
-                                        
+
                                     </TouchableOpacity>
 
                                 }
@@ -1949,8 +1949,8 @@ export default class WeekPage extends Component {
                                 justifyContent: 'center',
                                 marginLeft: 25,
                             }}>
-                             <Text style={styless.instructions}>Net Sales </Text>
-                             <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
                                 {/* <DatePicker
 
                                     date={this.state.date}
