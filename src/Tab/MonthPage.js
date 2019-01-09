@@ -68,7 +68,9 @@ export default class MonthPage extends Component {
             isGeo: "true",
             isLoading: true,
             filter_type: 'month',
-            netSales: ' '
+            netSales: ' ',
+            netSales1: ' ',
+            netSales2: ' '
         }
         this.onBackPress = this.onBackPress.bind(this);
 
@@ -196,12 +198,15 @@ export default class MonthPage extends Component {
     }
 
     // For show Expandable data on click button.
+    
     setExpandableData = (obj) => {
         var id = obj.id;
         var name = obj.name
+        var netSalesVal=obj.netSales;
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
+        var urlPan =''
         var regionId = ''
         var cityId = '';
         // this.getDate();
@@ -251,7 +256,7 @@ export default class MonthPage extends Component {
                             case '0':
                                 console.log(" value1==true  case 0");
                                 console.log(" region_id= " + id);
-                                urlValue = 'get_all_region_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + id;
+                                urlValue = 'get_all_region_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -265,13 +270,13 @@ export default class MonthPage extends Component {
 
                                 console.log(" region_id= " + id);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_city_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+                                urlValue = 'get_all_city_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
 
                                 break;
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'get_all_store_sale?filter_type=day&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
+                                urlValue = 'get_all_store_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
                                 break;
                             // case 3:
                             // case '3':
@@ -290,13 +295,13 @@ export default class MonthPage extends Component {
                                 console.log(" region_id= " + id);
                                 console.log(" region_id---= " + regionId);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + name;
+                                urlValue = 'get_all_deputy_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + name;
 
                                 break;
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+                                urlValue = 'get_all_petch_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
 
                                 break;
                             case 2:
@@ -306,7 +311,14 @@ export default class MonthPage extends Component {
 
                         }
                     }
-                    const urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
+                    if(name != "National"){
+                        urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
+
+                    }else{
+                        urlPan = 'http:///115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
+
+
+                    }
                     console.log("  url " + urlPan)
                     return fetch(urlPan)
                         .then((response) => response.json())
@@ -328,7 +340,7 @@ export default class MonthPage extends Component {
                                     console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
                                         dataSourceTemp.map((dataa) => {
                                             if (id == dataa.id) {
-
+                                                data.sale_data[0].total=netSalesVal;
                                                 dataa.sale_data = data.sale_data
                                                 dataa.hasSaleData = true
                                             } else {
@@ -543,7 +555,22 @@ export default class MonthPage extends Component {
         dateValue: { this.state.date };
     }
 
-
+    totalSaleFormatWithPercentage = (val) => {
+        try {
+            if (val > 999999) {
+                val = val / 1000000;
+                op = val.toFixed(2);
+                return (op + " %");
+            } else {
+                val = val / 1000;
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " %");
+            }
+        } catch (error) {
+            return (0 + " %");
+        }
+    }
     totalSaleFormat = (val) => {
         try {
             if (val > 999999) {
@@ -619,27 +646,54 @@ export default class MonthPage extends Component {
 
 
 
-                        <View style={styless.shapeinnerwhite}>
+                         {((item.name == "Comp Sale %")||(item.name == "Comp GC  %")||(item.name == "MOM Comp. Sale %")) &&
+                            <View style={styless.shapeinnerwhite}>
+
+                          
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 70,
 
 
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#000000',
-                                marginLeft: 70,
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }}> {
+                                    // "" +item.total.toFixed(2)+'%'
+                                        "" + this.totalSaleFormatWithPercentage(val)
+                                    }
+                                </Text>
+
+                            </View>
+
+                        }
+                        {
+                            <View style={styless.shapeinnerwhite}>
+
+                          
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 70,
 
 
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
 
-                            }}> {
-                                    //item.current_sale.toFixed(2)
-                                    "" + this.totalSaleFormat(val)
-                                }
-                            </Text>
+                                }}> {
+                                        //item.current_sale.toFixed(2)
+                                        "" + this.totalSaleFormat(val)
+                                    }
+                                </Text>
 
-                        </View>
+                            </View>
+
+                        }
                     </View>
                 </View>
 
@@ -705,17 +759,17 @@ export default class MonthPage extends Component {
                                             });
                                         }} >
                                         <Image
-                                        source={require('../images/list.png')}
-                                        style={{
-                                            width: 14,
-                                            height: 14,
-                                            padding: 8,
-                                            marginLeft: 20,
-                                            margin: 5,
-                                            alignItems: 'center', justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                            source={require('../images/list.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 8,
+                                                marginLeft: 20,
+                                                margin: 5,
+                                                alignItems: 'center', justifyContent: 'center',
+                                                resizeMode: 'stretch',
 
-                                        }} />
+                                            }} />
                                     </TouchableOpacity>
                                 }
                                 {
@@ -765,7 +819,27 @@ export default class MonthPage extends Component {
 
                                 <TouchableOpacity
                                     onPress={() => {
-
+                                        var netsale = this.totalSaleFormat(item.current_sale)
+                                        AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+                                            this.setState({ netSales: netsale });
+                                            switch(parseInt(this.state.parent)) { 
+                                                case 1:
+                                                case "1":
+                                                console.log("Setter -> Case1");
+                                                this.setState({ netSales1: netsale });
+                                                console.log("Setter -> Case1  netSales1 -> "+this.state.netSales1);
+                                                break;
+                                                case 2:
+                                                case "2":
+                                                console.log("Setter -> Case2");
+                                                this.setState({ netSales2: netsale });
+                                                console.log("Setter -> Case2  netSales2 ->"+this.state.netSales2);
+                                                break;
+                                            }
+        
+                                        console.log("Setter -> Parent : "+(this.state.parent+1)+"  netSales:regionIdVal for back  : " + netsale);
+                                       
+                                        }).done()
                                         if (this.state.parent == 2 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
@@ -823,15 +897,22 @@ export default class MonthPage extends Component {
                                     onPress={() => {
                                         console.log("  !item.hasSaleData && : ");
 
-                                        if (!(item.name == "National")) {
+                                        // if ((item.name == "National")) {
                                             var obj = {};
                                             obj.id = item.id;
                                             obj.name = item.name;
-
+                                            obj.netSales = item.current_sale;
                                             this.setExpandableData(obj);
+                                            // this.setExpandableNationalData(obj);
 
+                                        // }
+                                        // else {
+                                        //     var obj = {};
+                                        //     obj.id = item.id;
+                                        //     obj.name = item.name;
 
-                                        }
+                                        //     this.setExpandableData(obj);
+                                        // }
                                     }}  >
 
                                     {(!(item.name == "National")) &&
@@ -868,6 +949,18 @@ export default class MonthPage extends Component {
                                         }}>
 
 
+                                            <Image
+                                                source={require('../images/down.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 3,
+                                                    marginLeft: 20,
+
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
+
+                                                }} />
 
                                         </View>
 
@@ -933,7 +1026,7 @@ export default class MonthPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 3,
-                                                     marginLeft: 20,
+                                                    marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -952,6 +1045,18 @@ export default class MonthPage extends Component {
                                         }}>
 
 
+                                            <Image
+                                                source={require('../images/up.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 3,
+                                                    marginLeft: 20,
+
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
+
+                                                }} />
 
                                         </View>
 
@@ -1015,6 +1120,7 @@ export default class MonthPage extends Component {
         // console.log('Parent : '+parent)
         // console.log('tabPosition : '+tabPosition)
         this.customComponentDidMount()
+        EventRegister.emit('myCustomEvent', 'it works!!!')
     }
 
     callCurrentApi = () => {
@@ -1109,6 +1215,7 @@ export default class MonthPage extends Component {
             if (parent == null) {
                 parent = 0
             }
+           
             AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
                 console.log(" date_key : " + value);
                 if (value == null || value == '') {
@@ -1124,6 +1231,32 @@ export default class MonthPage extends Component {
                         value1 = "true";
                     }
                     console.log(" Is_Geo_key : " + value1);
+                    
+                    AsyncStorage.getItem("week"+parent).then((regionIdVal) => {
+                      
+                        // this.setState({netSales:regionIdVal});
+                        console.log(" Is_Geo_key : " + value1);
+                    console.log("Getter -> Parent -> "+(parent));
+                    switch(parent) { 
+                        case 1:
+                        case "1":
+                        console.log("Getter -> Parent -> Case1 "+(parent)+" this.state.netSales2 -> "+this.state.netSales1);
+                        var netsale=this.state.netSales1;
+                        this.setState({ netSales:netsale });
+                        break;
+                        case 2:
+                        case "2":
+                        console.log("Getter -> Parent ->Case2 "+(parent)+"  this.state.netSales2 -> "+this.state.netSales2);
+                        var netsale=this.state.netSales2;
+                        this.setState({ netSales:netsale });
+                        break;
+                    }
+                    
+                    console.log("Getter -> Parent : week"+parent+"value1 netSales:regionIdVal for back  : " + this.state.netSales);
+                   
+                     
+                    }).done();
+
                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,

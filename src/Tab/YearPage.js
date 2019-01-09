@@ -54,7 +54,9 @@ export default class YearPage extends Component {
             isGeo: "true",
             isLoading: true,
             filter_type: 'year',
-            netSales:'',
+            netSales: '',
+            netSales1: ' ',
+            netSales2: ' '
 
         }
         this.onBackPress = this.onBackPress.bind(this);
@@ -97,7 +99,7 @@ export default class YearPage extends Component {
     _myHomeFunction = () => {
         alert('Here is home tab!');
     }
-    
+
     componentWillMount() {
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             this.customComponentDidMount()
@@ -187,12 +189,15 @@ export default class YearPage extends Component {
 
 
     // For show Expandable data on click button.
+    
     setExpandableData = (obj) => {
         var id = obj.id;
         var name = obj.name
+        var netSalesVal=obj.netSales;
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
+        var urlPan='' 
         var regionId = ''
         var cityId = '';
         // this.getDate();
@@ -235,14 +240,14 @@ export default class YearPage extends Component {
 
                     })
                     if (value1 == "true") {
-                        this.setState({isGeo:true})
+                        this.setState({ isGeo: true })
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
                             case '0':
                                 console.log(" value1==true  case 0");
                                 console.log(" region_id= " + id);
-                                urlValue = 'get_all_region_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + id;
+                                urlValue = 'get_all_region_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -256,13 +261,13 @@ export default class YearPage extends Component {
 
                                 console.log(" region_id= " + id);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_city_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+                                urlValue = 'get_all_city_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
 
                                 break;
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'get_all_store_sale?filter_type=day&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
+                                urlValue = 'get_all_store_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
                                 break;
                             // case 3:
                             // case '3':
@@ -272,7 +277,7 @@ export default class YearPage extends Component {
 
                         }
                     } else {
-                        this.setState({isGeo:false})
+                        this.setState({ isGeo: false })
                         console.log("else value1==true");
                         switch (parent) {
                             case 0:
@@ -281,13 +286,13 @@ export default class YearPage extends Component {
                                 console.log(" region_id= " + id);
                                 console.log(" region_id---= " + regionId);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + name;
+                                urlValue = 'get_all_deputy_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + name;
 
                                 break;
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+                                urlValue = 'get_all_petch_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
 
                                 break;
                             case 2:
@@ -297,8 +302,15 @@ export default class YearPage extends Component {
 
                         }
                     }
-                    const urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
-                    console.log("  url " + urlPan)
+                    
+                    if(name != "National"){
+                        urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
+
+                    }else{
+                        urlPan = 'http:///115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
+
+
+                    }                    console.log("  url " + urlPan)
                     return fetch(urlPan)
                         .then((response) => response.json())
                         .then((responseJson) => {
@@ -319,6 +331,7 @@ export default class YearPage extends Component {
                                     console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
                                         dataSourceTemp.map((dataa) => {
                                             if (id == dataa.id) {
+                                                data.sale_data[0].total=netSalesVal;
                                                 dataa.hasSaleData = true
                                                 dataa.sale_data = data.sale_data
                                             } else {
@@ -357,7 +370,7 @@ export default class YearPage extends Component {
         }).done();
     }
 
-    setCurrentScreen = (id,name) => {
+    setCurrentScreen = (id, name) => {
         //0 for region 1 for city 2 for store
         var isGeoVal = "true"
         console.log('setCurrentScreen before parent : ' + this.state.parent)
@@ -392,9 +405,9 @@ export default class YearPage extends Component {
                 break;
             case 2:
             case '2':
-            AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
-            AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
-            console.log("GLOBAL.CITY_NAME_KEY : " + name);
+                AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+                AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
+                console.log("GLOBAL.CITY_NAME_KEY : " + name);
             case 3:
             case '3':
                 break;
@@ -535,7 +548,22 @@ export default class YearPage extends Component {
         dateValue: { this.state.date };
     }
 
-
+    totalSaleFormatWithPercentage = (val) => {
+        try {
+            if (val > 999999) {
+                val = val / 1000000;
+                op = val.toFixed(2);
+                return (op + " %");
+            } else {
+                val = val / 1000;
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " %");
+            }
+        } catch (error) {
+            return (0 + " %");
+        }
+    }
     totalSaleFormat = (val) => {
         try {
             if (val > 999999) {
@@ -612,27 +640,54 @@ export default class YearPage extends Component {
 
 
 
-                        <View style={styless.shapeinnerwhite}>
+                         {((item.name == "Comp Sale %")||(item.name == "Comp GC  %")||(item.name == "MOM Comp. Sale %")) &&
+                            <View style={styless.shapeinnerwhite}>
+
+                          
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 70,
 
 
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#000000',
-                                marginLeft: 70,
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }}> {
+                                    // "" +item.total.toFixed(2)+'%'
+                                        "" + this.totalSaleFormatWithPercentage(val)
+                                    }
+                                </Text>
+
+                            </View>
+
+                        }
+                        {
+                            <View style={styless.shapeinnerwhite}>
+
+                          
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 70,
 
 
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
 
-                            }}> {
-                                    //item.current_sale.toFixed(2)
-                                    "" + this.totalSaleFormat(val)
-                                }
-                            </Text>
+                                }}> {
+                                        //item.current_sale.toFixed(2)
+                                        "" + this.totalSaleFormat(val)
+                                    }
+                                </Text>
 
-                        </View>
+                            </View>
+
+                        }
                     </View>
                 </View>
 
@@ -654,9 +709,9 @@ export default class YearPage extends Component {
         var val = item.current_sale;
         var str = item.name;
         var rounfFranchise = '0.00';
-        if(item.name == "National"){
-            var netsale= this.totalSaleFormat(item.current_sale)
-            this.setState({ netSales:netsale });
+        if (item.name == "National") {
+            var netsale = this.totalSaleFormat(item.current_sale)
+            this.setState({ netSales: netsale });
 
         }
         // console.log('UI refeashing start')
@@ -687,71 +742,71 @@ export default class YearPage extends Component {
                                 backgroundColor: '#FFFFFF',
                                 width: '25%',
                             }}>
-                               {
-                               !( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) )  &&
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        /* 1. Navigate to the Details route with params */
-                                        this.props.navigation.navigate('DetailPage', {
-                                            itemName: this.toTitleCase(str),
-                                            itemId: item.id,
-                                            sales: this.totalSaleFormat(item.current_sale),
-                                            parent: this.state.parent,
-                                            date: this.state.date,
-                                            isGeo: this.state.isGeo,
-                                            filter_type: this.state.filter_type
-                                        });
-                                    }} >
-                                   <Image
-                                        source={require('../images/list.png')}
-                                        style={{
-                                            width: 14,
-                                            height: 14,
-                                            padding: 8,
-                                            marginLeft: 20,
-                                            margin: 5,
-                                            alignItems: 'center', justifyContent: 'center',
-                                            resizeMode: 'stretch',
-
-                                        }} />
-                                </TouchableOpacity>
-                                 }
-                                  {
-                                       ( (this.state.parent==2 && this.state.isGeo)||(this.state.parent==1 && !this.state.isGeo) ) &&
-                              
-                                  <View style={{ flexDirection: 'column',alignItems: 'center', justifyContent: 'center',marginTop:5}}>
-                                   <Text
-                                       
-                                       style={{
-                                          fontSize:8,
-                                          marginLeft: 20,
-                                          
-                                           color:'#0000FF',
-                                           alignItems: 'center', justifyContent: 'center',
-                                          
-
-                                       }} >
-                                       {
-                                         this.state.date  
-                                       }
-                                       </Text>
-                                    <Text
-                                       
-                                        style={{
-                                           fontSize:8,
-                                            
-                                            marginLeft: 25,
-                                           
-                                            color:'#0000FF',
-                                            alignItems: 'center', justifyContent: 'center',
-                                           
-
+                                {
+                                    !((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            /* 1. Navigate to the Details route with params */
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
                                         }} >
-                                          14:31
+                                        <Image
+                                            source={require('../images/list.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 8,
+                                                marginLeft: 20,
+                                                margin: 5,
+                                                alignItems: 'center', justifyContent: 'center',
+                                                resizeMode: 'stretch',
+
+                                            }} />
+                                    </TouchableOpacity>
+                                }
+                                {
+                                    ((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+
+                                    <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+                                        <Text
+
+                                            style={{
+                                                fontSize: 8,
+                                                marginLeft: 20,
+
+                                                color: '#0000FF',
+                                                alignItems: 'center', justifyContent: 'center',
+
+
+                                            }} >
+                                            {
+                                                this.state.date
+                                            }
                                         </Text>
-                                       
-                                        </View>
-                                 }
+                                        <Text
+
+                                            style={{
+                                                fontSize: 8,
+
+                                                marginLeft: 25,
+
+                                                color: '#0000FF',
+                                                alignItems: 'center', justifyContent: 'center',
+
+
+                                            }} >
+                                            14:31
+                                        </Text>
+
+                                    </View>
+                                }
                             </View>
 
                             <View style={{
@@ -763,8 +818,29 @@ export default class YearPage extends Component {
 
                                 <TouchableOpacity
                                     onPress={() => {
-                                        
-                                         if(this.state.parent==2 && this.state.isGeo){
+                                        var netsale = this.totalSaleFormat(item.current_sale)
+                                        AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+                                            this.setState({ netSales: netsale });
+                                            switch(parseInt(this.state.parent)) { 
+                                                case 1:
+                                                case "1":
+                                                console.log("Setter -> Case1");
+                                                this.setState({ netSales1: netsale });
+                                                console.log("Setter -> Case1  netSales1 -> "+this.state.netSales1);
+                                                break;
+                                                case 2:
+                                                case "2":
+                                                console.log("Setter -> Case2");
+                                                this.setState({ netSales2: netsale });
+                                                console.log("Setter -> Case2  netSales2 ->"+this.state.netSales2);
+                                                break;
+                                            }
+        
+                                        console.log("Setter -> Parent : "+(this.state.parent+1)+"  netSales:regionIdVal for back  : " + netsale);
+                                       
+                                        }).done()
+
+                                        if (this.state.parent == 2 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
                                                 itemName: this.toTitleCase(str),
@@ -776,7 +852,7 @@ export default class YearPage extends Component {
                                                 filter_type: this.state.filter_type
                                             });
                                         }
-                                        else if(this.state.parent==1 && !(this.state.isGeo)){
+                                        else if (this.state.parent == 1 && !(this.state.isGeo)) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
                                                 itemName: this.toTitleCase(str),
@@ -798,7 +874,7 @@ export default class YearPage extends Component {
 
                                         // color: '#CE000A',
                                         color: '#0000FF',
-                                       
+
                                         marginLeft: 50,
 
                                         justifyContent: 'center',
@@ -821,23 +897,30 @@ export default class YearPage extends Component {
                                     onPress={() => {
                                         console.log("  !item.hasSaleData && : ");
 
-                                        if (!(item.name == "National")) {
+                                        // if ((item.name == "National")) {
                                             var obj = {};
                                             obj.id = item.id;
                                             obj.name = item.name;
-
+                                            obj.netSales = item.current_sale;
                                             this.setExpandableData(obj);
+                                            // this.setExpandableNationalData(obj);
 
+                                        // }
+                                        // else {
+                                        //     var obj = {};
+                                        //     obj.id = item.id;
+                                        //     obj.name = item.name;
 
-                                        }
+                                        //     this.setExpandableData(obj);
+                                        // }
                                     }}  >
 
                                     {(!(item.name == "National")) &&
 
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
-                                            width: '15%', 
-                                           
+                                            width: '15%',
+
                                         }}>
 
 
@@ -862,12 +945,25 @@ export default class YearPage extends Component {
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
                                             width: '15%',
-                                          
+
                                         }}>
 
 
+                                            <Image
+                                                source={require('../images/down.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 3,
+                                                    marginLeft: 20,
+
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
+
+                                                }} />
 
                                         </View>
+
 
                                     }
 
@@ -921,7 +1017,7 @@ export default class YearPage extends Component {
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
                                             width: '15%',
-                                           
+
                                         }}>
 
 
@@ -931,7 +1027,7 @@ export default class YearPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 3,
-                                                     marginLeft: 20,
+                                                    marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -946,10 +1042,22 @@ export default class YearPage extends Component {
                                         <View style={{
                                             backgroundColor: '#FFFFFF',
                                             width: '15%',
-                                           
+
                                         }}>
 
 
+                                            <Image
+                                                source={require('../images/up.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 3,
+                                                    marginLeft: 20,
+
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
+
+                                                }} />
 
                                         </View>
 
@@ -1012,6 +1120,7 @@ export default class YearPage extends Component {
         // console.log('Parent : '+parent)
         // console.log('tabPosition : '+tabPosition)
         this.customComponentDidMount()
+        EventRegister.emit('myCustomEvent', 'it works!!!')
     }
 
     callCurrentApi = () => {
@@ -1105,6 +1214,7 @@ export default class YearPage extends Component {
             if (parent == null) {
                 parent = 0
             }
+            
             AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
                 console.log(" date_key : " + value);
                 if (value == null || value == '') {
@@ -1120,6 +1230,31 @@ export default class YearPage extends Component {
                         value1 = "true";
                     }
                     console.log(" Is_Geo_key : " + value1);
+                    AsyncStorage.getItem("week"+parent).then((regionIdVal) => {
+                      
+                        // this.setState({netSales:regionIdVal});
+                        console.log(" Is_Geo_key : " + value1);
+                    console.log("Getter -> Parent -> "+(parent));
+                    switch(parent) { 
+                        case 1:
+                        case "1":
+                        console.log("Getter -> Parent -> Case1 "+(parent)+" this.state.netSales2 -> "+this.state.netSales1);
+                        var netsale=this.state.netSales1;
+                        this.setState({ netSales:netsale });
+                        break;
+                        case 2:
+                        case "2":
+                        console.log("Getter -> Parent ->Case2 "+(parent)+"  this.state.netSales2 -> "+this.state.netSales2);
+                        var netsale=this.state.netSales2;
+                        this.setState({ netSales:netsale });
+                        break;
+                    }
+                    
+                    console.log("Getter -> Parent : week"+parent+"value1 netSales:regionIdVal for back  : " + this.state.netSales);
+                   
+                     
+                    }).done();
+
                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,
@@ -1127,7 +1262,7 @@ export default class YearPage extends Component {
 
                     })
                     if (value1 == "true") {
-                        this.setState({isGeo:true})
+                        this.setState({ isGeo: true })
                         console.log(" value1==true");
                         switch (parent) {
                             case 0:
@@ -1167,7 +1302,7 @@ export default class YearPage extends Component {
 
                         }
                     } else {
-                        this.setState({isGeo:false})
+                        this.setState({ isGeo: false })
                         console.log("else value1==true");
                         // urlValue='http://115.112.181.53:3000/api/getDeputyMgnSales' 
                         switch (parent) {
@@ -1261,7 +1396,7 @@ export default class YearPage extends Component {
             console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
             if (isGeo == "true") {
-                this.setState({isGeo:true})
+                this.setState({ isGeo: true })
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1301,7 +1436,7 @@ export default class YearPage extends Component {
                         break;
                 }
             } else {
-                this.setState({isGeo:false})
+                this.setState({ isGeo: false })
                 switch (parent) {
                     case 0:
                         // Region level
@@ -1463,7 +1598,7 @@ export default class YearPage extends Component {
                                 justifyContent: 'center',
                                 marginLeft: 60,
                             }}>
-                             <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                                 {/* <DatePicker
 
@@ -1522,37 +1657,37 @@ export default class YearPage extends Component {
 
                                             }}
                                         /> */}
-                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                        <Image
-                                             source={require('../images/yellow_geo.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/yellow_geo.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
-                                         <Image
-                                             source={require('../images/select_people.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                }}
+                                            />
+                                            <Image
+                                                source={require('../images/select_people.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
+                                                }}
+                                            />
                                         </View>
                                     </TouchableOpacity>
                                 }
@@ -1563,40 +1698,40 @@ export default class YearPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                         <Image
-                                         source={require('../images/select_geo.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                 marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/select_geo.png')}
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                        <Image
-                                         source={require('../images/yellow_people.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
+                                            <Image
+                                                source={require('../images/yellow_people.png')}
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                         </View>
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
+
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
+
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
+                                        </View>
                                     </TouchableOpacity>
 
                                 }
@@ -1611,7 +1746,7 @@ export default class YearPage extends Component {
                     }
 
                     {
-                       this.state.parent == 0 &&
+                        this.state.parent == 0 &&
                         <View style={styless.categries}>
 
 
@@ -1643,7 +1778,7 @@ export default class YearPage extends Component {
                                     }}
 
                                 /> */}
-                                 <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
 
@@ -1652,7 +1787,7 @@ export default class YearPage extends Component {
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
-                                marginLeft:20
+                                marginLeft: 20
 
                             }}>
 
@@ -1680,36 +1815,36 @@ export default class YearPage extends Component {
                                             }}
                                         /> */}
                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                        <Image
-                                             source={require('../images/yellow_geo.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/yellow_geo.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
-                                         <Image
-                                             source={require('../images/select_people.png')
-                                            }
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                }}
+                                            />
+                                            <Image
+                                                source={require('../images/select_people.png')
+                                                }
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                            }}
-                                        /> 
+                                                }}
+                                            />
                                         </View>
                                     </TouchableOpacity>
                                 }
@@ -1720,41 +1855,41 @@ export default class YearPage extends Component {
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                         <View style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center', 
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
 
-                                            }}>
-                                         <Image
-                                         source={require('../images/select_geo.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                 marginLeft: 10,
+                                        }}>
+                                            <Image
+                                                source={require('../images/select_geo.png')}
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
-                                        <Image
-                                         source={require('../images/yellow_people.png')}
-                                          
-                                            style={{
-                                                padding: 10,
-                                                margin: 5,
-                                                marginLeft: 10,
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
 
-                                                justifyContent: 'center',
-                                                resizeMode: 'stretch',
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
+                                            <Image
+                                                source={require('../images/yellow_people.png')}
 
-                                            }}
-                                            onPress={() => this.openDialog()}
-                                        />
+                                                style={{
+                                                    padding: 10,
+                                                    margin: 5,
+                                                    marginLeft: 10,
+
+                                                    justifyContent: 'center',
+                                                    resizeMode: 'stretch',
+
+                                                }}
+                                                onPress={() => this.openDialog()}
+                                            />
                                         </View>
-                                        
+
                                     </TouchableOpacity>
 
                                 }
@@ -1950,8 +2085,8 @@ export default class YearPage extends Component {
                                 justifyContent: 'center',
                                 marginLeft: 25,
                             }}>
-                             <Text style={styless.instructions}>Net Sales </Text>
-                             <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                <Text style={styless.instructions}>Net Sales </Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
                                 {/* <DatePicker
 
                                     date={this.state.date}

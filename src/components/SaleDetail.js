@@ -5,6 +5,8 @@
  */
 
 import React, { Component } from 'react';
+import { EventRegister } from 'react-native-event-listeners'
+
 import {
     Platform,
     StyleSheet,
@@ -30,7 +32,7 @@ export default class SaleDetails extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             // headerTitle: navigation.state.params.itemName + '',
-            headerTitle: <CustomHeader title={navigation.state.params.itemName + ''} subtitle={'25 Dec 2018 04:48 pm'}/>,
+            headerTitle: <CustomHeader title={navigation.state.params.itemName + ''} subtitle={navigation.state.params.date}/>,
             headerTitleStyle: { alignSelf: 'center', upperCaseLabel: false, justifyContent: (Platform.OS === 'ios') ? 'center' : 'flex-start' }
         }
     }
@@ -78,6 +80,7 @@ export default class SaleDetails extends Component {
        
         console.log(" filter_type --" + filter_type);
         this.customComponentDidMount(itemId, parent, isGeo, date11, filter_type)
+        EventRegister.emit('myCustomEvent', 'it works!!!');
     }
 
     totalSaleFormat = (val) => {

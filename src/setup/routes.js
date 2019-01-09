@@ -24,6 +24,8 @@ import DayPart from '../Tab/DayPart';
 import Pmix from '../Tab/Pmix';
 import LogoutScreen from '../components/LogoutScreen';
 import CustomHeader from '../utils/CustomHeader';
+var dateFormat = require('dateformat');
+
 
 
 export const Tabs = createMaterialTopTabNavigator({
@@ -329,10 +331,13 @@ const RootNavigator = createStackNavigator({
                                     resizeMode: 'stretch',
     
                                 }}
-                                onDateChange={(date,datetime,time) => {
+                                onDateChange={(date) => {
                                     console.log('Date ->  ' + date);
+                                    // var date = new Date().toDateString();
+                                    // date = dateFormat(date, "yyyy-mm-dd");
+                                    // date = moment(date).format("YYYY-MM-DD HH:mm:ss");
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date),
-                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, datetime),
+                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, date),
                                     // this.setState({ date: date });
                                     EventRegister.emit('myCustomEvent', 'it works!!!')
                                 }}
@@ -388,10 +393,15 @@ const RootNavigator = createStackNavigator({
                                     resizeMode: 'stretch',
     
                                 }}
-                                onDateChange={(date,datetime,time) => {
+                                onDateChange={(date) => {
+                                    
                                     console.log('Date ->  ' + date);
+                                    // var date = new Date().toDateString();
+                                    // date = dateFormat(date, "yyyy-mm-dd");
+                                    // date = moment(date).format("YYYY-MM-DD HH:mm:ss");
+
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
-                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, date+" "+time),
+                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, date),
                                     EventRegister.emit('myCustomEvent', 'it works!!!')
                                     
                                 }}

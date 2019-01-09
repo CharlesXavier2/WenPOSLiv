@@ -54,7 +54,9 @@ export default class WeekPage extends Component {
             isGeo: "true",
             isLoading: true,
             filter_type: 'week',
-            netSales: ' '
+            netSales: ' ',
+            netSales1: ' ',
+            netSales2: ' '
         }
         props.navigation.setParams({
             onTabFocus: this.tabClick
@@ -185,12 +187,15 @@ export default class WeekPage extends Component {
     }
 
     // For show Expandable data on click button.
+   
     setExpandableData = (obj) => {
         var id = obj.id;
         var name = obj.name
+        var netSalesVal=obj.netSales;
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
+        var urlPan=''
         var regionId = ''
         var cityId = '';
         // this.getDate();
@@ -221,11 +226,9 @@ export default class WeekPage extends Component {
                 }
                 urlPanDate = value;
                 AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
-                    console.log("1st Is_Geo_key : " + value1);
                     if (value1 === null) {
                         value1 = true;
                     }
-                    console.log(" Is_Geo_key : " + value1);
                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,
@@ -234,13 +237,11 @@ export default class WeekPage extends Component {
                     })
                     if (value1 == "true") {
                         this.setState({ isGeo: true })
-                        console.log(" value1==true");
                         switch (parent) {
                             case 0:
                             case '0':
-                                console.log(" value1==true  case 0");
-                                console.log(" region_id= " + id);
-                                urlValue = 'get_all_region_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + id;
+                               
+                                urlValue = 'get_all_region_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -250,17 +251,13 @@ export default class WeekPage extends Component {
                                 break;
                             case 1:
                             case '1':
-                                console.log(" value1==true  case 1");
-
-                                console.log(" region_id= " + id);
-                                console.log("city_name= " + name);
-                                urlValue = 'get_all_city_sale?filter_type=day&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+                               
+                                urlValue = 'get_all_city_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
 
                                 break;
                             case 2:
                             case '2':
-                                console.log(" value1==true  case 2");
-                                urlValue = 'get_all_store_sale?filter_type=day&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
+                                urlValue = 'get_all_store_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
                                 break;
                             // case 3:
                             // case '3':
@@ -271,38 +268,38 @@ export default class WeekPage extends Component {
                         }
                     } else {
                         this.setState({ isGeo: false })
-                        console.log("else value1==true");
                         switch (parent) {
                             case 0:
                             case '0':
-                                console.log("else value1==true case  0");
-                                console.log(" region_id= " + id);
-                                console.log(" region_id---= " + regionId);
-                                console.log("city_name= " + name);
-                                urlValue = 'get_all_deputy_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + name;
+                               
+                                urlValue = 'get_all_deputy_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + name;
 
                                 break;
                             case 1:
                             case '1':
-                                console.log("else value1==true case  1");
-                                urlValue = 'get_all_petch_manager_sale?filter_type=day&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+                                urlValue = 'get_all_petch_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
 
                                 break;
                             case 2:
                             case '2':
-                                console.log("else value1==true case  2");
                                 return
 
                         }
                     }
-                    const urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
+                    if(name != "National"){
+                        urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
+
+                    }else{
+                        urlPan = 'http:///115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
+
+
+                    }
                     console.log("  url " + urlPan)
                     return fetch(urlPan)
                         .then((response) => response.json())
                         .then((responseJson) => {
                             var dataSourceTemp = [];
                             this.setState({ indeterminate: false });
-                            console.log("Response data responseJson -> " + responseJson);
                             this.state.dataSource.map((value) => {
 
                                 dataSourceTemp.push({
@@ -311,12 +308,11 @@ export default class WeekPage extends Component {
                                     last_sale: value.last_sale, sale_data: []
                                 })
                             }),
-                                console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
 
                                 responseJson.sale_info.map((data) => {
-                                    console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
                                         dataSourceTemp.map((dataa) => {
                                             if (id == dataa.id) {
+                                                data.sale_data[0].total=netSalesVal;
                                                 dataa.sale_data = data.sale_data
                                                 dataa.hasSaleData = true
                                             } else {
@@ -359,12 +355,10 @@ export default class WeekPage extends Component {
     setCurrentScreen = (id, name) => {
         //0 for region 1 for city 2 for store
         var isGeoVal = "true"
-        console.log('setCurrentScreen before parent : ' + this.state.parent)
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
         if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
-            console.log('Already in store ')
             return;
         }
         var parent = (parseInt(this.state.parent) + 1);
@@ -532,7 +526,22 @@ export default class WeekPage extends Component {
 
         dateValue: { this.state.date };
     }
-
+    totalSaleFormatWithPercentage = (val) => {
+        try {
+            if (val > 999999) {
+                val = val / 1000000;
+                op = val.toFixed(2);
+                return (op + " %");
+            } else {
+                val = val / 1000;
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " %");
+            }
+        } catch (error) {
+            return (0 + " %");
+        }
+    }
 
     totalSaleFormat = (val) => {
         try {
@@ -563,7 +572,6 @@ export default class WeekPage extends Component {
     // Rerender data in row on click Expandable button
     renderItemSaleData = ({ item }) => {
         var val = item.total;
-        console.log(' renderItemSaleData' + item.name)
         return (
 
 
@@ -610,27 +618,54 @@ export default class WeekPage extends Component {
 
 
 
-                        <View style={styless.shapeinnerwhite}>
+                         {((item.name == "Comp Sale %")||(item.name == "Comp GC  %")||(item.name == "MOM Comp. Sale %")) &&
+                            <View style={styless.shapeinnerwhite}>
+
+                          
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 70,
 
 
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#000000',
-                                marginLeft: 70,
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }}> {
+                                    // "" +item.total.toFixed(2)+'%'
+                                        "" + this.totalSaleFormatWithPercentage(val)
+                                    }
+                                </Text>
+
+                            </View>
+
+                        }
+                        {
+                            <View style={styless.shapeinnerwhite}>
+
+                          
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 70,
 
 
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
 
-                            }}> {
-                                    //item.current_sale.toFixed(2)
-                                    "" + this.totalSaleFormat(val)
-                                }
-                            </Text>
+                                }}> {
+                                        //item.current_sale.toFixed(2)
+                                        "" + this.totalSaleFormat(val)
+                                    }
+                                </Text>
 
-                        </View>
+                            </View>
+
+                        }
                     </View>
                 </View>
 
@@ -652,9 +687,7 @@ export default class WeekPage extends Component {
             this.setState({ netSales: netsale });
 
         }
-        // console.log('UI refeashing start')
-
-        return (
+       return (
 
             <View style={styless.MainContainer}>
 
@@ -695,18 +728,18 @@ export default class WeekPage extends Component {
                                                 filter_type: this.state.filter_type
                                             });
                                         }} >
-                                      <Image
-                                        source={require('../images/list.png')}
-                                        style={{
-                                            width: 14,
-                                            height: 14,
-                                            padding: 8,
-                                            marginLeft: 20,
-                                            margin: 5,
-                                            alignItems: 'center', justifyContent: 'center',
-                                            resizeMode: 'stretch',
+                                        <Image
+                                            source={require('../images/list.png')}
+                                            style={{
+                                                width: 14,
+                                                height: 14,
+                                                padding: 8,
+                                                marginLeft: 20,
+                                                margin: 5,
+                                                alignItems: 'center', justifyContent: 'center',
+                                                resizeMode: 'stretch',
 
-                                        }} />
+                                            }} />
                                     </TouchableOpacity>
                                 }
                                 {
@@ -756,7 +789,30 @@ export default class WeekPage extends Component {
 
                                 <TouchableOpacity
                                     onPress={() => {
-
+                                        var netsale = this.totalSaleFormat(item.current_sale)
+                                        AsyncStorage.setItem("week"+(this.state.parent+1),netsale);
+                                        console.log("Setter ->  Parent -> "+(this.state.parent+1));
+                                        AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+                                            this.setState({ netSales: netsale });
+                                            switch(parseInt(this.state.parent)) { 
+                                                case 1:
+                                                case "1":
+                                                console.log("Setter -> Case1");
+                                                this.setState({ netSales1: netsale });
+                                                console.log("Setter -> Case1  netSales1 -> "+this.state.netSales1);
+                                                break;
+                                                case 2:
+                                                case "2":
+                                                console.log("Setter -> Case2");
+                                                this.setState({ netSales2: netsale });
+                                                console.log("Setter -> Case2  netSales2 ->"+this.state.netSales2);
+                                                break;
+                                            }
+        
+                                        console.log("Setter -> Parent : "+(this.state.parent+1)+"  netSales:regionIdVal for back  : " + netsale);
+                                       
+                                        }).done()
+                                        
                                         if (this.state.parent == 2 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
@@ -812,17 +868,23 @@ export default class WeekPage extends Component {
                                 <TouchableOpacity
 
                                     onPress={() => {
-                                        console.log("  !item.hasSaleData && : ");
 
-                                        if (!(item.name == "National")) {
+                                        // if ((item.name == "National")) {
                                             var obj = {};
                                             obj.id = item.id;
                                             obj.name = item.name;
-
+                                            obj.netSales = item.current_sale;
                                             this.setExpandableData(obj);
+                                            // this.setExpandableNationalData(obj);
 
+                                        // }
+                                        // else {
+                                        //     var obj = {};
+                                        //     obj.id = item.id;
+                                        //     obj.name = item.name;
 
-                                        }
+                                        //     this.setExpandableData(obj);
+                                        // }
                                     }}  >
 
                                     {(!(item.name == "National")) &&
@@ -859,6 +921,18 @@ export default class WeekPage extends Component {
                                         }}>
 
 
+                                            <Image
+                                                source={require('../images/down.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 3,
+                                                    marginLeft: 20,
+
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
+
+                                                }} />
 
                                         </View>
 
@@ -874,10 +948,7 @@ export default class WeekPage extends Component {
                                 <TouchableOpacity
 
                                     onPress={() => {
-                                        console.log("  item.hasSaleData && : ");
-
-
-                                        var dataSourceTemp = []
+                                         var dataSourceTemp = []
                                         this.setState({ indeterminate: true });
                                         this.state.dataSource.map((value) => {
                                             dataSourceTemp.push({
@@ -924,7 +995,7 @@ export default class WeekPage extends Component {
                                                     width: 14,
                                                     height: 14,
                                                     padding: 3,
-                                                     marginLeft: 20,
+                                                    marginLeft: 20,
 
                                                     margin: 5,
                                                     resizeMode: 'stretch',
@@ -943,6 +1014,18 @@ export default class WeekPage extends Component {
                                         }}>
 
 
+                                            <Image
+                                                source={require('../images/up.png')}
+                                                style={{
+                                                    width: 14,
+                                                    height: 14,
+                                                    padding: 3,
+                                                    marginLeft: 20,
+
+                                                    margin: 5,
+                                                    resizeMode: 'stretch',
+
+                                                }} />
 
                                         </View>
 
@@ -1009,13 +1092,13 @@ export default class WeekPage extends Component {
         // console.log('Parent : '+parent)
         // console.log('tabPosition : '+tabPosition)
         this.customComponentDidMount()
+        EventRegister.emit('myCustomEvent', 'it works!!!')
     }
 
     callCurrentApi = () => {
         var urlPanDate = ''
         this.getDate();
         AsyncStorage.getItem("date_key").then((value) => {
-            console.log(" Getter date" + value);
             urlPanDate = value;
             const urlPan = 'http://115.112.224.200:3000/api/getRegionSales'
             console.log("  url " + urlPan)
@@ -1036,10 +1119,7 @@ export default class WeekPage extends Component {
 
                 .then((responseJson) => {
                     this.setState({ indeterminate: false });
-
-                    console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-
-                    responseJson.data.map((dataa) => {
+                        responseJson.data.map((dataa) => {
                         var sale_data = []
                         sale_data.push({
                             name: 'Net Sales', total: dataa.current_sale,
@@ -1103,8 +1183,8 @@ export default class WeekPage extends Component {
             if (parent == null) {
                 parent = 0
             }
+            
             AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
-                console.log(" date_key : " + value);
                 if (value == null || value == '') {
                     var date = new Date().toDateString();
                     date = dateFormat(date, "yyyy-mm-dd");
@@ -1113,12 +1193,36 @@ export default class WeekPage extends Component {
                 }
                 urlPanDate = value;
                 AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
-                    console.log("1st Is_Geo_key : " + value1);
+                  
                     if (value1 === null) {
                         value1 = "true";
                     }
                     console.log(" Is_Geo_key : " + value1);
-                    var urlValue = ''
+                    AsyncStorage.getItem("week"+parent).then((regionIdVal) => {
+                      
+                        // this.setState({netSales:regionIdVal});
+                        console.log(" Is_Geo_key : " + value1);
+                    console.log("Getter -> Parent -> "+(parent));
+                    switch(parent) { 
+                        case 1:
+                        case "1":
+                        console.log("Getter -> Parent -> Case1 "+(parent)+" this.state.netSales2 -> "+this.state.netSales1);
+                        var netsale=this.state.netSales1;
+                        this.setState({ netSales:netsale });
+                        break;
+                        case 2:
+                        case "2":
+                        console.log("Getter -> Parent ->Case2 "+(parent)+"  this.state.netSales2 -> "+this.state.netSales2);
+                        var netsale=this.state.netSales2;
+                        this.setState({ netSales:netsale });
+                        break;
+                    }
+                    
+                    console.log("Getter -> Parent : week"+parent+"value1 netSales:regionIdVal for back  : " + this.state.netSales);
+                   
+                     
+                    }).done();
+                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,
                         filter_type: filter_type,
@@ -1126,11 +1230,10 @@ export default class WeekPage extends Component {
                     })
                     if (value1 == "true") {
                         this.setState({ isGeo: true })
-                        console.log(" value1==true");
+                    
                         switch (parent) {
                             case 0:
                             case '0':
-                                console.log(" value1==true  case 0");
                                 urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
@@ -1139,7 +1242,6 @@ export default class WeekPage extends Component {
                                 break;
                             case 1:
                             case '1':
-                                console.log(" value1==true  case 1");
                                 urlValue = 'http://115.112.224.200:3000/api/getCitySales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
@@ -1149,7 +1251,6 @@ export default class WeekPage extends Component {
                                 break;
                             case 2:
                             case '2':
-                                console.log(" value1==true  case 2");
                                 urlValue = 'http://115.112.224.200:3000/api/getStoreSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
@@ -1159,19 +1260,16 @@ export default class WeekPage extends Component {
                                 break;
                             case 3:
                             case '3':
-                                console.log(" value1==true  case ");
                                 urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 break;
 
                         }
                     } else {
                         this.setState({ isGeo: false })
-                        console.log("else value1==true");
                         // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
                         switch (parent) {
                             case 0:
                             case '0':
-                                console.log("else value1==true case  0");
                                 urlValue = 'http://115.112.224.200:3000/api/getDeputyMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
@@ -1180,7 +1278,6 @@ export default class WeekPage extends Component {
                                 break;
                             case 1:
                             case '1':
-                                console.log("else value1==true case  1");
                                 urlValue = 'http://115.112.224.200:3000/api/getPetchMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
@@ -1196,7 +1293,6 @@ export default class WeekPage extends Component {
                         }
                     }
 
-                    console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
                     fetch(urlPan, {
@@ -1211,7 +1307,6 @@ export default class WeekPage extends Component {
                         .then((responseJson) => {
                             this.setState({ indeterminate: false });
 
-                            console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
 
                             responseJson.data.map((dataa) => {
                                 var sale_data = []
@@ -1250,12 +1345,10 @@ export default class WeekPage extends Component {
         // this.setState({
         //     indeterminate=true
         // })
-        console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
         var bodyData = "", url = "";
         var isGeo = this.state.isGeo
 
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((isGeoVal) => {
-            console.log(" pageStackComponentDidMount Is_Geo_key : " + isGeoVal)
             isGeo = isGeoVal;
             this.setState({ isGeo: isGeoVal })
             if (isGeo == "true") {
@@ -1329,7 +1422,6 @@ export default class WeekPage extends Component {
 
 
 
-            console.log("this.callApi(url,bodyData)  url : " + url + "   bodyData : " + bodyData)
             this.callApi(url, bodyData)
             // AsyncStorage.getItem("parent_key").then((parent) => {
             //     console.log(" Parent : " + parent);
@@ -1363,7 +1455,6 @@ export default class WeekPage extends Component {
             .then((responseJson) => {
                 this.setState({ indeterminate: false });
 
-                console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
 
                 responseJson.data.map((dataa) => {
                     var sale_data = []
