@@ -110,14 +110,20 @@ export default class MonthPage extends Component {
     _myHomeFunction = () => {
         alert('Here is home tab!');
     }
-    componentWillMount() {
-        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
-            this.customComponentDidMount()
-        })
-    }
 
     componentWillUnmount() {
-        EventRegister.removeEventListener(this.listener)
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+
+    }
+    componentDidMount() {
+        console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        this.listener = EventRegister.addEventListener('onBackPress', (data) => {
+            console.log('componentWillMount ')
+            this.onBackPress();
+        }),
+            this.customComponentDidMount()
+        EventRegister.emit('myCustomEvent', 'it works!!!')
     }
 
     componentWillReceiveProps(newProps) {
@@ -198,15 +204,15 @@ export default class MonthPage extends Component {
     }
 
     // For show Expandable data on click button.
-    
+
     setExpandableData = (obj) => {
         var id = obj.id;
         var name = obj.name
-        var netSalesVal=obj.netSales;
+        var netSalesVal = obj.netSales;
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
-        var urlPan =''
+        var urlPan = ''
         var regionId = ''
         var cityId = '';
         // this.getDate();
@@ -256,7 +262,7 @@ export default class MonthPage extends Component {
                             case '0':
                                 console.log(" value1==true  case 0");
                                 console.log(" region_id= " + id);
-                                urlValue = 'get_all_region_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + id;
+                                urlValue = 'get_all_region_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -270,13 +276,13 @@ export default class MonthPage extends Component {
 
                                 console.log(" region_id= " + id);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_city_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+                                urlValue = 'get_all_city_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
 
                                 break;
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'get_all_store_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
+                                urlValue = 'get_all_store_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
                                 break;
                             // case 3:
                             // case '3':
@@ -295,13 +301,13 @@ export default class MonthPage extends Component {
                                 console.log(" region_id= " + id);
                                 console.log(" region_id---= " + regionId);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_deputy_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + name;
+                                urlValue = 'get_all_deputy_manager_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&deputy_name=' + name;
 
                                 break;
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'get_all_petch_manager_sale?filter_type='+filter_type+'&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+                                urlValue = 'get_all_petch_manager_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
 
                                 break;
                             case 2:
@@ -311,11 +317,11 @@ export default class MonthPage extends Component {
 
                         }
                     }
-                    if(name != "National"){
+                    if (name != "National") {
                         urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
 
-                    }else{
-                        urlPan = 'http:///115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
+                    } else {
+                        urlPan = 'http:///115.112.224.200:3000/v2/get_pan_level_sale?filter_type=' + filter_type + '&date=' + urlPanDate;
 
 
                     }
@@ -340,7 +346,7 @@ export default class MonthPage extends Component {
                                     console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
                                         dataSourceTemp.map((dataa) => {
                                             if (id == dataa.id) {
-                                                data.sale_data[0].total=netSalesVal;
+                                                data.sale_data[0].total = netSalesVal;
                                                 dataa.sale_data = data.sale_data
                                                 dataa.hasSaleData = true
                                             } else {
@@ -577,11 +583,15 @@ export default class MonthPage extends Component {
                 val = val / 1000000;
                 op = val.toFixed(2);
                 return (op + " mn");
-            } else {
+            } else if (val > 999) {
                 val = val / 1000;
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
+            } else {
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " ");
             }
         } catch (error) {
             return (0 + " K");
@@ -646,10 +656,10 @@ export default class MonthPage extends Component {
 
 
 
-                         {((item.name == "Comp Sale %")||(item.name == "Comp GC  %")||(item.name == "MOM Comp. Sale %")) &&
+                        {((item.name == "Comp Sale %") || (item.name == "Comp GC  %") || (item.name == "MOM Comp. Sale %")) &&
                             <View style={styless.shapeinnerwhite}>
 
-                          
+
                                 <Text style={{
                                     fontSize: 12,
                                     //width: 150,
@@ -662,7 +672,7 @@ export default class MonthPage extends Component {
                                     alignItems: 'center',
 
                                 }}> {
-                                    // "" +item.total.toFixed(2)+'%'
+                                        // "" +item.total.toFixed(2)+'%'
                                         "" + this.totalSaleFormatWithPercentage(val)
                                     }
                                 </Text>
@@ -673,7 +683,7 @@ export default class MonthPage extends Component {
                         {
                             <View style={styless.shapeinnerwhite}>
 
-                          
+
                                 <Text style={{
                                     fontSize: 12,
                                     //width: 150,
@@ -822,23 +832,23 @@ export default class MonthPage extends Component {
                                         var netsale = this.totalSaleFormat(item.current_sale)
                                         AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
                                             this.setState({ netSales: netsale });
-                                            switch(parseInt(this.state.parent)) { 
+                                            switch (parseInt(this.state.parent)) {
                                                 case 1:
                                                 case "1":
-                                                console.log("Setter -> Case1");
-                                                this.setState({ netSales1: netsale });
-                                                console.log("Setter -> Case1  netSales1 -> "+this.state.netSales1);
-                                                break;
+                                                    console.log("Setter -> Case1");
+                                                    this.setState({ netSales1: netsale });
+                                                    console.log("Setter -> Case1  netSales1 -> " + this.state.netSales1);
+                                                    break;
                                                 case 2:
                                                 case "2":
-                                                console.log("Setter -> Case2");
-                                                this.setState({ netSales2: netsale });
-                                                console.log("Setter -> Case2  netSales2 ->"+this.state.netSales2);
-                                                break;
+                                                    console.log("Setter -> Case2");
+                                                    this.setState({ netSales2: netsale });
+                                                    console.log("Setter -> Case2  netSales2 ->" + this.state.netSales2);
+                                                    break;
                                             }
-        
-                                        console.log("Setter -> Parent : "+(this.state.parent+1)+"  netSales:regionIdVal for back  : " + netsale);
-                                       
+
+                                            console.log("Setter -> Parent : " + (this.state.parent + 1) + "  netSales:regionIdVal for back  : " + netsale);
+
                                         }).done()
                                         if (this.state.parent == 2 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
@@ -898,12 +908,12 @@ export default class MonthPage extends Component {
                                         console.log("  !item.hasSaleData && : ");
 
                                         // if ((item.name == "National")) {
-                                            var obj = {};
-                                            obj.id = item.id;
-                                            obj.name = item.name;
-                                            obj.netSales = item.current_sale;
-                                            this.setExpandableData(obj);
-                                            // this.setExpandableNationalData(obj);
+                                        var obj = {};
+                                        obj.id = item.id;
+                                        obj.name = item.name;
+                                        obj.netSales = item.current_sale;
+                                        this.setExpandableData(obj);
+                                        // this.setExpandableNationalData(obj);
 
                                         // }
                                         // else {
@@ -1101,28 +1111,6 @@ export default class MonthPage extends Component {
 
     }
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
-
-    }
-    componentDidMount() {
-        console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
-        // const { navigation } = this.props;
-        // const parent = navigation.getParam('parent', '0');
-        // const tabPosition = navigation.getParam('tabPosition', '0');
-        //  parentVal =parent,
-        //  tabPositionVal=tabPosition,
-
-        //  this.setState({ parent: parentVal, });
-        //  this.setState({ tabPosition: tabPositionVal, });
-
-        // console.log('Parent : '+parent)
-        // console.log('tabPosition : '+tabPosition)
-        this.customComponentDidMount()
-        EventRegister.emit('myCustomEvent', 'it works!!!')
-    }
-
     callCurrentApi = () => {
         var urlPanDate = ''
         this.getDate();
@@ -1188,6 +1176,7 @@ export default class MonthPage extends Component {
     }
     //for date
     customComponentDidMount = () => {
+        console.log("MONTH customComponentDidMount ");
         this.getDate()
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent1) => {
             console.log(" parent_key : " + parent1);
@@ -1215,7 +1204,7 @@ export default class MonthPage extends Component {
             if (parent == null) {
                 parent = 0
             }
-           
+
             AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
                 console.log(" date_key : " + value);
                 if (value == null || value == '') {
@@ -1231,30 +1220,30 @@ export default class MonthPage extends Component {
                         value1 = "true";
                     }
                     console.log(" Is_Geo_key : " + value1);
-                    
-                    AsyncStorage.getItem("week"+parent).then((regionIdVal) => {
-                      
+
+                    AsyncStorage.getItem("week" + parent).then((regionIdVal) => {
+
                         // this.setState({netSales:regionIdVal});
                         console.log(" Is_Geo_key : " + value1);
-                    console.log("Getter -> Parent -> "+(parent));
-                    switch(parent) { 
-                        case 1:
-                        case "1":
-                        console.log("Getter -> Parent -> Case1 "+(parent)+" this.state.netSales2 -> "+this.state.netSales1);
-                        var netsale=this.state.netSales1;
-                        this.setState({ netSales:netsale });
-                        break;
-                        case 2:
-                        case "2":
-                        console.log("Getter -> Parent ->Case2 "+(parent)+"  this.state.netSales2 -> "+this.state.netSales2);
-                        var netsale=this.state.netSales2;
-                        this.setState({ netSales:netsale });
-                        break;
-                    }
-                    
-                    console.log("Getter -> Parent : week"+parent+"value1 netSales:regionIdVal for back  : " + this.state.netSales);
-                   
-                     
+                        console.log("Getter -> Parent -> " + (parent));
+                        switch (parent) {
+                            case 1:
+                            case "1":
+                                console.log("Getter -> Parent -> Case1 " + (parent) + " this.state.netSales2 -> " + this.state.netSales1);
+                                var netsale = this.state.netSales1;
+                                this.setState({ netSales: netsale });
+                                break;
+                            case 2:
+                            case "2":
+                                console.log("Getter -> Parent ->Case2 " + (parent) + "  this.state.netSales2 -> " + this.state.netSales2);
+                                var netsale = this.state.netSales2;
+                                this.setState({ netSales: netsale });
+                                break;
+                        }
+
+                        console.log("Getter -> Parent : week" + parent + "value1 netSales:regionIdVal for back  : " + this.state.netSales);
+
+
                     }).done();
 
                     var urlValue = ''
@@ -2213,14 +2202,10 @@ export default class MonthPage extends Component {
     }
     // for back stack navigation
     onBackPress = () => {
-        this.ShowAlertWithDelay()
-        this.customComponentDidMount()
+        console.log('onBackPress Parent : ' + this.state.parent)
+        this.setBackStackScreen();
         return true;
     }
-
-
-
-
 }
 
 

@@ -549,11 +549,15 @@ export default class WeekPage extends Component {
                 val = val / 1000000;
                 op = val.toFixed(2);
                 return (op + " mn");
-            } else {
+            } else if(val > 999) {
                 val = val / 1000;
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
+            } else {
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " ");
             }
         } catch (error) {
             return (0 + " K");
@@ -1071,8 +1075,6 @@ export default class WeekPage extends Component {
 
     }
 
-
-
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
 
@@ -1080,17 +1082,10 @@ export default class WeekPage extends Component {
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
-        // const { navigation } = this.props;
-        // const parent = navigation.getParam('parent', '0');
-        // const tabPosition = navigation.getParam('tabPosition', '0');
-        //  parentVal =parent,
-        //  tabPositionVal=tabPosition,
-
-        //  this.setState({ parent: parentVal, });
-        //  this.setState({ tabPosition: tabPositionVal, });
-
-        // console.log('Parent : '+parent)
-        // console.log('tabPosition : '+tabPosition)
+        this.listener = EventRegister.addEventListener('onBackPress', (data) => {
+            console.log('componentWillMount ')
+            this.onBackPress();
+        }),
         this.customComponentDidMount()
         EventRegister.emit('myCustomEvent', 'it works!!!')
     }
@@ -1156,6 +1151,7 @@ export default class WeekPage extends Component {
     }
     //for date
     customComponentDidMount = () => {
+        console.log("WEEK customComponentDidMount "); 
         this.getDate()
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent1) => {
             console.log(" parent_key : " + parent1);
@@ -2160,12 +2156,12 @@ export default class WeekPage extends Component {
 
 
     }
-    // for back stack navigation
-    onBackPress = () => {
-        this.ShowAlertWithDelay()
-        this.customComponentDidMount()
-        return true;
-    }
+  // for back stack navigation
+  onBackPress = () => {
+    console.log('onBackPress Parent : ' + this.state.parent)
+    this.setBackStackScreen();
+    return true;
+}
 
 
 

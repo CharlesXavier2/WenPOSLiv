@@ -108,6 +108,7 @@ export default class DayPage extends Component {
         alert('Here is home tab!');
     }
     onSelect = () => {
+        console.log(" onSelect day : ")
         this.customComponentDidMount()
 
     };
@@ -115,6 +116,7 @@ export default class DayPage extends Component {
     tabClick = () => {
         this.setState({ parent: 0 })
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
+        console.log(" tabClick day : ")
         this.customComponentDidMount()
     }
 
@@ -484,10 +486,12 @@ export default class DayPage extends Component {
                 val = val / 1000000;
                 op = val.toFixed(2);
                 return (op + " %");
-            } else {
+            } else if(val > 999.00) {
                 val = val / 1000;
                 op = val.toFixed(2);
-                // op = getTwoDecimalFormat(val);
+                return (op + " %");
+            }else {
+                op = val.toFixed(2);
                 return (op + " %");
             }
         } catch (error) {
@@ -501,11 +505,15 @@ export default class DayPage extends Component {
                 val = val / 1000000;
                 op = val.toFixed(2);
                 return (op + " mn");
-            } else {
+            } else if(val > 999) {
                 val = val / 1000;
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
+            }else {
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " ");
             }
         } catch (error) {
             return (0 + " K");
@@ -1069,22 +1077,27 @@ export default class DayPage extends Component {
 
     }
 
-
-    componentWillMount() {
-
-        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
-
-            this.customComponentDidMount()
-        }),
-
-            BackHandler.addEventListener('hardwareBackPress', this.backButtonClick);
-    }
     backButtonClick() {
+        console.log(" backButtonClick day : ")
         if (this.props.navigation && this.props.navigation.goBack) {
             this.props.navigation.goBack(null);
             return false;
         }
         return true;
+    }
+    componentDidMount() {
+        console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
+        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
+            console.log('componentWillMount ')
+            this.customComponentDidMount()
+        }),
+        this.listener = EventRegister.addEventListener('onBackPress', (data) => {
+            console.log('componentWillMount ')
+            this.onBackPress();
+        }),
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        this.customComponentDidMount()
+        EventRegister.emit('myCustomEvent', 'it works!!!')
     }
     componentWillUnmount() {
         EventRegister.removeEventListener(this.listener);
@@ -1092,31 +1105,11 @@ export default class DayPage extends Component {
     }
 
     onBackPress() {
-        Alert.alert("Backpress")
+        alert("Backpress")
         if (activeRoute.index === 0) {
             return false;
         }
         return true;
-    }
-
-
-    componentDidMount() {
-        console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
-
-        // const { navigation } = this.props;
-        // const parent = navigation.getParam('parent', '0');
-        // const tabPosition = navigation.getParam('tabPosition', '0');
-        //  parentVal =parent,
-        //  tabPositionVal=tabPosition,
-
-        //  this.setState({ parent: parentVal, });
-        //  this.setState({ tabPosition: tabPositionVal, });
-
-        // console.log('Parent : '+parent)
-        // console.log('tabPosition : '+tabPosition)
-        this.customComponentDidMount()
-        EventRegister.emit('myCustomEvent', 'it works!!!')
     }
 
     callCurrentApi = () => {
@@ -1177,6 +1170,7 @@ export default class DayPage extends Component {
 
 
     customComponentDidMount = () => {
+        console.log("DAY customComponentDidMount "); 
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
@@ -1491,19 +1485,25 @@ export default class DayPage extends Component {
             console.log(" parent_key : " + parent);
             if (this.state.parent == 0) {
                 console.log('1 onBackPress Parent : ' + this.state.parent)
-                Alert.alert(
-                    'Quiting',
-                    'Want to quit?',
-                    [
-                        {
-                            text: 'Cancel',
-                            onPress: () => console.log('Cancel Pressed'),
-                            style: 'cancel'
-                        },
-                        { text: 'OK', onPress: () => BackHandler.exitApp() }
-                    ],
-                    { cancelable: false }
-                );
+                // Alert.alert(
+                //     'Quiting',
+                //     'Want to quit?',
+                //     [
+                //         {
+                //             text: 'Cancel',
+                //             onPress: () => console.log('Cancel Pressed'),
+                //             style: 'cancel'
+                //         },
+                //         { text: 'OK', onPress: () => 
+                //         { 
+                //         AsyncStorage.clear();
+                //         this.props.navigation.navigate('LoginPage')
+                //         // BackHandler.exitApp()
+                //         }
+                //      }
+                //     ],
+                //     { cancelable: false }
+                // );
                 return true;
             }
             // works best when the goBack is async

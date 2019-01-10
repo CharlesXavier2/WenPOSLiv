@@ -52,45 +52,45 @@ export const Tabs = createMaterialTopTabNavigator({
             },
             swipeEnabled: false,
 
-        }, 
-       
-     
+        },
+
+
     });
-    export const TabOrderDetail = createMaterialTopTabNavigator({
-        
-        Hour: Hour,
-        DayPart: DayPart,
-        Pmix: Pmix,
-        OrderMode: OrderMode,
-       
-    }, {
-        
-            tabBarOptions: {
-                upperCaseLabel: false,
+export const TabOrderDetail = createMaterialTopTabNavigator({
+
+    Hour: Hour,
+    DayPart: DayPart,
+    Pmix: Pmix,
+    OrderMode: OrderMode,
+
+}, {
+
+        tabBarOptions: {
+            upperCaseLabel: false,
+            backgroundColor: '#CE000A',
+            activeTintColor: '#fff',
+            inactiveTintColor: 'yellow',
+            labelStyle: {
+                fontSize: 12,
+                margin: 0,
+                padding: 0,
+            },
+            style: {
+
                 backgroundColor: '#CE000A',
-                activeTintColor: '#fff',
-                inactiveTintColor: 'yellow',
-                labelStyle: {
-                    fontSize: 12,
-                    margin: 0,
-                    padding: 0,
-                },
-                style: {
-                   
-                    backgroundColor: '#CE000A',
-                },
-                indicatorStyle: {
-                    backgroundColor: '#fff',
-                },
-    
-                tabBarOnPress: (scene, jumpToIndex) => {
-                    console.log('onPress:', scene.route);
-                    jumpToIndex(scene.index);
-                },
-                swipeEnabled: false,
-            }, 
-            
-        });
+            },
+            indicatorStyle: {
+                backgroundColor: '#fff',
+            },
+
+            tabBarOnPress: (scene, jumpToIndex) => {
+                console.log('onPress:', scene.route);
+                jumpToIndex(scene.index);
+            },
+            swipeEnabled: false,
+        },
+
+    });
 
 export const DrawerNavigator = createDrawerNavigator({
     DayPage: {
@@ -124,8 +124,8 @@ export const MenuImage = ({ navigation }) => {
         return <Image source={require('../images/drawer.png')}
             style={{
 
-               marginRight:10,
-               padding:10
+                marginRight: 10,
+                padding: 10
 
 
             }}
@@ -194,7 +194,7 @@ const RootNavigator = createStackNavigator({
     LoginPage: { screen: LoginPage },
     DrawerNavigator: { screen: DrawerNavigator },
     DatePicker: { screen: DatePicker },
-    LogoutScreen:{ screen: LogoutScreen },
+    LogoutScreen: { screen: LogoutScreen },
     DetailPage: {
         screen: DetailPage,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
@@ -224,7 +224,7 @@ const RootNavigator = createStackNavigator({
             headerTintColor: '#FAC209',
             headerTitleStyle: {
                 fontStyle: 'normal',
-               
+
                 width: '100%',
                 upperCaseLabel: false,
             },
@@ -254,9 +254,9 @@ const RootNavigator = createStackNavigator({
         navigationOptions: ({ navigation, title, subtitle }) => {
             const { navigate } = navigation
             return {
-                headerTitle: <CustomHeader/>,
+                headerTitle: <CustomHeader />,
                 // title: 'McDLiv',
-              
+
                 //    headerLeft: (
                 //         <TouchableOpacity  >
 
@@ -281,7 +281,7 @@ const RootNavigator = createStackNavigator({
                 // headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />
 
                 // ,
-               
+
                 headerLeft: (Platform.OS === 'android') ?
 
                     //     <TouchableOpacity>
@@ -289,22 +289,50 @@ const RootNavigator = createStackNavigator({
                     //   </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         navigation.dispatch(DrawerActions.toggleDrawer())
-                        // this.props.navigation.navigate('DayPage')
-                        // DayPage._myHomeFunction()
-                        // DayPage.this._myHomeFunction
                     }
 
                     }>
                         <MenuImage style="styles.bar" navigation={navigation} />
                     </TouchableOpacity>
-                    : null
-                // :  AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
-                //       if(parent==0) 
-                //       null
-                //       else
-                //       ''
 
-                //        } 
+
+                    :  <TouchableOpacity onPress={() => {
+                        EventRegister.emit('onBackPress', 'it works!!!')
+                    }
+
+                    }>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}>
+
+                            <Image
+                                source={require('../images/back.png')}
+                                style={{
+                                    paddingLeft: 10,
+                                    paddingTop: 10,
+                                    paddingBottom: 10,
+                                    marginLeft: 10,
+                                    resizeMode: 'stretch',
+
+                                }}
+                            />
+                            {/* <Text style={{
+                                    fontSize: 14,
+
+                                    color: '#ffffff',
+                                    // paddingLeft: 40,
+
+
+                                    //justifyContent: 'center',
+                                    textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }} >Back</Text> */}
+
+                        </View>
+                    </TouchableOpacity>
+
 
                 ,
                 headerRight: (Platform.OS === 'android') ?
@@ -326,26 +354,26 @@ const RootNavigator = createStackNavigator({
                                     height: 14,
                                     padding: 10,
                                     marginRight: 10,
-                                   
+
                                     alignItems: 'center', justifyContent: 'center',
                                     resizeMode: 'stretch',
-    
+
                                 }}
                                 onDateChange={(date) => {
                                     console.log('Date ->  ' + date);
                                     // var date = new Date().toDateString();
-                                    // date = dateFormat(date, "yyyy-mm-dd");
+                                    // date = dateFormat(dBackBackate, "yyyy-mm-dd");
                                     // date = moment(date).format("YYYY-MM-DD HH:mm:ss");
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date),
-                                    AsyncStorage.setItem(GLOBAL.TIME_KEY, date),
-                                    // this.setState({ date: date });
-                                    EventRegister.emit('myCustomEvent', 'it works!!!')
+                                        AsyncStorage.setItem(GLOBAL.TIME_KEY, date),
+                                        // this.setState({ date: date });
+                                        EventRegister.emit('myCustomEvent', 'it works!!!')
                                 }}
 
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => 
+                            onPress={() =>
                                 /* 1. home icon click */
                                 navigation.navigate('DayPage')
 
@@ -354,16 +382,16 @@ const RootNavigator = createStackNavigator({
                             {/* onPress={() => navigation.goBack(null)} */}
                             <Image
                                 source={require('../images/home.png')}
-                            style={{
-                                width: 14,
-                                height: 14,
-                                padding: 10,
-                                marginRight: 15,
-                               
-                                alignItems: 'center', justifyContent: 'center',
-                                resizeMode: 'stretch',
+                                style={{
+                                    width: 14,
+                                    height: 14,
+                                    padding: 10,
+                                    marginRight: 15,
 
-                            }}
+                                    alignItems: 'center', justifyContent: 'center',
+                                    resizeMode: 'stretch',
+
+                                }}
                             />
                         </TouchableOpacity>
                     </View>
@@ -387,14 +415,14 @@ const RootNavigator = createStackNavigator({
                                     width: 14,
                                     height: 14,
                                     padding: 10,
-                                    marginTop:5,
+                                    marginTop: 5,
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     resizeMode: 'stretch',
-    
+
                                 }}
                                 onDateChange={(date) => {
-                                    
+
                                     console.log('Date ->  ' + date);
                                     // var date = new Date().toDateString();
                                     // date = dateFormat(date, "yyyy-mm-dd");
@@ -402,8 +430,8 @@ const RootNavigator = createStackNavigator({
 
                                     AsyncStorage.setItem(GLOBAL.DATE_KEY, date);
                                     AsyncStorage.setItem(GLOBAL.TIME_KEY, date),
-                                    EventRegister.emit('myCustomEvent', 'it works!!!')
-                                    
+                                        EventRegister.emit('myCustomEvent', 'it works!!!')
+
                                 }}
 
                             />

@@ -103,6 +103,10 @@ export default class YearPage extends Component {
     componentWillMount() {
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             this.customComponentDidMount()
+        }),
+        this.listener = EventRegister.addEventListener('onBackPress', (data) => {
+            console.log('componentWillMount ')
+            this.onBackPress();
         })
     }
 
@@ -111,17 +115,11 @@ export default class YearPage extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        // this._myHomeFunction();
         try {
-            // this.customComponentDidMount()
             console.log(" componentWillReceiveProps year : ")
         } catch (error) {
 
         }
-        // alert('Here is home tab! : '+newProps.screenProps.currentScreen);
-        // if (newProps.screenProps.route_index == 0) {
-        //   this._myHomeFunction();
-        // }
     }
 
     getDate = () => {
@@ -425,105 +423,7 @@ export default class YearPage extends Component {
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, JSON.stringify(parent))
         this.setState({ parent });
         this.customComponentDidMount();
-        //     var id=0;
-
-        //   // var clickId=id;
-        //     this.setState({ parent });
-        //     var isGeo="true"
-        //     AsyncStorage.getItem("Is_Geo_key").then((isGeoVal) => {
-        //         if(isGeoVal==null){
-        //             isGeo="true"
-        //         }else{
-        //             isGeo=isGeoVal
-        //         }
-
-        //     }).done()
-        //     console.log('isGeo : '+isGeo)
-        //     if(isGeo=="true") {
-        //     switch(this.state.parent) {
-        //         case 0:
-        //         // Region level
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //         }),
-        //         url='getRegionSales'
-
-        //         break;
-        //         case 1:
-
-        //         // Cities level
-        //         id=this.state.regionId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             region_id:id,
-        //         }),
-        //         url='getCitySales'
-        //         console.log('setBackStackScreenswitchCities'+id)
-        //         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, ""+id);
-        //         break;
-        //         case 2:
-        //         // Store level
-        //         id=this.state.cityId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             city_id:id,
-        //         }),
-        //         url='getStoreSales'
-        //         AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, ""+id);
-        //         break;
-        //    }
-        // }else{
-        //     switch(this.state.parent) {
-        //         case 0:
-        //         // Region level
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //         }),
-        //         url='getDeputyMgnSales'
-
-        //         break;
-        //         case 1:
-
-        //         // Cities level
-        //         id=this.state.regionId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             deputy_id:id,
-        //         }),
-        //         url='getPetchMgnSales'
-        //         console.log('setBackStackScreenswitch Cities in People : '+id)
-        //         AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, ""+id);
-        //         break;
-        //         case 2:
-        //         // Store level
-        //         id=this.state.cityId;
-        //         bodyData=JSON.stringify({
-        //             date:this.state.date,
-        //             filter_type:'day',
-        //             city_id:id,
-        //         }),
-        //         url='getStoreSales'
-        //         AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, ""+id);
-        //         break;
-        //    }
-        // }
-        //    console.log('Action ID : '+id)
-        //    console.log('URL : '+url)
-        // //    AsyncStorage.getItem("parent_key").then((value) => {
-        // //     console.log(" parent_key : " + value);
-        // //     screenPosition = value;   
-        // // }
-        // this.callApi(url,bodyData)
-        //   this.pageStackComponentDidMount(id);
-
     };
-
-
 
     clickButton() {
         console.log('click button')
@@ -570,11 +470,15 @@ export default class YearPage extends Component {
                 val = val / 1000000;
                 op = val.toFixed(2);
                 return (op + " mn");
-            } else {
+            } else if (val > 999) {
                 val = val / 1000;
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
+            } else {
+                op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (op + " ");
             }
         } catch (error) {
             return (0 + " K");
@@ -1108,17 +1012,6 @@ export default class YearPage extends Component {
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
-        // const { navigation } = this.props;
-        // const parent = navigation.getParam('parent', '0');
-        // const tabPosition = navigation.getParam('tabPosition', '0');
-        //  parentVal =parent,
-        //  tabPositionVal=tabPosition,
-
-        //  this.setState({ parent: parentVal, });
-        //  this.setState({ tabPosition: tabPositionVal, });
-
-        // console.log('Parent : '+parent)
-        // console.log('tabPosition : '+tabPosition)
         this.customComponentDidMount()
         EventRegister.emit('myCustomEvent', 'it works!!!')
     }
@@ -1187,6 +1080,7 @@ export default class YearPage extends Component {
     }
     //for date
     customComponentDidMount = () => {
+        console.log("YEAR customComponentDidMount "); 
         this.getDate()
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent1) => {
             console.log(" parent_key : " + parent1);
@@ -2205,14 +2099,13 @@ export default class YearPage extends Component {
 
 
     }
-    // for back stack navigation
-    onBackPress = () => {
-        this.ShowAlertWithDelay()
-        this.customComponentDidMount()
+   
+      // for back stack navigation
+      onBackPress = () => {
+        console.log('YEAR onBackPress ')
+        this.setBackStackScreen()
         return true;
     }
-
-
 }
 
 
