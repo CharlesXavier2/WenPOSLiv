@@ -305,7 +305,7 @@ export default class YearPage extends Component {
                         urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
 
                     }else{
-                        urlPan = 'http:///115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
+                        urlPan = 'http://115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
 
 
                     }                    console.log("  url " + urlPan)
