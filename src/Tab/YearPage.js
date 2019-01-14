@@ -103,11 +103,14 @@ export default class YearPage extends Component {
     componentWillMount() {
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             this.customComponentDidMount()
-        }),
-        this.listener = EventRegister.addEventListener('onBackPress', (data) => {
-            console.log('componentWillMount ')
-            this.onBackPress();
-        })
+        });
+        if(Platform.OS != 'android'){
+            this.listener = EventRegister.addEventListener('onBackPress', (data) => {
+                console.log('componentWillMount ')
+                this.onBackPress();
+            })
+        }
+        
     }
 
     componentWillUnmount() {
@@ -2104,6 +2107,7 @@ export default class YearPage extends Component {
       onBackPress = () => {
         console.log('YEAR onBackPress ')
         this.setBackStackScreen()
+        EventRegister.emit('onBackPress', 'it works!!!')
         return true;
     }
 }
