@@ -297,7 +297,7 @@ const RootNavigator = createStackNavigator({
 
 
                     :  <TouchableOpacity onPress={() => {
-                        EventRegister.emit('onBackPress', 'it works!!!')
+                        EventRegister.emit('myCustomEvent', 'it works!!!')
                     }
 
                     }>
@@ -317,7 +317,7 @@ const RootNavigator = createStackNavigator({
 
                                 }}
                             />
-                            {/* <Text style={{
+                            <Text style={{
                                     fontSize: 14,
 
                                     color: '#ffffff',
@@ -328,7 +328,7 @@ const RootNavigator = createStackNavigator({
                                     textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }} >Back</Text> */}
+                                }} >Back</Text>
 
                         </View>
                     </TouchableOpacity>
