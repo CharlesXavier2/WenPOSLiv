@@ -100,6 +100,10 @@ export default class WeekPage extends Component {
     }
 
     componentWillMount() {
+        this.listenerios = EventRegister.addEventListener('myCustomEventIOS', (data) => {
+            console.log('componentWillMount ')
+            this.setBackStackScreen();
+        }),
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             this.customComponentDidMount()
         })
