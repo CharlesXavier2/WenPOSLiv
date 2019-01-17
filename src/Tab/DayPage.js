@@ -1097,11 +1097,11 @@ export default class DayPage extends Component {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             console.log('componentWillMount ')
-            this.customComponentDidMount()
+            this.onBackPress()
         }),
         this.listener = EventRegister.addEventListener('onBackPress', (data) => {
             console.log('componentWillMount ')
-            this.onBackPress();
+            this.onBackPressJust();
         }),
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         this.customComponentDidMount()
@@ -1112,12 +1112,8 @@ export default class DayPage extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress.bind(this));
     }
 
-    onBackPress() {
-        alert("Backpress")
-        if (activeRoute.index === 0) {
-            return false;
-        }
-        return true;
+    onBackPressJust() {
+        this.onBackPress()
     }
 
     callCurrentApi = () => {
