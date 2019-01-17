@@ -297,7 +297,7 @@ const RootNavigator = createStackNavigator({
 
 
                     :  <TouchableOpacity onPress={() => {
-                        EventRegister.emit('myCustomEvent', 'it works!!!')
+                        EventRegister.emit('myCustomEventIOS', 'it works!!!')
                     }
 
                     }>

@@ -117,6 +117,10 @@ export default class MonthPage extends Component {
     }
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
+        this.listenerios = EventRegister.addEventListener('myCustomEventIOS', (data) => {
+            console.log('componentWillMount ')
+            this.setBackStackScreen();
+        }),
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         this.listener = EventRegister.addEventListener('onBackPress', (data) => {
             console.log('componentWillMount ')
