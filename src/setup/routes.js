@@ -36,14 +36,14 @@ export const Tabs = createMaterialTopTabNavigator({
 }, {
         tabBarOptions: {
             upperCaseLabel: false,
-            backgroundColor: '#CE000A',
+            backgroundColor: '#1E2B51',
             activeTintColor: '#fff',
-            inactiveTintColor: 'yellow',
+            inactiveTintColor: '#FFFFFF',
             style: {
-                backgroundColor: '#CE000A',
+                backgroundColor: '#1E2B51',
             },
             indicatorStyle: {
-                backgroundColor: '#fff',
+                backgroundColor: '#FFFFFF',
             },
 
             tabBarOnPress: (scene, jumpToIndex) => {
@@ -67,9 +67,9 @@ export const TabOrderDetail = createMaterialTopTabNavigator({
 
         tabBarOptions: {
             upperCaseLabel: false,
-            backgroundColor: '#CE000A',
+            backgroundColor: '#1E2B51',
             activeTintColor: '#fff',
-            inactiveTintColor: 'yellow',
+            inactiveTintColor: '#FFFFFF',
             labelStyle: {
                 fontSize: 12,
                 margin: 0,
@@ -77,10 +77,10 @@ export const TabOrderDetail = createMaterialTopTabNavigator({
             },
             style: {
 
-                backgroundColor: '#CE000A',
+                backgroundColor: '#1E2B51',
             },
             indicatorStyle: {
-                backgroundColor: '#fff',
+                backgroundColor: '#FFFFFF',
             },
 
             tabBarOnPress: (scene, jumpToIndex) => {
@@ -115,7 +115,7 @@ export const DrawerNavigator = createDrawerNavigator({
         initialRouteName: 'DayPage',
         contentComponent: DrawerScreen,
         drawerWidth: 250,
-        drawerBackgroundColor: '#CE000A',
+        drawerBackgroundColor: '#1E2B51',
     },
 );
 
@@ -123,11 +123,9 @@ export const MenuImage = ({ navigation }) => {
     if (!navigation.state.isDrawerOpen) {
         return <Image source={require('../images/drawer.png')}
             style={{
-
-                marginRight: 10,
-                padding: 10
-
-
+                 marginLeft:5,
+                marginRight:10,
+                padding:10
             }}
         />
     }
@@ -201,7 +199,7 @@ const RootNavigator = createStackNavigator({
             //title: 'National',
             headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
-                backgroundColor: '#CE000A',
+                backgroundColor: '#121A31',
                 position: 'absolute',
             },
             headerTintColor: '#FAC209',
@@ -218,7 +216,7 @@ const RootNavigator = createStackNavigator({
             //title: 'National',
             headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
-                backgroundColor: '#CE000A',
+                backgroundColor: '#1E2B51',
                 position: 'absolute',
             },
             headerTintColor: '#FAC209',
@@ -237,7 +235,7 @@ const RootNavigator = createStackNavigator({
             //title: 'National',
             headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
-                backgroundColor: '#CE000A',
+                backgroundColor: '#1E2B51',
                 position: 'absolute',
             },
             headerTintColor: '#FAC209',
@@ -317,7 +315,7 @@ const RootNavigator = createStackNavigator({
 
                                 }}
                             />
-                            <Text style={{
+                            {/* <Text style={{
                                     fontSize: 14,
 
                                     color: '#ffffff',
@@ -328,7 +326,7 @@ const RootNavigator = createStackNavigator({
                                     textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }} >Back</Text>
+                                }} >Back</Text> */}
 
                         </View>
                     </TouchableOpacity>
@@ -452,7 +450,7 @@ const RootNavigator = createStackNavigator({
                     </View>,
 
                 headerStyle: {
-                    backgroundColor: '#CE000A',
+                    backgroundColor: '#1E2B51',
                     position: 'absolute',
                 },
                 headerTintColor: '#FAC209',

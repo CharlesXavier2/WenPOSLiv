@@ -352,7 +352,7 @@ export default class SaleDetails extends Component {
                                     <Text style={{
                                         fontSize: 12,
                                         //width: 150,
-                                        color: '#000000',
+                                        color: '#FFFFFF',
                                         marginLeft: -20,
                                         textAlign: 'left',
 
@@ -521,8 +521,8 @@ export default class SaleDetails extends Component {
 
 const CustomHeader = ({ title, subtitle }) => (
     <View >
-      <Text style={{ fontSize: 16, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
-      <Text style={{ fontSize: 10, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
+      <Text style={{ fontSize: 16, color: '#FFFFFF',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#FFFFFF',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
     </View>
   );
 const styless = StyleSheet.create({
@@ -581,7 +581,7 @@ const styless = StyleSheet.create({
         //   marginLeft:30,
         height: 40,
         // borderRadius: 1,
-        borderColor: '#F4F5F5',
+        borderColor: '#000000',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
         // marginBottom: 5,
@@ -628,7 +628,7 @@ const styless = StyleSheet.create({
         color: '#ffffff',
 
         // paddingLeft: 20,
-        backgroundColor: '#FAC209',
+        backgroundColor: '#1e2b51',
         //justifyContent: 'center',
         textAlignVertical: "center",
         alignItems: 'center',
@@ -647,7 +647,7 @@ const styless = StyleSheet.create({
 
     },
     shapeyellow: {
-        backgroundColor: '#FBE028',
+        backgroundColor: '#1e2b51',
         width: '50%',
         marginLeft: -30,
 

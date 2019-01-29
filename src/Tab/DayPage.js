@@ -90,7 +90,7 @@ export default class DayPage extends Component {
                     <Text>{navigation.param}</Text>
                 </View>
             ),
-           
+
 
 
             tabBarOnPress: ({ navigation, defaultHandler }) => {
@@ -218,7 +218,7 @@ export default class DayPage extends Component {
     setExpandableData = (obj) => {
         var id = obj.id;
         var name = obj.name
-        var netSalesVal=obj.netSales;
+        var netSalesVal = obj.netSales;
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
@@ -358,7 +358,7 @@ export default class DayPage extends Component {
 
                                             if (id == dataa.id) {
                                                 dataa.hasSaleData = true;
-                                                data.sale_data[0].total=netSalesVal;
+                                                data.sale_data[0].total = netSalesVal;
                                                 dataa.sale_data = data.sale_data
                                             }
 
@@ -406,7 +406,7 @@ export default class DayPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
-        if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
+        if ((isGeoVal == "true" && this.state.parent >= 0) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -482,16 +482,16 @@ export default class DayPage extends Component {
     }
     totalSaleFormatWithPercentage = (val) => {
         try {
-            if (val !=0) {
-                
+            if (val != 0) {
+
                 op = val.toFixed(2);
-                return (op + " %");
+                return (op + "%");
             } else {
-               
-                return (val + " %");
+
+                return (val + "%");
             }
         } catch (error) {
-            return (0 + " %");
+            return (0 + "%");
         }
     }
 
@@ -501,12 +501,12 @@ export default class DayPage extends Component {
                 val = val / 1000000;
                 op = val.toFixed(2);
                 return (op + " mn");
-            } else if(val > 999) {
+            } else if (val > 999) {
                 val = val / 1000;
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
-            }else {
+            } else {
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " ");
@@ -534,7 +534,7 @@ export default class DayPage extends Component {
             <View>
                 <View style={{
                     marginLeft: -30,
-                    backgroundColor: '#F4F5F5',
+                    backgroundColor: '#000000',
                     height: 0.8,
 
                 }} />
@@ -597,43 +597,43 @@ export default class DayPage extends Component {
 
                 {/* </View> */}
                 {/* {(!(item.name == "Net Sale")) && */}
-                    <View style={styless.cardViewRow}>
-                        <View style={{
-                            flexDirection: 'row',
+                <View style={styless.cardViewRow}>
+                    <View style={{
+                        flexDirection: 'row',
 
-                        }}>
-
-
-                            <View style={styless.shapeyellow}>
+                    }}>
 
 
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 30,
+                        <View style={styless.shapeyellow}>
 
 
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}
-                                > {
-
-                                        "" + item.name
-                                    }
-
-                                </Text>
-
-                            </View>
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
 
 
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
 
-                         {((item.name == "Comp Sale %")||(item.name == "Comp GC  %")||(item.name == "MOM Comp. Sale %")) &&
+                            }}
+                            > {
+
+                                    "" + item.name
+                                }
+
+                            </Text>
+
+                        </View>
+
+
+
+                        {((item.name == "Comp Sale %") || (item.name == "Comp GC  %") || (item.name == "MOM Comp. Sale %")) &&
                             <View style={styless.shapeinnerwhite}>
 
-                          
+
                                 <Text style={{
                                     fontSize: 12,
                                     //width: 150,
@@ -646,8 +646,8 @@ export default class DayPage extends Component {
                                     alignItems: 'center',
 
                                 }}> {
-                                    // "" +item.total.toFixed(2)+'%'
-                                        "" + this.totalSaleFormatWithPercentage(val)
+                                        // "" +item.total.toFixed(2)+'%'
+                                        this.totalSaleFormatWithPercentage(val)
                                     }
                                 </Text>
 
@@ -657,7 +657,7 @@ export default class DayPage extends Component {
                         {
                             <View style={styless.shapeinnerwhite}>
 
-                          
+
                                 <Text style={{
                                     fontSize: 12,
                                     //width: 150,
@@ -678,9 +678,9 @@ export default class DayPage extends Component {
                             </View>
 
                         }
-                        </View>
-
                     </View>
+
+                </View>
 
                 {/* } */}
 
@@ -692,10 +692,13 @@ export default class DayPage extends Component {
     renderItem11 = ({ item }) => {
         var val = item.current_sale;
         var str = item.name;
-        if (item.name == "National" ) {
+        if (item.name == "National") {
             var netsale = this.totalSaleFormat(item.current_sale)
             this.setState({ netSales: netsale });
         }
+
+
+        
         // else if(!this.state.isGeo){
 
         //     var netsale = netsale + (item.current_sale);
@@ -703,7 +706,7 @@ export default class DayPage extends Component {
         //     this.setState({ netSales: netsaless });
         // }
         // else{
-            
+
         //     this.setState({ netSales: '' });
         // }
 
@@ -809,10 +812,10 @@ export default class DayPage extends Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         var netsale = this.totalSaleFormat(item.current_sale)
-                                        AsyncStorage.setItem("day"+(this.state.parent+1)+this.state.isGeo,netsale);
-                                        console.log("Setter -> Parent : "+(this.state.parent+1)+"  netSales:regionIdVal for back  : " + netsale);
+                                        AsyncStorage.setItem("day" + (this.state.parent + 1) + this.state.isGeo, netsale);
+                                        console.log("Setter -> Parent : " + (this.state.parent + 1) + "  netSales:regionIdVal for back  : " + netsale);
                                         this.setState({ netSales: netsale });
-                                        console.log("this.state.netSales" +this.state.netSales);
+                                        console.log("this.state.netSales" + this.state.netSales);
 
 
                                         if (this.state.parent == 2 && this.state.isGeo) {
@@ -877,8 +880,8 @@ export default class DayPage extends Component {
                                         obj.id = item.id;
                                         obj.name = item.name;
                                         obj.netSales = item.current_sale;
-                                        console.log("  obj.netSales : "+obj.netSales);
-                                        this.setExpandableData(obj);
+                                        console.log("  obj.netSales : " + obj.netSales);
+                                        // this.setExpandableData(obj);
                                         // this.setExpandableNationalData(obj);
 
                                         // }
@@ -1052,9 +1055,9 @@ export default class DayPage extends Component {
 
                     {
                         item.sale_data != null &&
-                        
-                         
-                      
+
+
+
 
 
 
@@ -1067,7 +1070,7 @@ export default class DayPage extends Component {
 
 
                         />
-                        
+
 
                     }
 
@@ -1096,20 +1099,20 @@ export default class DayPage extends Component {
     componentDidMount() {
         console.log('GLOBAL.BASE_URL : ' + GLOBAL.BASE_URL)
 
-        
+
         this.listenerios = EventRegister.addEventListener('myCustomEventIOS', (data) => {
             console.log('componentWillMount ')
             this.onBackPress();
         }),
-        this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
-            console.log('componentWillMount ')
-            this.customComponentDidMount()
-        }),
-        this.listener = EventRegister.addEventListener('onBackPress', (data) => {
-            console.log('componentWillMount ')
-            this.onBackPress();
-        }),
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+            this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
+                console.log('componentWillMount ')
+                this.customComponentDidMount()
+            }),
+            this.listener = EventRegister.addEventListener('onBackPress', (data) => {
+                console.log('componentWillMount ')
+                this.onBackPress();
+            }),
+            BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         this.customComponentDidMount()
         EventRegister.emit('myCustomEvent', 'it works!!!')
     }
@@ -1184,14 +1187,14 @@ export default class DayPage extends Component {
 
 
     customComponentDidMount = () => {
-        console.log("DAY customComponentDidMount "); 
+        console.log("DAY customComponentDidMount ");
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
         var regionId = ''
         var cityId = '';
         // this.getDate();
-       
+
         AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
             regionId = regionIdVal
         }).done()
@@ -1204,7 +1207,7 @@ export default class DayPage extends Component {
             if (parent == null) {
                 parent = 0
             }
-           
+
             AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
                 console.log(" date_key : " + value);
                 if (value == null || value == '') {
@@ -1220,12 +1223,12 @@ export default class DayPage extends Component {
                         value1 = "true";
                     }
                     console.log(" Is_Geo_key : " + value1);
-                    AsyncStorage.getItem("day"+parent+""+value1).then((regionIdVal) => {
-                        this.setState({netSales:regionIdVal});
+                    AsyncStorage.getItem("day" + parent + "" + value1).then((regionIdVal) => {
+                        this.setState({ netSales: regionIdVal });
                         console.log("netSales:regionIdVal for  state  : " + regionIdVal);
                         console.log("netSales:===== : " + this.state.netSales);
                     }).done()
-                    console.log("Getter -> Parent : "+parent+"  netSales:regionIdVal for back  : " + this.state.netSales);
+                    console.log("Getter -> Parent : " + parent + "  netSales:regionIdVal for back  : " + this.state.netSales);
                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,
@@ -1239,7 +1242,8 @@ export default class DayPage extends Component {
                             case 0:
                             case '0':
                                 console.log(" value1==true  case 0");
-                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                urlValue = 'http://104.211.49.150:3200/api/getPanSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1252,24 +1256,24 @@ export default class DayPage extends Component {
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
-                                    region_id: regionId,
+                                    sub_region_id:"Chattisgarh",
                                 })
                                 break;
-                            case 2:
-                            case '2':
-                                console.log(" value1==true  case 2");
-                                urlValue = 'http://115.112.224.200:3000/api/getStoreSales'
-                                bodyJson = JSON.stringify({
-                                    date: urlPanDate,
-                                    filter_type: filter_type,
-                                    city_id: cityId,
-                                })
-                                break;
-                            case 3:
-                            case '3':
-                                console.log(" value1==true  case ");
-                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
-                                break;
+                            // case 2:
+                            // case '2':
+                            //     console.log(" value1==true  case 2");
+                            //     urlValue = 'http://115.112.224.200:3000/api/getStoreSales'
+                            //     bodyJson = JSON.stringify({
+                            //         date: urlPanDate,
+                            //         filter_type: filter_type,
+                            //         city_id: cityId,
+                            //     })
+                            //     break;
+                            // case 3:
+                            // case '3':
+                            //     console.log(" value1==true  case ");
+                            //     urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                            //     break;
 
                         }
                     } else {
@@ -1306,48 +1310,71 @@ export default class DayPage extends Component {
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
-                    fetch(urlPan, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: bodyJson
-                    })
-                        .then((response) => response.json())
-                        .then((responseJson) => {
-                            responseJson.data.map((dataa) => {
-                                var sale_data = []
-                                sale_data.push({
-                                    name: 'Net Sales', total: dataa.current_sale,
+                        fetch(urlPan, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: bodyJson
+                        })
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                              
+                                   var nets;
+                                   responseJson.data.map((info) => {
+                                    nets=info.current_sale
+                                    })
+                                responseJson.data.push( {
+                                        id: 1,
+                                        name: "North",
+                                        current_sale: nets,
+                                        last_sale: 0,
+                                        sale_data:[]
+                                    })
+                                responseJson.data.map((dataa) => {
+                                    nets=dataa.current_sale
+                                    
+                                    var sale_data = []
+                                    sale_data.push({
+                                        name: 'Net Sales', total: dataa.current_sale,
+                                    })
+                                    dataa.hasSaleData = false
+                                    dataa.sale_data = sale_data
+                                   
                                 })
-                                dataa.hasSaleData = false
-                                dataa.sale_data = sale_data
+                                
+                            
+                                // this.setState.dataSource.push( responseJson.sale_info );
+                                this.setState({ indeterminate: false });
+                                // this.setState({ netSales: responseJson.data[0].current_sale });
+                                if (responseJson != null) {
+                                    this.setState({
+                                        dataSource: responseJson.data
+                                    })
+                                }
+    
+    
                             })
-                            // this.setState.dataSource.push( responseJson.sale_info );
-                            this.setState({ indeterminate: false });
-                            // this.setState({ netSales: responseJson.data[0].current_sale });
-                            if (responseJson != null) {
-                                this.setState({
-                                    dataSource: responseJson.data
-                                })
-                            }
-
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                        })
-
-
-                        .catch((error) => {
-                            console.log(error)
-                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+    
+    
+                            .catch((error) => {
+                                console.log(error)
+                            })
+        
+                    
 
                 }).done();
+           
             }).done();
+            
         }).done();
+   
     }
-
+    //last contral+z...
     //for page refersh
 
     pageStackComponentDidMount(id, parent) {
@@ -1379,7 +1406,7 @@ export default class DayPage extends Component {
                         bodyData = JSON.stringify({
                             date: this.state.date,
                             filter_type: filter_type,
-                            region_id: id,
+                            sub_region_id:"Chattisgarh",
                         }),
                             url = 'getCitySales'
 
@@ -1451,7 +1478,8 @@ export default class DayPage extends Component {
 
     callApi = (url, bodyData) => {
 
-        const urlPan = 'http://115.112.224.200:3000/api/' + url;
+        // const urlPan = 'http://115.112.224.200:3000/api/' + url;
+           const urlPan='http://104.211.49.150:3200/api/getPanSales';
         console.log("  url " + urlPan)
         fetch(urlPan, {
             method: 'POST',
@@ -1465,16 +1493,30 @@ export default class DayPage extends Component {
                 this.setState({ indeterminate: false });
 
                 console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-
-                responseJson.data.map((dataa) => {
-                    var sale_data = []
-                    sale_data.push({
-                        name: 'Net Sales', total: dataa.current_sale,
-                    })
-                    dataa.hasSaleData = false
-                    dataa.sale_data = sale_data
-                })
-
+       
+                    var nets;
+                    responseJson.data.map((info) => {
+                     nets=info.current_sale
+                     })
+                 responseJson.data.push( {
+                         id: 1,
+                         name: "North",
+                         current_sale: nets,
+                         last_sale: 0,
+                         sale_data:[]
+                     })
+                 responseJson.data.map((dataa) => {
+                     nets=dataa.current_sale
+                     
+                     var sale_data = []
+                     sale_data.push({
+                         name: 'Net Sales', total: dataa.current_sale,
+                     })
+                     dataa.hasSaleData = false
+                     dataa.sale_data = sale_data
+                    
+                 })
+                 
                 // this.setState.dataSource.push(responseJson.sale_info);
                 this.setState({
                     dataSource: responseJson.data
@@ -1563,19 +1605,19 @@ export default class DayPage extends Component {
                             marginTop={1}
                         />
                     }
-                   
+
 
                     {
-                        
+
                         <View style={styless.categries}>
-                           <View style={{
+                            <View style={{
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                width:'50%'
+                                width: '50%'
                                 // marginLeft: 25,
                             }}>
-                               
+
                                 <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
@@ -1583,18 +1625,18 @@ export default class DayPage extends Component {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                width:'50%',
-                                
+                                width: '50%',
+
 
                             }}>
-                              {
-                                      this.state.isGeo &&
+                                {
+                                    this.state.isGeo &&
 
                                     <TouchableOpacity
                                         onPress={() => {
                                             this.openDialog()
                                         }}>
-                                        
+
                                         <View style={{
                                             flexDirection: 'row',
                                             alignItems: 'center',
@@ -1608,8 +1650,8 @@ export default class DayPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:20,
-                                                    height:20,
+                                                    width: 20,
+                                                    height: 20,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1622,8 +1664,8 @@ export default class DayPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:24,
-                                                    height:24,
+                                                    width: 24,
+                                                    height: 24,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1652,8 +1694,8 @@ export default class DayPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:20,
-                                                    height:20,
+                                                    width: 20,
+                                                    height: 20,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1667,8 +1709,8 @@ export default class DayPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:24,
-                                                    height:24,
+                                                    width: 24,
+                                                    height: 24,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1700,7 +1742,7 @@ export default class DayPage extends Component {
 
 
                     />
-              </View >
+                </View >
             );
         }
         else {
@@ -1721,9 +1763,9 @@ export default class DayPage extends Component {
                     }
 
 
-                   
+
                     {
-                         
+
                         <View style={styless.categries}>
 
 
@@ -1736,9 +1778,9 @@ export default class DayPage extends Component {
                             }}>
                                 <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
-                               
+
                             </View>
- 
+
 
                         </View>
                     }
@@ -1749,7 +1791,7 @@ export default class DayPage extends Component {
         }
     }
 
-   
+
 
 }
 
@@ -1791,11 +1833,11 @@ const styless = StyleSheet.create({
         width: '90%',
         // height: 105,
         // borderRadius: 1,
-        borderColor: '#F4F5F5',
+        borderColor: '#000000',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
         marginBottom: 5,
-        borderWidth: 0.5,
+        borderWidth: 0.8,
         borderRadius: 1,
 
         //     marginLeft: 10,
@@ -1805,7 +1847,7 @@ const styless = StyleSheet.create({
         flexDirection: 'column',
         height: 30,
 
-        //backgroundColor: '#fff',
+        backgroundColor: '#fff',
         justifyContent: 'center',
         // alignItems: 'center',
         // textAlignVertical: "center"
@@ -1868,7 +1910,7 @@ const styless = StyleSheet.create({
 
     },
     shapeyellow: {
-        backgroundColor: '#FBE028',
+        backgroundColor: '#1e2b51',
         marginLeft: -30,
         width: '45%',
         height: 21,

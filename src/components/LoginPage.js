@@ -23,8 +23,8 @@ export default class LoginPage extends Component{
     constructor(props){
        super(props);
        this.state = {
-        username:'admin@mcdliv.in',
-        password:'mcdliv',
+        username:'admin@tacobellliv.in',
+        password:'tacobellliv',
         } 
     }
     render(){
@@ -42,13 +42,20 @@ export default class LoginPage extends Component{
                 <View style={styles.logoIcon}>
                 <Image 
             
-                source={require('../images/mcdo_logo.png')} 
+                source={require('../images/Taco_Bell.png')}
+                style={{
+                   
+                    width:96,
+                    height: 96,
+                    resizeMode: 'stretch',
+
+                }} 
               />
               </View>
                     <View >
                       
                     <TextInput style={styles.inputbar}
-                      Text='admin@mcdliv.in'
+                      Text='admin@tacobellliv.in'
                     placeholder='User Id'
                     returnKeyType='next'
                     keyboardType='email-address'
@@ -63,7 +70,7 @@ export default class LoginPage extends Component{
                            secureTextEntry={true}
                            placeholder='Password'
                            autoCapitalize='none'
-                            Text='mcdliv'
+                            Text='tacobellliv'
                            returnKeyType='search'
                            onChangeText={(password)=> this.setState({password})}>
                            value={this.state.password}
@@ -88,7 +95,7 @@ export default class LoginPage extends Component{
     }
     login = () => {
 
-        if(this.state.username=='admin@mcdliv.in'&&this.state.password=='mcdliv' )
+        if(this.state.username=='admin@tacobellliv.in'&&this.state.password=='tacobellliv' )
         {
             AsyncStorage.setItem(GLOBAL.PARENT_KEY,"0")
             AsyncStorage.setItem(GLOBAL.REGION_ID_KEY,"")

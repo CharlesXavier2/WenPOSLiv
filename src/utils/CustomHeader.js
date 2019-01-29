@@ -23,7 +23,7 @@ export default class CustomHeader extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            title: "McD",
+            title: "TacoBell",
             date: '',
             time:''
         }
@@ -77,8 +77,8 @@ export default class CustomHeader extends Component {
 
     render() {
         return ( <View >
-        <Text style={{ fontSize: 16, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{this.state.title}</Text>
-        <Text style={{ fontSize: 10, color: '#FAC209',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{this.state.date}</Text>
+        <Text style={{ fontSize: 16, color: '#FFFFFF',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{this.state.title}</Text>
+        <Text style={{ fontSize: 10, color: '#FFFFFF',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{this.state.date}</Text>
       </View>
         )
     }

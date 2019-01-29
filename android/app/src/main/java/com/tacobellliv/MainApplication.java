@@ -1,4 +1,4 @@
-package com.mcd;
+package com.tacobellliv;
 
 import android.app.Application;
 

@@ -166,7 +166,7 @@ export default class OrderMode extends Component {
                                     <Text style={{
                                         fontSize: 10,
                                         //width: 150,
-                                        color: '#000000',
+                                        color: '#ffffff',
                                         marginLeft: -40,
                                         textAlign: 'left',
 
@@ -491,7 +491,7 @@ const styless = StyleSheet.create({
         //   marginLeft:30,
         height: 40,
         // borderRadius: 1,
-        borderColor: '#F4F5F5',
+        borderColor: '#000000',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
         // marginBottom: 5,
@@ -557,7 +557,7 @@ const styless = StyleSheet.create({
 
     },
     shapeyellow: {
-        backgroundColor: '#FBE028',
+        backgroundColor: '#1e2b51',
         width: '50%',
         marginLeft: -30,
 

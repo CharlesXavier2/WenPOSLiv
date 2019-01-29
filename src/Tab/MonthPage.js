@@ -397,7 +397,7 @@ export default class MonthPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
-        if ((isGeoVal == "true" && this.state.parent >= 2) || (isGeoVal == "false" && this.state.parent >= 1)) {
+        if ((isGeoVal == "true" && this.state.parent >= 0) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -618,7 +618,7 @@ export default class MonthPage extends Component {
             <View>
                 <View style={{
                     marginLeft: -30,
-                    backgroundColor: '#F4F5F5',
+                    backgroundColor: '#000000',
                     height: 0.8,
 
                 }} />
@@ -636,7 +636,7 @@ export default class MonthPage extends Component {
                             <Text style={{
                                 fontSize: 12,
                                 //width: 150,
-                                color: '#000000',
+                                color: '#FFFFFF',
                                 marginLeft: 30,
 
 
@@ -914,7 +914,7 @@ export default class MonthPage extends Component {
                                         obj.id = item.id;
                                         obj.name = item.name;
                                         obj.netSales = item.current_sale;
-                                        this.setExpandableData(obj);
+                                        // this.setExpandableData(obj);
                                         // this.setExpandableNationalData(obj);
 
                                         // }
@@ -1176,9 +1176,10 @@ export default class MonthPage extends Component {
         AsyncStorage.setItem(GLOBAL.PARENT_KEY, "0");
         this.customComponentDidMount()
     }
-    //for date
+    //for data
     customComponentDidMount = () => {
         console.log("MONTH customComponentDidMount ");
+        this.setState({ indeterminate: true });
         this.getDate()
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent1) => {
             console.log(" parent_key : " + parent1);
@@ -1261,7 +1262,9 @@ export default class MonthPage extends Component {
                             case 0:
                             case '0':
                                 console.log(" value1==true  case 0");
-                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                urlValue = 'http://104.211.49.150:3200/api/getPanSales'
+
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1339,20 +1342,31 @@ export default class MonthPage extends Component {
                     })
                         .then((response) => response.json())
                         .then((responseJson) => {
-                            this.setState({ indeterminate: false });
-
-                            console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-
-                            responseJson.data.map((dataa) => {
-                                var sale_data = []
-                                sale_data.push({
-                                    name: 'Net Sales', total: dataa.current_sale,
-                                })
-                                dataa.hasSaleData = false
-
-                                dataa.sale_data = sale_data
-                            })
-                            // this.setState.dataSource.push( responseJson.sale_info );
+                          
+                            var nets;
+                            responseJson.data.map((info) => {
+                             nets=info.current_sale
+                             })
+                         responseJson.data.push( {
+                                 id: 1,
+                                 name: "North",
+                                 current_sale: nets,
+                                 last_sale: 0,
+                                 sale_data:[]
+                             })
+                         responseJson.data.map((dataa) => {
+                             nets=dataa.current_sale
+                             
+                             var sale_data = []
+                             sale_data.push({
+                                 name: 'Net Sales', total: dataa.current_sale,
+                             })
+                             dataa.hasSaleData = false
+                             dataa.sale_data = sale_data
+                            
+                         })
+                         // this.setState.dataSource.push( responseJson.sale_info );
+                         this.setState({ indeterminate: false });
 
 
                             if (responseJson != null) {
@@ -1818,11 +1832,11 @@ const styless = StyleSheet.create({
         width: '90%',
         // height: 105,
         // borderRadius: 1,
-        borderColor: '#F4F5F5',
+        borderColor: '#000000',
         backgroundColor: '#FFFFFF',
         marginTop: 5,
         marginBottom: 5,
-        borderWidth: 0.5,
+        borderWidth: 0.8,
         borderRadius: 1,
 
         //     marginLeft: 10,
@@ -1895,7 +1909,7 @@ const styless = StyleSheet.create({
 
     },
     shapeyellow: {
-        backgroundColor: '#FBE028',
+        backgroundColor: '#1E2B51',
         marginLeft: -30,
         width: '45%',
         height: 21,
