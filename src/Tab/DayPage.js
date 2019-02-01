@@ -63,6 +63,7 @@ export default class DayPage extends Component {
             tabPosition: 0,
             clickId: "0",
             regionId: 0,
+            subregionId: 0,
             cityId: 0,
             storeId: 0,
             isGeo: "true",
@@ -406,7 +407,7 @@ export default class DayPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
-        if ((isGeoVal == "true" && this.state.parent >= 0) || (isGeoVal == "false" && this.state.parent >= 1)) {
+        if ((isGeoVal == "true" && this.state.parent >= 3) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -432,13 +433,18 @@ export default class DayPage extends Component {
                 break;
             case 2:
             case '2':
+                AsyncStorage.setItem(GLOBAL.SUB_REGION_ID_KEY, "" + id)
+
+                break;
+            case 3:
+            case '3':
                 AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
                 AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
                 console.log("GLOBAL.CITY_NAME_KEY : " + name);
 
                 break;
-            case 3:
-            case '3':
+            case 4:
+            case '4':
                 break;
 
         }
@@ -698,7 +704,7 @@ export default class DayPage extends Component {
         }
 
 
-        
+
         // else if(!this.state.isGeo){
 
         //     var netsale = netsale + (item.current_sale);
@@ -741,7 +747,7 @@ export default class DayPage extends Component {
                                 width: '25%',
                             }}>
                                 {
-                                    !((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    !((this.state.parent == 3 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
                                     <TouchableOpacity
                                         onPress={() => {
                                             /* 1. Navigate to the Details route with params */
@@ -770,7 +776,7 @@ export default class DayPage extends Component {
                                     </TouchableOpacity>
                                 }
                                 {
-                                    ((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    ((this.state.parent == 3 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
 
                                     <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
                                         <Text
@@ -818,7 +824,7 @@ export default class DayPage extends Component {
                                         console.log("this.state.netSales" + this.state.netSales);
 
 
-                                        if (this.state.parent == 2 && this.state.isGeo) {
+                                        if (this.state.parent == 3 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
                                                 itemName: this.toTitleCase(str),
@@ -1192,11 +1198,15 @@ export default class DayPage extends Component {
         this.getDate();
         var urlPanDate = ''
         var regionId = ''
+        var subregionId = ''
         var cityId = '';
         // this.getDate();
 
         AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
             regionId = regionIdVal
+        }).done()
+        AsyncStorage.getItem(GLOBAL.SUB_REGION_ID_KEY).then((subregionIdVal) => {
+            subregionId = subregionIdVal
         }).done()
         AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
             cityId = cityIdVal
@@ -1252,28 +1262,40 @@ export default class DayPage extends Component {
                             case 1:
                             case '1':
                                 console.log(" value1==true  case 1");
-                                urlValue = 'http://115.112.224.200:3000/api/getCitySales'
+                                // urlValue = 'http://115.112.224.200:3000/api/getSubRegionSales'
+                                urlValue = 'http://104.211.49.150:6060/api/getSubRegionSales'
+
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
-                                    sub_region_id:"Chattisgarh",
+                                    region_id: regionId,
                                 })
                                 break;
-                            // case 2:
-                            // case '2':
-                            //     console.log(" value1==true  case 2");
-                            //     urlValue = 'http://115.112.224.200:3000/api/getStoreSales'
-                            //     bodyJson = JSON.stringify({
-                            //         date: urlPanDate,
-                            //         filter_type: filter_type,
-                            //         city_id: cityId,
-                            //     })
-                            //     break;
-                            // case 3:
-                            // case '3':
-                            //     console.log(" value1==true  case ");
-                            //     urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
-                            //     break;
+                            case 2:
+                            case '2':
+                                console.log(" value1==true  case 1");
+                                urlValue = 'http://104.211.49.150:6060/api/getCitySales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: filter_type,
+                                    sub_region_id: "Chattisgarh",
+                                })
+                                break;
+                            case 3:
+                            case '3':
+                                console.log(" value1==true  case 2");
+                                urlValue = 'http://104.211.49.150:6060/api/getStoreSales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: filter_type,
+                                    city_id: cityId,
+                                })
+                                break;
+                            case 4:
+                            case '4':
+                                console.log(" value1==true  case ");
+                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                break;
 
                         }
                     } else {
@@ -1310,6 +1332,7 @@ export default class DayPage extends Component {
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
+                    if (this.state.parent == 0) {
                         fetch(urlPan, {
                             method: 'POST',
                             headers: {
@@ -1320,31 +1343,97 @@ export default class DayPage extends Component {
                         })
                             .then((response) => response.json())
                             .then((responseJson) => {
-                              
-                                   var nets;
-                                   responseJson.data.map((info) => {
-                                    nets=info.current_sale
-                                    })
-                                responseJson.data.push( {
-                                        id: 1,
-                                        name: "North",
-                                        current_sale: nets,
-                                        last_sale: 0,
-                                        sale_data:[]
-                                    })
+
+                                var nets;
+                                responseJson.data.map((info) => {
+                                    nets = info.current_sale
+                                })
+
+
+                                responseJson.data.push({
+                                    id: 1,
+                                    name: "North",
+                                    current_sale: nets,
+                                    last_sale: 0,
+                                    sale_data: []
+                                })
+
                                 responseJson.data.map((dataa) => {
-                                    nets=dataa.current_sale
-                                    
+                                    nets = dataa.current_sale
+                                    AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
                                     var sale_data = []
                                     sale_data.push({
                                         name: 'Net Sales', total: dataa.current_sale,
                                     })
                                     dataa.hasSaleData = false
                                     dataa.sale_data = sale_data
-                                   
+
                                 })
-                                
-                            
+
+
+                                // this.setState.dataSource.push( responseJson.sale_info );
+                                this.setState({ indeterminate: false });
+                                // this.setState({ netSales: responseJson.data[0].current_sale });
+                                if (responseJson != null) {
+                                   
+                                    this.setState({
+                                        dataSource: responseJson.data
+                                    })
+                                }
+
+
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+                    } else {
+                        AsyncStorage.getItem(GLOBAL.NET_SALES).then((netSalesVal) => {
+                            getNetSale = netSalesVal
+                        }).done()
+                        fetch(urlPan, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: bodyJson
+                        })
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+
+                                // var nets;
+                                // responseJson.data.map((info) => {
+                                //     nets = info.current_sale
+                                // })
+
+
+                                // responseJson.data.push({
+                                //     id: 1,
+                                //     name: "North",
+                                //     current_sale: nets,
+                                //     last_sale: 0,
+                                //     sale_data: []
+                                // })
+
+                                responseJson.data.map((dataa) => {
+                                    nets = dataa.current_sale
+
+                                    var sale_data = []
+                                    sale_data.push({
+                                        name: 'Net Sales', total: getNetSale,
+                                    })
+                                    dataa.hasSaleData = false
+                                    dataa.sale_data = sale_data
+
+                                })
+
+
                                 // this.setState.dataSource.push( responseJson.sale_info );
                                 this.setState({ indeterminate: false });
                                 // this.setState({ netSales: responseJson.data[0].current_sale });
@@ -1353,26 +1442,26 @@ export default class DayPage extends Component {
                                         dataSource: responseJson.data
                                     })
                                 }
-    
-    
+
+
                             })
                             .catch((error) => {
                                 console.log(error)
                             })
-    
-    
+
+
                             .catch((error) => {
                                 console.log(error)
                             })
-        
-                    
+
+                    }
 
                 }).done();
-           
+
             }).done();
-            
+
         }).done();
-   
+
     }
     //last contral+z...
     //for page refersh
@@ -1395,25 +1484,40 @@ export default class DayPage extends Component {
                             date: this.state.date,
                             filter_type: filter_type,
                         }),
-                            url = 'getRegionSales'
+                            url = 'http://104.211.49.150:3200/api/getPanSales'
 
                         break;
                     case 1:
                         this.state.regionId = id;
+
+                        // SubRegion level
+
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: filter_type,
+                            region_id: id,
+                        }),
+                            url = 'http://104.211.49.150:6060/api/getSubRegionSales'
+
+
+
+                        break;
+                    case 2:
+                        this.state.subregionId = id;
 
                         // Cities level
 
                         bodyData = JSON.stringify({
                             date: this.state.date,
                             filter_type: filter_type,
-                            sub_region_id:"Chattisgarh",
+                            sub_region_id: "Chattisgarh",
                         }),
-                            url = 'getCitySales'
+                            url = 'http://104.211.49.150:6060/api/getCitySales'
 
 
 
                         break;
-                    case 2:
+                    case 3:
                         // Store level
                         this.state.cityId = id;
                         // this.state.storeId=id;
@@ -1422,7 +1526,7 @@ export default class DayPage extends Component {
                             filter_type: filter_type,
                             city_id: id,
                         }),
-                            url = 'getStoreSales'
+                            url = 'http://104.211.49.150:6060/api/getStoreSales'
 
                         break;
                 }
@@ -1479,58 +1583,131 @@ export default class DayPage extends Component {
     callApi = (url, bodyData) => {
 
         // const urlPan = 'http://115.112.224.200:3000/api/' + url;
-           const urlPan='http://104.211.49.150:3200/api/getPanSales';
+        const urlPan = url;
         console.log("  url " + urlPan)
-        fetch(urlPan, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: bodyData,
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({ indeterminate: false });
+        if (this.state.parent == 0) {
+            fetch(urlPan, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: bodyData
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
 
-                console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-       
                     var nets;
                     responseJson.data.map((info) => {
-                     nets=info.current_sale
-                     })
-                 responseJson.data.push( {
-                         id: 1,
-                         name: "North",
-                         current_sale: nets,
-                         last_sale: 0,
-                         sale_data:[]
-                     })
-                 responseJson.data.map((dataa) => {
-                     nets=dataa.current_sale
-                     
-                     var sale_data = []
-                     sale_data.push({
-                         name: 'Net Sales', total: dataa.current_sale,
-                     })
-                     dataa.hasSaleData = false
-                     dataa.sale_data = sale_data
-                    
-                 })
-                 
-                // this.setState.dataSource.push(responseJson.sale_info);
-                this.setState({
-                    dataSource: responseJson.data
-                })
-                if (responseJson != null) {
-                }
+                        nets = info.current_sale
+                    })
 
+
+                    responseJson.data.push({
+                        id: 1,
+                        name: "North",
+                        current_sale: nets,
+                        last_sale: 0,
+                        sale_data: []
+                    })
+
+                    responseJson.data.map((dataa) => {
+                        nets = dataa.current_sale
+                        AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
+                        var sale_data = []
+                        sale_data.push({
+                            name: 'Net Sales', total: dataa.current_sale,
+                        })
+                        dataa.hasSaleData = false
+                        dataa.sale_data = sale_data
+
+                    })
+
+
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    this.setState({ indeterminate: false });
+                    // this.setState({ netSales: responseJson.data[0].current_sale });
+                    if (responseJson != null) {
+                       
+                        this.setState({
+                            dataSource: responseJson.data
+                        })
+                    }
+
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+
+
+                .catch((error) => {
+                    console.log(error)
+                })
+
+        } else {
+            AsyncStorage.getItem(GLOBAL.NET_SALES).then((netSalesVal) => {
+                getNetSale = netSalesVal
+            }).done()
+            fetch(urlPan, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: bodyData
             })
-            .catch((error) => {
-                console.log(error)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+
+                    // var nets;
+                    // responseJson.data.map((info) => {
+                    //     nets = info.current_sale
+                    // })
+
+
+                    // responseJson.data.push({
+                    //     id: 1,
+                    //     name: "North",
+                    //     current_sale: nets,
+                    //     last_sale: 0,
+                    //     sale_data: []
+                    // })
+
+                    responseJson.data.map((dataa) => {
+                        nets = dataa.current_sale
+
+                        var sale_data = []
+                        sale_data.push({
+                            name: 'Net Sales', total: getNetSale,
+                        })
+                        dataa.hasSaleData = false
+                        dataa.sale_data = sale_data
+
+                    })
+
+
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    this.setState({ indeterminate: false });
+                    // this.setState({ netSales: responseJson.data[0].current_sale });
+                    if (responseJson != null) {
+                        this.setState({
+                            dataSource: responseJson.data
+                        })
+                    }
+
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+
+
+                .catch((error) => {
+                    console.log(error)
+                })
+
+        }
 
     };
 
@@ -1860,7 +2037,7 @@ const styless = StyleSheet.create({
     cardViewRow: {
         flexDirection: 'column',
         height: 20,
-
+        backgroundColor: '#fff',
         //backgroundColor: '#fff',
         // justifyContent: 'center',
         // alignItems: 'center',

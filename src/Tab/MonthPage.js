@@ -63,6 +63,7 @@ export default class MonthPage extends Component {
             tabPosition: 0,
             clickId: "0",
             regionId: 0,
+            subregionId: 0,
             cityId: 0,
             storeId: 0,
             isGeo: "true",
@@ -121,7 +122,7 @@ export default class MonthPage extends Component {
             console.log('componentWillMount ')
             this.setBackStackScreen();
         }),
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+            BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         this.listener = EventRegister.addEventListener('onBackPress', (data) => {
             console.log('componentWillMount ')
             this.onBackPress();
@@ -325,7 +326,7 @@ export default class MonthPage extends Component {
                         urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
 
                     } else {
-                        urlPan = 'http://115.112.224.200:3000/v2/get_pan_level_sale?filter_type='+filter_type+'&date=' + urlPanDate;
+                        urlPan = 'http://115.112.224.200:3000/v2/get_pan_level_sale?filter_type=' + filter_type + '&date=' + urlPanDate;
 
 
                     }
@@ -397,7 +398,7 @@ export default class MonthPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
-        if ((isGeoVal == "true" && this.state.parent >= 0) || (isGeoVal == "false" && this.state.parent >= 1)) {
+        if ((isGeoVal == "true" && this.state.parent >= 3) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -422,11 +423,18 @@ export default class MonthPage extends Component {
                 break;
             case 2:
             case '2':
+                AsyncStorage.setItem(GLOBAL.SUB_REGION_ID_KEY, "" + id)
+
+                break;
+            case 3:
+            case '3':
                 AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
                 AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
                 console.log("GLOBAL.CITY_NAME_KEY : " + name);
-            case 3:
-            case '3':
+
+                break;
+            case 4:
+            case '4':
                 break;
 
         }
@@ -567,12 +575,12 @@ export default class MonthPage extends Component {
 
     totalSaleFormatWithPercentage = (val) => {
         try {
-            if (val !=0) {
-                
+            if (val != 0) {
+
                 op = val.toFixed(2);
                 return (op + " %");
             } else {
-               
+
                 return (val + " %");
             }
         } catch (error) {
@@ -756,7 +764,7 @@ export default class MonthPage extends Component {
                                 width: '25%',
                             }}>
                                 {
-                                    !((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    !((this.state.parent == 3 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
                                     <TouchableOpacity
                                         onPress={() => {
                                             /* 1. Navigate to the Details route with params */
@@ -785,7 +793,7 @@ export default class MonthPage extends Component {
                                     </TouchableOpacity>
                                 }
                                 {
-                                    ((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    ((this.state.parent == 3 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
 
                                     <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
                                         <Text
@@ -852,7 +860,7 @@ export default class MonthPage extends Component {
                                             console.log("Setter -> Parent : " + (this.state.parent + 1) + "  netSales:regionIdVal for back  : " + netsale);
 
                                         }).done()
-                                        if (this.state.parent == 2 && this.state.isGeo) {
+                                        if (this.state.parent == 3 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
                                             this.props.navigation.navigate('DetailPage', {
                                                 itemName: this.toTitleCase(str),
@@ -1193,6 +1201,7 @@ export default class MonthPage extends Component {
         console.log(" customComponentDidMount ");
         var urlPanDate = ''
         var regionId = ''
+        var subregionId = ''
         var cityId = '';
         // this.getDate();
         AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
@@ -1264,7 +1273,6 @@ export default class MonthPage extends Component {
                                 console.log(" value1==true  case 0");
                                 // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 urlValue = 'http://104.211.49.150:3200/api/getPanSales'
-
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1273,7 +1281,9 @@ export default class MonthPage extends Component {
                             case 1:
                             case '1':
                                 console.log(" value1==true  case 1");
-                                urlValue = 'http://115.112.224.200:3000/api/getCitySales'
+                                // urlValue = 'http://115.112.224.200:3000/api/getSubRegionSales'
+                                urlValue = 'http://104.211.49.150:6060/api/getSubRegionSales'
+
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1282,16 +1292,26 @@ export default class MonthPage extends Component {
                                 break;
                             case 2:
                             case '2':
+                                console.log(" value1==true  case 1");
+                                urlValue = 'http://104.211.49.150:6060/api/getCitySales'
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: filter_type,
+                                    sub_region_id: "Chattisgarh",
+                                })
+                                break;
+                            case 3:
+                            case '3':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'http://115.112.224.200:3000/api/getStoreSales'
+                                urlValue = 'http://104.211.49.150:6060/api/getStoreSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
                                     city_id: cityId,
                                 })
                                 break;
-                            case 3:
-                            case '3':
+                            case 4:
+                            case '4':
                                 console.log(" value1==true  case ");
                                 urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 break;
@@ -1332,59 +1352,129 @@ export default class MonthPage extends Component {
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
-                    fetch(urlPan, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: bodyJson
-                    })
-                        .then((response) => response.json())
-                        .then((responseJson) => {
-                          
-                            var nets;
-                            responseJson.data.map((info) => {
-                             nets=info.current_sale
-                             })
-                         responseJson.data.push( {
-                                 id: 1,
-                                 name: "North",
-                                 current_sale: nets,
-                                 last_sale: 0,
-                                 sale_data:[]
-                             })
-                         responseJson.data.map((dataa) => {
-                             nets=dataa.current_sale
-                             
-                             var sale_data = []
-                             sale_data.push({
-                                 name: 'Net Sales', total: dataa.current_sale,
-                             })
-                             dataa.hasSaleData = false
-                             dataa.sale_data = sale_data
-                            
-                         })
-                         // this.setState.dataSource.push( responseJson.sale_info );
-                         this.setState({ indeterminate: false });
+                    if (this.state.parent == 0) {
+                        fetch(urlPan, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: bodyJson
+                        })
+                            .then((response) => response.json())
+                            .then((responseJson) => {
 
-
-                            if (responseJson != null) {
-                                this.setState({
-                                    dataSource: responseJson.data
+                                var nets;
+                                responseJson.data.map((info) => {
+                                    nets = info.current_sale
                                 })
-                            }
 
+
+                                responseJson.data.push({
+                                    id: 1,
+                                    name: "North",
+                                    current_sale: nets,
+                                    last_sale: 0,
+                                    sale_data: []
+                                })
+
+                                responseJson.data.map((dataa) => {
+                                    nets = dataa.current_sale
+                                    AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
+                                    var sale_data = []
+                                    sale_data.push({
+                                        name: 'Net Sales', total: dataa.current_sale,
+                                    })
+                                    dataa.hasSaleData = false
+                                    dataa.sale_data = sale_data
+
+                                })
+
+
+                                // this.setState.dataSource.push( responseJson.sale_info );
+                                this.setState({ indeterminate: false });
+                                // this.setState({ netSales: responseJson.data[0].current_sale });
+                                if (responseJson != null) {
+                                   
+                                    this.setState({
+                                        dataSource: responseJson.data
+                                    })
+                                }
+
+
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+                    } else {
+                        AsyncStorage.getItem(GLOBAL.NET_SALES).then((netSalesVal) => {
+                            getNetSale = netSalesVal
+                        }).done()
+                        fetch(urlPan, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: bodyJson
                         })
-                        .catch((error) => {
-                            console.log(error)
-                        })
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+
+                                // var nets;
+                                // responseJson.data.map((info) => {
+                                //     nets = info.current_sale
+                                // })
 
 
-                        .catch((error) => {
-                            console.log(error)
-                        })
+                                // responseJson.data.push({
+                                //     id: 1,
+                                //     name: "North",
+                                //     current_sale: nets,
+                                //     last_sale: 0,
+                                //     sale_data: []
+                                // })
 
+                                responseJson.data.map((dataa) => {
+                                    nets = dataa.current_sale
+
+                                    var sale_data = []
+                                    sale_data.push({
+                                        name: 'Net Sales', total: getNetSale,
+                                    })
+                                    dataa.hasSaleData = false
+                                    dataa.sale_data = sale_data
+
+                                })
+
+
+                                // this.setState.dataSource.push( responseJson.sale_info );
+                                this.setState({ indeterminate: false });
+                                // this.setState({ netSales: responseJson.data[0].current_sale });
+                                if (responseJson != null) {
+                                    this.setState({
+                                        dataSource: responseJson.data
+                                    })
+                                }
+
+
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
+                    }
                 }).done();
             }).done();
         }).done();
@@ -1412,25 +1502,40 @@ export default class MonthPage extends Component {
                             date: this.state.date,
                             filter_type: filter_type,
                         }),
-                            url = 'getRegionSales'
+                            url = 'http://104.211.49.150:3200/api/getPanSales'
 
                         break;
-                    case 1:
+                        case 1:
                         this.state.regionId = id;
 
-                        // Cities level
+                        // SubRegion level
 
                         bodyData = JSON.stringify({
                             date: this.state.date,
                             filter_type: filter_type,
                             region_id: id,
                         }),
-                            url = 'getCitySales'
+                            url = 'http://104.211.49.150:6060/api/getSubRegionSales'
 
 
 
                         break;
                     case 2:
+                        this.state.subregionId = id;
+
+                        // Cities level
+
+                        bodyData = JSON.stringify({
+                            date: this.state.date,
+                            filter_type: filter_type,
+                            sub_region_id: "Chattisgarh",
+                        }),
+                            url = 'http://104.211.49.150:6060/api/getCitySales'
+
+
+
+                        break;
+                    case 3:
                         // Store level
                         this.state.cityId = id;
                         // this.state.storeId=id;
@@ -1439,7 +1544,7 @@ export default class MonthPage extends Component {
                             filter_type: filter_type,
                             city_id: id,
                         }),
-                            url = 'getStoreSales'
+                            url = 'http://104.211.49.150:6060/api/getStoreSales'
 
                         break;
                 }
@@ -1495,45 +1600,132 @@ export default class MonthPage extends Component {
 
     callApi = (url, bodyData) => {
 
-        const urlPan = 'http://115.112.224.200:3000/api/' + url;
+        // const urlPan = 'http://115.112.224.200:3000/api/' + url;
+        const urlPan = url;
         console.log("  url " + urlPan)
-        fetch(urlPan, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: bodyData,
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({ indeterminate: false });
+        if (this.state.parent == 0) {
+            fetch(urlPan, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: bodyData
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
 
-                console.log("this.callApi(url,bodyData)  responseJson.data : " + responseJson.data);
-
-                responseJson.data.map((dataa) => {
-                    var sale_data = []
-                    sale_data.push({
-                        name: 'Net Sales', total: dataa.current_sale,
+                    var nets;
+                    responseJson.data.map((info) => {
+                        nets = info.current_sale
                     })
-                    dataa.hasSaleData = false
 
-                    dataa.sale_data = sale_data
+
+                    responseJson.data.push({
+                        id: 1,
+                        name: "North",
+                        current_sale: nets,
+                        last_sale: 0,
+                        sale_data: []
+                    })
+
+                    responseJson.data.map((dataa) => {
+                        nets = dataa.current_sale
+                        AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
+                        var sale_data = []
+                        sale_data.push({
+                            name: 'Net Sales', total: dataa.current_sale,
+                        })
+                        dataa.hasSaleData = false
+                        dataa.sale_data = sale_data
+
+                    })
+
+
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    this.setState({ indeterminate: false });
+                    // this.setState({ netSales: responseJson.data[0].current_sale });
+                    if (responseJson != null) {
+                       
+                        this.setState({
+                            dataSource: responseJson.data
+                        })
+                    }
+
+
                 })
-                this.setState({
-                    dataSource: responseJson.data
+                .catch((error) => {
+                    console.log(error)
                 })
 
-                if (responseJson != null) {
 
-                }
+                .catch((error) => {
+                    console.log(error)
+                })
 
+        } else {
+            AsyncStorage.getItem(GLOBAL.NET_SALES).then((netSalesVal) => {
+                getNetSale = netSalesVal
+            }).done()
+            fetch(urlPan, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: bodyData
             })
-            .catch((error) => {
-                console.log(error)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+
+                    // var nets;
+                    // responseJson.data.map((info) => {
+                    //     nets = info.current_sale
+                    // })
+
+
+                    // responseJson.data.push({
+                    //     id: 1,
+                    //     name: "North",
+                    //     current_sale: nets,
+                    //     last_sale: 0,
+                    //     sale_data: []
+                    // })
+
+                    responseJson.data.map((dataa) => {
+                        nets = dataa.current_sale
+
+                        var sale_data = []
+                        sale_data.push({
+                            name: 'Net Sales', total: getNetSale,
+                        })
+                        dataa.hasSaleData = false
+                        dataa.sale_data = sale_data
+
+                    })
+
+
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    this.setState({ indeterminate: false });
+                    // this.setState({ netSales: responseJson.data[0].current_sale });
+                    if (responseJson != null) {
+                        this.setState({
+                            dataSource: responseJson.data
+                        })
+                    }
+
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+
+
+                .catch((error) => {
+                    console.log(error)
+                })
+
+        }
 
     };
 
@@ -1561,10 +1753,10 @@ export default class MonthPage extends Component {
                             marginTop={1}
                         />
                     }
-                  
+
 
                     {
-                       
+
                         <View style={styless.categries}>
 
 
@@ -1573,10 +1765,10 @@ export default class MonthPage extends Component {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                width:'50%'
-                                
+                                width: '50%'
+
                             }}>
-                               
+
                                 <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
@@ -1587,7 +1779,7 @@ export default class MonthPage extends Component {
                                 flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                width:'50%'
+                                width: '50%'
 
                             }}>
 
@@ -1627,8 +1819,8 @@ export default class MonthPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:20,
-                                                    height:20,
+                                                    width: 20,
+                                                    height: 20,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1641,8 +1833,8 @@ export default class MonthPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:24,
-                                                    height:24,
+                                                    width: 24,
+                                                    height: 24,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1671,8 +1863,8 @@ export default class MonthPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:20,
-                                                    height:20,
+                                                    width: 20,
+                                                    height: 20,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1686,8 +1878,8 @@ export default class MonthPage extends Component {
                                                     padding: 2,
                                                     margin: 5,
                                                     marginLeft: 10,
-                                                    width:24,
-                                                    height:24,
+                                                    width: 24,
+                                                    height: 24,
                                                     justifyContent: 'center',
                                                     resizeMode: 'stretch',
 
@@ -1747,10 +1939,10 @@ export default class MonthPage extends Component {
 
 
                     {
-                       
+
                         <View style={styless.categries}>
 
-                           
+
 
                             <View style={{
                                 flexDirection: 'row',
@@ -1758,16 +1950,16 @@ export default class MonthPage extends Component {
                                 justifyContent: 'center',
                                 marginLeft: 25,
                             }}>
-                               
+
                                 <Text style={styless.instructions}>Net Sales </Text>
                                 <Text style={styless.instructions}>{this.state.netSales}</Text>
                             </View>
 
 
-                           
+
                         </View>
                     }
-                    
+
 
                 </View>
             );
@@ -1845,7 +2037,7 @@ const styless = StyleSheet.create({
     cardViewRowHeader: {
         flexDirection: 'column',
         height: 30,
-
+        backgroundColor: '#fff',
         //backgroundColor: '#fff',
         justifyContent: 'center',
         // alignItems: 'center',
@@ -1859,7 +2051,7 @@ const styless = StyleSheet.create({
     cardViewRow: {
         flexDirection: 'column',
         height: 20,
-
+        backgroundColor: '#fff',
         //backgroundColor: '#fff',
         // justifyContent: 'center',
         // alignItems: 'center',
