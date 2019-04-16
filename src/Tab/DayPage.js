@@ -69,7 +69,9 @@ export default class DayPage extends Component {
             isGeo: "true",
             isLoading: true,
             filter_type: 'day',
-            netSales: ' '
+            netSales: ' ',
+            netSale: '',
+            kpidataSource: []
         }
         props.navigation.setParams({
             onTabFocus: this.tabClick
@@ -191,15 +193,20 @@ export default class DayPage extends Component {
                                 value = "true";
                             }
                             console.log(" Is_Geo_key : " + value);
-                            if (value == "true") {
-                                AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
-                                this.setState({ isGeo: true })
-
-                            } else {
+                            if (value != "true") {
                                 AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
                                 this.setState({ isGeo: false })
 
                             }
+                            // if (value == "true") {
+                            //     AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
+                            //     this.setState({ isGeo: true })
+
+                            // } else {
+                            //     AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
+                            //     this.setState({ isGeo: false })
+
+                            // }
                             console.log("State value Is_Geo_key : " + this.state.isGeo);
 
                             this.setState({ parent: 0 })
@@ -273,7 +280,9 @@ export default class DayPage extends Component {
                             case '0':
                                 console.log(" value1==true  case 0");
                                 console.log(" region_id= " + id);
-                                urlValue = 'get_all_region_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + id;
+                                // urlValue='http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0';
+                                urlValue = 'get_all_region_sale?filter_type=day&date=2018-12-30&region_id=WEST';
+                                // urlValue = 'get_all_region_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + id;
                                 // var cityId=id
 
                                 // bodyJson = JSON.stringify({
@@ -287,7 +296,11 @@ export default class DayPage extends Component {
 
                                 console.log(" region_id= " + id);
                                 console.log("city_name= " + name);
-                                urlValue = 'get_all_city_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
+                                                                urlValue='http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0';
+
+                                urlValue = 'get_all_region_sale?filter_type=day&date=2018-12-30&region_id=WEST';
+
+                                // urlValue = 'get_all_city_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
 
                                 break;
                             case 2:
@@ -332,7 +345,7 @@ export default class DayPage extends Component {
                         urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
 
                     } else {
-                        urlPan = 'http://115.112.224.200:3000/v2/get_pan_level_sale?filter_type=' + filter_type + '&date=' + urlPanDate;
+                        // urlPan = 'http://115.112.224.200:3000/v2/get_pan_level_sale?filter_type=' + filter_type + '&date=' + urlPanDate;
 
 
                     }
@@ -351,7 +364,7 @@ export default class DayPage extends Component {
                                     last_sale: value.last_sale, sale_data: []
                                 })
                             }),
-                                console.log("dataSourceTem -> " + JSON.stringify(dataSourceTemp)),
+                                console.log("dataSource -> " + JSON.stringify(responseJson.sale_info)),
 
                                 responseJson.sale_info.map((data) => {
                                     console.log("responseJson.sale_info.map((data) -> " + JSON.stringify(data)),
@@ -361,9 +374,7 @@ export default class DayPage extends Component {
                                                 dataa.hasSaleData = true;
                                                 data.sale_data[0].total = netSalesVal;
                                                 dataa.sale_data = data.sale_data
-                                            }
-
-                                            else {
+                                            } else {
                                                 var sale_data = []
                                                 sale_data.push({
                                                     name: 'Net Sales', total: dataa.current_sale,
@@ -374,12 +385,14 @@ export default class DayPage extends Component {
 
                                         })
                                 })
+                            console.log("dataSourceTemp -> " + JSON.stringify(dataSourceTemp));
 
-                            const myObjStr = JSON.stringify(dataSourceTemp);
+                            // const myObjStr = JSON.stringify(dataSourceTemp);
 
-                            console.log("dataSource : " + myObjStr);
+                            // console.log("dataSource : " + myObjStr);
 
                             this.setState({
+
                                 dataSource: dataSourceTemp
                             })
 
@@ -407,7 +420,9 @@ export default class DayPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
-        if ((isGeoVal == "true" && this.state.parent >= 3) || (isGeoVal == "false" && this.state.parent >= 1)) {
+
+        //TODO for only show region and store level
+        if ((isGeoVal == "true" && this.state.parent >= 1) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -429,6 +444,8 @@ export default class DayPage extends Component {
                 break;
             case 1:
             case '1':
+            // AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+            // AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
                 AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id)
                 break;
             case 2:
@@ -533,6 +550,7 @@ export default class DayPage extends Component {
     // Rerender data in row on click Expandable button
     renderItemSaleData = ({ item }) => {
         var val = item.total;
+        var val1 = "0";
         console.log(' renderItemSaleData' + item.name)
         return (
 
@@ -609,7 +627,7 @@ export default class DayPage extends Component {
 
                     }}>
 
-
+                      {(item.name == "Total Tickets") &&
                         <View style={styless.shapeyellow}>
 
 
@@ -625,7 +643,217 @@ export default class DayPage extends Component {
                                 alignItems: 'center',
 
                             }}
-                            > {
+                            > ADS
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                       {(item.name == "Avg. Sale") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > SSSG
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                      {(item.name == "Comp Sale %") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > SSTG
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                      {(item.name == "Comp GC  %") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > ADT
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                       {(item.name == "Avg.GC per Day") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > APC
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                       {(item.name == "Avg. per Check") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > WOW
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                       {(item.name == "MOM Comp. Sale %") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > MOM
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                       {(item.name == "MDS") &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > Delivery %
+                            {/* {
+
+                                    "" + item.name
+                                } */}
+
+                            </Text>
+
+                        </View>
+                      }
+                      {
+                          item.name == "Net Sale" &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > 
+                            {
 
                                     "" + item.name
                                 }
@@ -633,10 +861,38 @@ export default class DayPage extends Component {
                             </Text>
 
                         </View>
+                      }
+                       {
+                           item.name == "Net Sales"  &&
+                        <View style={styless.shapeyellow}>
+
+
+                            <Text style={{
+                                fontSize: 12,
+                                //width: 150,
+                                color: '#FFFFFF',
+                                marginLeft: 30,
+
+
+                                justifyContent: 'center',
+                                //textAlignVertical: "center",
+                                alignItems: 'center',
+
+                            }}
+                            > 
+                            {
+
+                                    "" + item.name
+                                }
+
+                            </Text>
+
+                        </View>
+                      }
 
 
 
-                        {((item.name == "Comp Sale %") || (item.name == "Comp GC  %") || (item.name == "MOM Comp. Sale %")) &&
+                        {/* {((item.name == "Comp Sale %") || (item.name == "Comp GC  %") || (item.name == "MOM Comp. Sale %")) &&
                             <View style={styless.shapeinnerwhite}>
 
 
@@ -659,8 +915,10 @@ export default class DayPage extends Component {
 
                             </View>
 
-                        }
+                        } */}
                         {
+
+                            item.name == "Net Sales" && item.name != "Net Sale" &&
                             <View style={styless.shapeinnerwhite}>
 
 
@@ -668,8 +926,8 @@ export default class DayPage extends Component {
                                     fontSize: 12,
                                     //width: 150,
                                     color: '#000000',
-                                    marginLeft: 70,
-
+                                    marginLeft: 50,
+                                    marginRight: 20,
 
                                     justifyContent: 'center',
                                     //textAlignVertical: "center",
@@ -684,6 +942,67 @@ export default class DayPage extends Component {
                             </View>
 
                         }
+                        {
+
+                            item.name == "Net Sale" && item.name != "Net Sales" &&
+                            <View style={styless.shapeinnerwhite}>
+
+
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginLeft: 50,
+
+                                    marginRight: 20,
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }}> {
+                                        //item.current_sale.toFixed(2)
+                                        "" + this.totalSaleFormat(val)
+                                    }
+                                </Text>
+
+                            </View>
+
+                        }
+                        {
+                         item.name != "Net Sale" && item.name != "Net Sales" &&
+
+                            <View style={styless.shapeinnerwhite}>
+
+
+                                <Text style={{
+                                    fontSize: 12,
+                                    //width: 150,
+                                    color: '#000000',
+                                    marginRight: 20,
+                                    marginLeft: 50,
+
+
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center',
+
+                                }}> {
+                                        //item.current_sale.toFixed(2)
+                                        "" + this.totalSaleFormat(val1)
+                                    }
+                                </Text>
+
+                            </View>
+
+                        }
+                        <View style={{
+                           width:20,
+
+                        }}>
+
+
+                            
+                        </View>
                     </View>
 
                 </View>
@@ -698,6 +1017,16 @@ export default class DayPage extends Component {
     renderItem11 = ({ item }) => {
         var val = item.current_sale;
         var str = item.name;
+        // if(item.name=="Ncr"){
+        //     str = "Sub Region";
+        // }else if(item.name=="Noida"){
+        //     str = "City";
+        // }else if(item.name=="Dlf Mall"){
+        //     str = "Store 1";
+        // }else{
+        //     str = item.name;
+        // }
+
         if (item.name == "National") {
             var netsale = this.totalSaleFormat(item.current_sale)
             this.setState({ netSales: netsale });
@@ -751,15 +1080,15 @@ export default class DayPage extends Component {
                                     <TouchableOpacity
                                         onPress={() => {
                                             /* 1. Navigate to the Details route with params */
-                                            this.props.navigation.navigate('DetailPage', {
-                                                itemName: this.toTitleCase(str),
-                                                itemId: item.id,
-                                                sales: this.totalSaleFormat(item.current_sale),
-                                                parent: this.state.parent,
-                                                date: this.state.date,
-                                                isGeo: this.state.isGeo,
-                                                filter_type: this.state.filter_type
-                                            });
+                                            // this.props.navigation.navigate('DetailPage', {
+                                            //     itemName: this.toTitleCase(str),
+                                            //     itemId: item.id,
+                                            //     sales: this.totalSaleFormat(item.current_sale),
+                                            //     parent: this.state.parent,
+                                            //     date: this.state.date,
+                                            //     isGeo: this.state.isGeo,
+                                            //     filter_type: this.state.filter_type
+                                            // });
                                         }} >
                                         <Image
                                             source={require('../images/list.png')}
@@ -826,27 +1155,27 @@ export default class DayPage extends Component {
 
                                         if (this.state.parent == 3 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
-                                            this.props.navigation.navigate('DetailPage', {
-                                                itemName: this.toTitleCase(str),
-                                                itemId: item.id,
-                                                sales: this.totalSaleFormat(item.current_sale),
-                                                parent: this.state.parent,
-                                                date: this.state.date,
-                                                isGeo: this.state.isGeo,
-                                                filter_type: this.state.filter_type
-                                            });
+                                            // this.props.navigation.navigate('DetailPage', {
+                                            //     itemName: this.toTitleCase(str),
+                                            //     itemId: item.id,
+                                            //     sales: this.totalSaleFormat(item.current_sale),
+                                            //     parent: this.state.parent,
+                                            //     date: this.state.date,
+                                            //     isGeo: this.state.isGeo,
+                                            //     filter_type: this.state.filter_type
+                                            // });
                                         }
                                         else if (this.state.parent == 1 && !this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
-                                            this.props.navigation.navigate('DetailPage', {
-                                                itemName: this.toTitleCase(str),
-                                                itemId: item.id,
-                                                sales: this.totalSaleFormat(item.current_sale),
-                                                parent: this.state.parent,
-                                                date: this.state.date,
-                                                isGeo: this.state.isGeo,
-                                                filter_type: this.state.filter_type
-                                            });
+                                            // this.props.navigation.navigate('DetailPage', {
+                                            //     itemName: this.toTitleCase(str),
+                                            //     itemId: item.id,
+                                            //     sales: this.totalSaleFormat(item.current_sale),
+                                            //     parent: this.state.parent,
+                                            //     date: this.state.date,
+                                            //     isGeo: this.state.isGeo,
+                                            //     filter_type: this.state.filter_type
+                                            // });
                                         }
                                         else if (!(item.name == "National")) {
                                             this.setCurrentScreen(item.id, item.name);
@@ -887,7 +1216,7 @@ export default class DayPage extends Component {
                                         obj.name = item.name;
                                         obj.netSales = item.current_sale;
                                         console.log("  obj.netSales : " + obj.netSales);
-                                        // this.setExpandableData(obj);
+                                        this.setExpandableData(obj);
                                         // this.setExpandableNationalData(obj);
 
                                         // }
@@ -896,7 +1225,7 @@ export default class DayPage extends Component {
                                         //     obj.id = item.id;
                                         //     obj.name = item.name;
 
-                                        //     this.setExpandableData(obj);
+                                        // this.setExpandableData(obj);
                                         // }
                                     }}  >
 
@@ -1253,7 +1582,8 @@ export default class DayPage extends Component {
                             case '0':
                                 console.log(" value1==true  case 0");
                                 // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
-                                urlValue = 'http://104.211.49.150:3200/api/getPanSales'
+                                // urlValue = 'http://104.211.49.150:3200/api/getPanSales'
+                                urlValue = 'http://104.211.49.150:3001/api/getRegionSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1263,33 +1593,34 @@ export default class DayPage extends Component {
                             case '1':
                                 console.log(" value1==true  case 1");
                                 // urlValue = 'http://115.112.224.200:3000/api/getSubRegionSales'
-                                urlValue = 'http://104.211.49.150:6060/api/getSubRegionSales'
+                                // urlValue = 'http://104.211.49.150:6060/api/getSubRegionSales'
+                                urlValue = 'http://104.211.49.150:3001/api/getStoreSales'
 
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
-                                    region_id: regionId,
+                                    city_id: "1",
                                 })
                                 break;
                             case 2:
                             case '2':
                                 console.log(" value1==true  case 1");
-                                urlValue = 'http://104.211.49.150:6060/api/getCitySales'
-                                bodyJson = JSON.stringify({
-                                    date: urlPanDate,
-                                    filter_type: filter_type,
-                                    sub_region_id: "Chattisgarh",
-                                })
+                                // urlValue = 'http://104.211.49.150:6060/api/getCitySales'
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                //     sub_region_id: "Chattisgarh",
+                                // })
                                 break;
                             case 3:
                             case '3':
                                 console.log(" value1==true  case 2");
-                                urlValue = 'http://104.211.49.150:6060/api/getStoreSales'
-                                bodyJson = JSON.stringify({
-                                    date: urlPanDate,
-                                    filter_type: filter_type,
-                                    city_id: cityId,
-                                })
+                                // urlValue = 'http://104.211.49.150:6060/api/getStoreSales'
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                //     city_id: cityId,
+                                // })
                                 break;
                             case 4:
                             case '4':
@@ -1332,7 +1663,9 @@ export default class DayPage extends Component {
                     console.log(" Body Request : " + bodyJson)
                     const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
-                    if (this.state.parent == 0) {
+                    console.log(" body===" + JSON.stringify(bodyJson));
+
+                    // if (this.state.parent == 0) {
                         fetch(urlPan, {
                             method: 'POST',
                             headers: {
@@ -1350,13 +1683,13 @@ export default class DayPage extends Component {
                                 })
 
 
-                                responseJson.data.push({
-                                    id: 1,
-                                    name: "North",
-                                    current_sale: nets,
-                                    last_sale: 0,
-                                    sale_data: []
-                                })
+                                // responseJson.data.push({
+                                //     id: 1,
+                                //     name: "North",
+                                //     current_sale: nets,
+                                //     last_sale: 0,
+                                //     sale_data: []
+                                // })
 
                                 responseJson.data.map((dataa) => {
                                     nets = dataa.current_sale
@@ -1375,7 +1708,8 @@ export default class DayPage extends Component {
                                 this.setState({ indeterminate: false });
                                 // this.setState({ netSales: responseJson.data[0].current_sale });
                                 if (responseJson != null) {
-                                   
+                                    var netSaless = this.totalSaleFormat(responseJson.total_sale);
+                                    this.setState({ netSale: netSaless });
                                     this.setState({
                                         dataSource: responseJson.data
                                     })
@@ -1392,69 +1726,70 @@ export default class DayPage extends Component {
                                 console.log(error)
                             })
 
-                    } else {
-                        AsyncStorage.getItem(GLOBAL.NET_SALES).then((netSalesVal) => {
-                            getNetSale = netSalesVal
-                        }).done()
-                        fetch(urlPan, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: bodyJson
-                        })
-                            .then((response) => response.json())
-                            .then((responseJson) => {
+                    // } 
+                    // else {
+                    //     AsyncStorage.getItem(GLOBAL.NET_SALES).then((netSalesVal) => {
+                    //         getNetSale = netSalesVal
+                    //     }).done()
+                    //     fetch(urlPan, {
+                    //         method: 'POST',
+                    //         headers: {
+                    //             'Accept': 'application/json',
+                    //             'Content-Type': 'application/json'
+                    //         },
+                    //         body: bodyJson
+                    //     })
+                    //         .then((response) => response.json())
+                    //         .then((responseJson) => {
 
-                                // var nets;
-                                // responseJson.data.map((info) => {
-                                //     nets = info.current_sale
-                                // })
-
-
-                                // responseJson.data.push({
-                                //     id: 1,
-                                //     name: "North",
-                                //     current_sale: nets,
-                                //     last_sale: 0,
-                                //     sale_data: []
-                                // })
-
-                                responseJson.data.map((dataa) => {
-                                    nets = dataa.current_sale
-
-                                    var sale_data = []
-                                    sale_data.push({
-                                        name: 'Net Sales', total: getNetSale,
-                                    })
-                                    dataa.hasSaleData = false
-                                    dataa.sale_data = sale_data
-
-                                })
+                    //             // var nets;
+                    //             // responseJson.data.map((info) => {
+                    //             //     nets = info.current_sale
+                    //             // })
 
 
-                                // this.setState.dataSource.push( responseJson.sale_info );
-                                this.setState({ indeterminate: false });
-                                // this.setState({ netSales: responseJson.data[0].current_sale });
-                                if (responseJson != null) {
-                                    this.setState({
-                                        dataSource: responseJson.data
-                                    })
-                                }
+                    //             // responseJson.data.push({
+                    //             //     id: 1,
+                    //             //     name: "North",
+                    //             //     current_sale: nets,
+                    //             //     last_sale: 0,
+                    //             //     sale_data: []
+                    //             // })
+
+                    //             responseJson.data.map((dataa) => {
+                    //                 nets = dataa.current_sale
+
+                    //                 var sale_data = []
+                    //                 sale_data.push({
+                    //                     name: 'Net Salesss', total: dataa.current_sale,
+                    //                 })
+                    //                 dataa.hasSaleData = false
+                    //                 dataa.sale_data = sale_data
+
+                    //             })
 
 
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                            })
+                    //             // this.setState.dataSource.push( responseJson.sale_info );
+                    //             this.setState({ indeterminate: false });
+                    //             // this.setState({ netSales: responseJson.data[0].current_sale });
+                    //             if (responseJson != null) {
+                    //                 this.setState({
+                    //                     dataSource: responseJson.data
+                    //                 })
+                    //             }
 
 
-                            .catch((error) => {
-                                console.log(error)
-                            })
+                    //         })
+                    //         .catch((error) => {
+                    //             console.log(error)
+                    //         })
 
-                    }
+
+                    //         .catch((error) => {
+                    //             console.log(error)
+                    //         })
+
+                    // }
 
                 }).done();
 
@@ -1484,7 +1819,8 @@ export default class DayPage extends Component {
                             date: this.state.date,
                             filter_type: filter_type,
                         }),
-                            url = 'http://104.211.49.150:3200/api/getPanSales'
+                            // url = 'http://104.211.49.150:3200/api/getPanSales'
+                            url = 'http://104.211.49.150:3001/api/getRegionSales'
 
                         break;
                     case 1:
@@ -1492,14 +1828,22 @@ export default class DayPage extends Component {
 
                         // SubRegion level
 
+                        // bodyData = JSON.stringify({
+                        //     date: this.state.date,
+                        //     filter_type: filter_type,
+                        //     region_id: id,
+                        // }),
+                        //     url = 'http://104.211.49.150:6060/api/getSubRegionSales'
+
+
+
                         bodyData = JSON.stringify({
                             date: this.state.date,
                             filter_type: filter_type,
-                            region_id: id,
+                            city_id: 1,
+                            // region_id: regionId,
                         }),
-                            url = 'http://104.211.49.150:6060/api/getSubRegionSales'
-
-
+                            url = 'http://104.211.49.150:3001/api/getStoreSales'
 
                         break;
                     case 2:
@@ -1507,26 +1851,26 @@ export default class DayPage extends Component {
 
                         // Cities level
 
-                        bodyData = JSON.stringify({
-                            date: this.state.date,
-                            filter_type: filter_type,
-                            sub_region_id: "Chattisgarh",
-                        }),
-                            url = 'http://104.211.49.150:6060/api/getCitySales'
+                        // bodyData = JSON.stringify({
+                        //     date: this.state.date,
+                        //     filter_type: filter_type,
+                        //     sub_region_id: "Chattisgarh",
+                        // }),
+                        //     url = 'http://104.211.49.150:6060/api/getCitySales'
 
 
 
                         break;
                     case 3:
                         // Store level
-                        this.state.cityId = id;
-                        // this.state.storeId=id;
-                        bodyData = JSON.stringify({
-                            date: this.state.date,
-                            filter_type: filter_type,
-                            city_id: id,
-                        }),
-                            url = 'http://104.211.49.150:6060/api/getStoreSales'
+                        // this.state.cityId = id;
+                        // // this.state.storeId=id;
+                        // bodyData = JSON.stringify({
+                        //     date: this.state.date,
+                        //     filter_type: filter_type,
+                        //     city_id: id,
+                        // }),
+                        //     url = 'http://104.211.49.150:6060/api/getStoreSales'
 
                         break;
                 }
@@ -1596,6 +1940,7 @@ export default class DayPage extends Component {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
+                    console.log("response.json() =======: " + responseJson)
 
                     var nets;
                     responseJson.data.map((info) => {
@@ -1603,13 +1948,13 @@ export default class DayPage extends Component {
                     })
 
 
-                    responseJson.data.push({
-                        id: 1,
-                        name: "North",
-                        current_sale: nets,
-                        last_sale: 0,
-                        sale_data: []
-                    })
+                    // responseJson.data.push({
+                    //     id: 1,
+                    //     name: "North",
+                    //     current_sale: nets,
+                    //     last_sale: 0,
+                    //     sale_data: []
+                    // })
 
                     responseJson.data.map((dataa) => {
                         nets = dataa.current_sale
@@ -1628,7 +1973,7 @@ export default class DayPage extends Component {
                     this.setState({ indeterminate: false });
                     // this.setState({ netSales: responseJson.data[0].current_sale });
                     if (responseJson != null) {
-                       
+
                         this.setState({
                             dataSource: responseJson.data
                         })
@@ -1679,7 +2024,7 @@ export default class DayPage extends Component {
 
                         var sale_data = []
                         sale_data.push({
-                            name: 'Net Sales', total: getNetSale,
+                            name: 'Net Sales', total: dataa.current_sale,
                         })
                         dataa.hasSaleData = false
                         dataa.sale_data = sale_data
@@ -1796,7 +2141,7 @@ export default class DayPage extends Component {
                             }}>
 
                                 <Text style={styless.instructions}>Net Sales </Text>
-                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                <Text style={styless.instructions}>{this.state.netSale}</Text>
                             </View>
                             <View style={{
                                 flexDirection: 'row',
@@ -1954,7 +2299,7 @@ export default class DayPage extends Component {
                                 marginLeft: 25,
                             }}>
                                 <Text style={styless.instructions}>Net Sales </Text>
-                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+                                <Text style={styless.instructions}>{this.state.netSale}</Text>
 
                             </View>
 
