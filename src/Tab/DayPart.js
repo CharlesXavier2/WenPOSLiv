@@ -6,10 +6,12 @@ import {
     View,
     Image,
     FlatList,
+    InteractionManager,
     AsyncStorage,
     TouchableOpacity,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import { EventRegister } from 'react-native-event-listeners'
 import CardView from 'react-native-cardview';
 import styles from '../styles';
 import * as Progress from 'react-native-progress'
@@ -31,13 +33,17 @@ export default class DayPart extends Component {
             dataSource: [],
             progress: 0,
             indeterminate: true,
-
+            refreshing: true,
             date: '',
-            netSales: ' '
-
+            itemName: '',
+            parent: '',
+            isGeo:true,
+            filter_type: '',
+            itemId: '',
+            sales: ''
 
         }
-
+      
     }
     animate() {
         let progress = 0;
@@ -54,16 +60,52 @@ export default class DayPart extends Component {
         }, 9100);
     }
 
+    
+   
+
     componentDidMount() {
         /* 2. Get the param, provide a fallback value if not available */
-        const { navigation } = this.props;
-        var date = new Date().toDateString();
-        date = dateFormat(date, "yyyy-mm-dd");
+        // const { navigation } = this.props;
+        // var date = new Date().toDateString();
+        // date = dateFormat(date, "yyyy-mm-dd");
+        // const title = navigation.getParam('itemName', "McDLiv")
+        // this.setState({ itemName: title });
+         /* 2. Get the param, provide a fallback value if not available */
+         const { navigation } = this.props;
+         var date = new Date().toDateString();
+         date = dateFormat(date, "yyyy-mm-dd");
+         const itemId = navigation.getParam('itemId', 'Undefined');
+         const parent = navigation.getParam('parent', '0');
+         const isGeo = navigation.getParam('isGeo',false);
+         const date11 = navigation.getParam('date', date);
+         const filter_type = navigation.getParam('filter_type', date);
+         const title = navigation.getParam('itemName', "McDLiv")
+         const sales = navigation.getParam('sales', '0 K')
+ 
+         this.setState({ itemId: itemId });
+         this.setState({ parent: parent });
+         this.setState({ isGeo: isGeo });
+         this.setState({ date: date11 });
+         this.setState({ filter_type: filter_type });
+         this.setState({ itemName: title });
+         this.setState({ sales: sales });
+         console.log(" DayPart=================================page");
+        //  console.log(" itemId --" + itemId);
+        //  console.log(" parent --" + parent);
+        //  console.log(" isGeo --" + isGeo);
+        //  console.log(" date --" + date11);
+        //  console.log(" filter_type --" + filter_type);
+        //  console.log(" Total Net sales --" + sales);
+         this.customComponentDidMount(itemId, parent, isGeo, date11, filter_type);
+       
+         EventRegister.emit('myCustomEvent', 'it works!!!');
 
 
-
-        this.customComponentDidMount()
+        // this.customComponentDidMount()
     }
+    
+   
+    
 
     totalSaleFormat = (val) => {
         try {
@@ -110,32 +152,130 @@ export default class DayPart extends Component {
     }
 
 
-    //for date
-    customComponentDidMount = () => {
-        console.log(" customComponentDidMount start ")
-        const urlPan = 'http://bkliveapp.bklive.in:4500/v2/get_day_part_sale?filter_type=day&region_id=1&date=2018-08-24';
-        console.log("  url " + urlPan)
-        return fetch(urlPan)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({ indeterminate: false });
-                console.log("Response data responseJson -> " + responseJson);
-                this.setState({
-                    dataSource: responseJson.sale_info.sale_data
-                })
-                var netsale= this.totalSaleFormat(responseJson.sale_info.NetSale)
-                this.setState({ netSales:netsale });
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+   //for date
+   customComponentDidMount = (itemId, parent, isGeo, date, filter_type) => {
+    // console.log(" customComponentDidMount start ")
+    var urlPanDate = ""
+    urlPanDate = date;
+    console.log(" Is_Geo_key : " + isGeo);
+    var baseUrl = ''
+    var urlValue = ''
+    
+    // var bodyJson = JSON.stringify({
+    //     date: urlPanDate,
+    //     filter_type: filter_type,
+    // })
+    // urlValue = 'http://115.112.224.200:3000/api/getBmSales'
+    
+    baseUrl='http://104.211.49.150:3001/v2/get_day_part_sale?filter_type='
+    if ("" + isGeo == "true") {
+        console.log(" value1==true");
 
+       
+       switch (parent) {
+            case 0:
+            case '0':
+                console.log(" value1==true  case 0");
+               
+                if(itemId=='National'){
+                    urlValue = baseUrl+filter_type+'&date='+urlPanDate
 
-            .catch((error) => {
-                console.log(error)
-            })
+                }else{
+                    // http://115.112.224.200:3000/v2/get_day_part_sale?filter_type=day&date=2019-03-28&region_id=SOUTH
+                urlValue = baseUrl+filter_type+'&date='+urlPanDate+'&region_id='+itemId
+            }
+                break;
+            case 1:
+            case '1':
+                console.log(" value1==true  case 1");
+                urlValue = baseUrl+filter_type+'&date='+urlPanDate+'&city_id='+itemId
 
+                break;
+            case 2:
+            case '2':
+                console.log(" value1==true  case 2");
+
+                urlValue = baseUrl+filter_type+'&date='+urlPanDate+'&store_id='+itemId
+              
+
+                break;
+            case 3:
+            case '3':
+            console.log(" value1==true  case 3");
+           
+           
+
+            break;
+
+        }
+    } else {
+        console.log("else value1==true")
+        // bodyJson = JSON.stringify({
+        //     date: urlPanDate,
+        //     filter_type: filter_type,
+        //     // city_id: itemId,
+        // })
+        // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
+        switch (parent) {
+            case 0:
+            case '0':
+                console.log("else value1==true case  0")
+                
+                urlValue = baseUrl+filter_type+'&date='+urlPanDate+'&am_id='+itemId
+
+                break;
+            case 1:
+            case '1':
+                console.log("else value1==true case  1");
+
+                
+                // urlValue = baseUrl+filter_type+'&date='+urlPanDate+'&petch_id='+itemId
+
+                break;
+            case 2:
+            case '2':
+                console.log("else value1==true case  2");
+                // bodyJson = JSON.stringify({
+                //     date: urlPanDate,
+                //     filter_type: filter_type,
+                //     store_id: itemId,
+                // })
+                // break;
+                return
+
+        }
     }
+
+        const urlPan = urlValue;
+        console.log("  url " + urlPan)
+        this.setState({ indeterminate: true });
+        this.setState({ refreshing: true });
+        return fetch(urlPan)
+        .then((response) => response.json())
+        .then((responseJson) => {
+           
+            this.setState({ indeterminate: false });
+            console.log("Response data responseJson -> " + responseJson);
+            console.log("data----responseJson  Total Sale -> " + responseJson.sale_info.total_sales);
+            // responseJson.sale_info.hourly_sales.map((data) => {
+            //     console.log("data----responseJson -> " + data);
+            //     // dataSourceTemp.push({
+            //     //    data
+            //     // })
+            // })
+            var netsale= this.totalSaleFormat(responseJson.sale_info.NetSale)
+            this.setState({ netSales:netsale });
+            this.setState({
+                dataSource: responseJson.sale_info.sale_data
+            }) 
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+   }
 
     renderItem = ({ item }) => {
        
@@ -176,7 +316,7 @@ export default class DayPart extends Component {
 
                                     }}>{
 
-                                           item.DaypartName
+                                           item.DAYPART
                                         }
 
                                     </Text>
@@ -200,9 +340,9 @@ export default class DayPart extends Component {
 
                                 }}>
                                     {
-
+                                        item.TC
                                         //item.current_sale.toFixed(2)
-                                        this.parseFloat2Decimals(item.percentage) + '%'
+                                        // this.parseFloat2Decimals(item.percentage) + '%'
                                     }
                                 </Text>
 
@@ -256,7 +396,7 @@ export default class DayPart extends Component {
                                             {
 
                                                 //item.current_sale.toFixed(2)
-                                                this.totalSaleFormat(item.NetSale)
+                                                this.totalSaleFormat(item.Sales)
                                             }
                                         </Text>
 
@@ -296,13 +436,13 @@ export default class DayPart extends Component {
 
     render() {
 
-
+        if(!this.state.indeterminate){
         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', width: '100%', height: '100%' }}>
 
-                    {
+                    {/* {
                         this.state.indeterminate &&
                         <Progress.Bar
                             style={styles.progress}
@@ -314,7 +454,7 @@ export default class DayPart extends Component {
                             color={'rgb(250, 194, 9)'}
                             marginTop={1}
                         />
-                    }
+                    } */}
 
 
 
@@ -363,7 +503,7 @@ export default class DayPart extends Component {
                      fontSize: 10,
                      marginLeft:30,
                      color: '#000000',
-                }}>%</Text>
+                }}>TC</Text>
                 </View>
                 <View style={{
                    justifyContent: 'center',
@@ -392,12 +532,31 @@ export default class DayPart extends Component {
 
 
             );
+        }else{
+            return (
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                   
+                    <Image
+
+                        source={require('../images/error.png')}
+                    />
+                    <Text style={{
+                        fontWeight: 'bold',
+                        color: '#ff0000',
+                        marginTop: 5,
+                    }} >OOOPS!</Text>
+                    <Text>Sorry, Data not found.</Text>
+
+
+
+                </View>
+            )
         }
+    }
         else {
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', width: '100%', height: '100%' }}>
-                    {
-                        this.state.indeterminate &&
+                   
                         <Progress.Bar
                             style={styles.progress}
                             progress={this.state.progress}
@@ -408,23 +567,11 @@ export default class DayPart extends Component {
                             color={'rgb(250, 194, 9)'}
                             marginTop={1}
                         />
-                    }
+                   
 
 
 
-                    <View
-                        style={{
-                            marginTop: 30,
-
-                        }} >
-                        {/* <Text>Data not found </Text> */}
-                        {/* <FlatList
-                        data={this.state.dataSource}
-                        renderItem={
-                            this.renderItem
-                        }
-                    /> */}
-                    </View >
+                   
                 </View>
             )
         }
@@ -491,7 +638,7 @@ const styless = StyleSheet.create({
         // borderRadius: 1,
         borderColor: '#000000',
         backgroundColor: '#FFFFFF',
-        marginTop: 5,
+        marginTop: 8,
         // marginBottom: 5,
         borderWidth: 0.5,
         borderRadius: 1,
@@ -556,7 +703,7 @@ const styless = StyleSheet.create({
     },
     shapeyellow: {
         backgroundColor: '#1e2b51',
-        width: '50%',
+        width: '55%',
         marginLeft: -30,
 
         height: 30,
@@ -571,9 +718,9 @@ const styless = StyleSheet.create({
     shapewhite: {
         backgroundColor: '#FFFFFF',
         width: '25%',
-        marginTop: 7,
+        marginTop: 4,
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
 
 
     },

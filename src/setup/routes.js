@@ -17,6 +17,8 @@ import YearPage from '../Tab/YearPage';
 import DatePicker from '../utils/datepicker.js';
 import SaleDetails from '../components/SaleDetail';
 import DetailPage from '../components/DetailPage';
+import VoidDetails from '../components/VoidDetails';
+import PaymentDetails from '../components/PaymentDetails';
 const GLOBAL = require('../constant/Globals.js');
 import OrderMode from '../Tab/OrderMode';
 import Hour from '../Tab/Hour';
@@ -70,6 +72,7 @@ export const TabOrderDetail = createMaterialTopTabNavigator({
             backgroundColor: '#1E2B51',
             activeTintColor: '#fff',
             inactiveTintColor: '#FFFFFF',
+           
             labelStyle: {
                 fontSize: 12,
                 margin: 0,
@@ -197,7 +200,43 @@ const RootNavigator = createStackNavigator({
         screen: DetailPage,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
+            headerLeft: <HeaderBackButton  tintColor={'white'} onPress={() => navigation.goBack(null)} />,
+            headerStyle: {
+                backgroundColor: '#121A31',
+                position: 'absolute',
+            },
+            headerTintColor: '#FAC209',
+            headerTitleStyle: {
+                fontStyle: 'normal',
+                width: '100%',
+                upperCaseLabel: false,
+            },
+            
+
+        })
+    },
+    VoidDetails: {
+        screen: VoidDetails,
+        navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
+            //title: 'National',
+            headerLeft: <HeaderBackButton  tintColor={'white'} onPress={() => navigation.goBack(null)} />,
+            headerStyle: {
+                backgroundColor: '#121A31',
+                position: 'absolute',
+            },
+            headerTintColor: '#FAC209',
+            headerTitleStyle: {
+                fontStyle: 'normal',
+                width: '100%',
+                upperCaseLabel: false,
+            },
+        })
+    },
+    PaymentDetails: {
+        screen: PaymentDetails,
+        navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
+            //title: 'National',
+            headerLeft: <HeaderBackButton  tintColor={'white'} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
                 backgroundColor: '#121A31',
                 position: 'absolute',
@@ -214,7 +253,7 @@ const RootNavigator = createStackNavigator({
         screen: TabOrderDetail,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
+            headerLeft: <HeaderBackButton  tintColor={'white'} onPress={() => navigation.goBack(null)} />,
             headerStyle: {
                 backgroundColor: '#1E2B51',
                 position: 'absolute',
@@ -233,7 +272,8 @@ const RootNavigator = createStackNavigator({
         screen: SaleDetails,
         navigationOptions: ({ navigation }) => ({ //don't forget parentheses around the object notation
             //title: 'National',
-            headerLeft: <HeaderBackButton style={{ overlayColor: '#000000' }} onPress={() => navigation.goBack(null)} />,
+            headerLeft: <HeaderBackButton  tintColor={'white'} onPress={() => navigation.goBack(null)} />,
+           
             headerStyle: {
                 backgroundColor: '#1E2B51',
                 position: 'absolute',
@@ -242,8 +282,10 @@ const RootNavigator = createStackNavigator({
             headerTitleStyle: {
                 fontStyle: 'normal',
                 width: '100%',
+                color: '#ffffff',
                 upperCaseLabel: false,
             },
+           
         })
     },
 
@@ -375,7 +417,6 @@ const RootNavigator = createStackNavigator({
                                 /* 1. home icon click */
                                 navigation.navigate('DayPage')
 
-
                             } >
                             {/* onPress={() => navigation.goBack(null)} */}
                             <Image
@@ -453,11 +494,14 @@ const RootNavigator = createStackNavigator({
                     backgroundColor: '#1E2B51',
                     position: 'absolute',
                 },
+               
                 headerTintColor: '#FAC209',
                 headerTitleStyle: {
                     fontStyle: 'normal',
                     width: '100%',
+                    color:'#ffffff'
                 },
+                
 
 
 

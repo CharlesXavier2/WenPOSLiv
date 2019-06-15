@@ -36,6 +36,8 @@ import Details from '../components/Details';
 var dateFormat = require('dateformat');
 var filter_type = 'day';
 var tabPositionVal = 0;
+const baseUrl='http://104.211.49.150:3001/';
+
 //var dateValue='';
 export default class DayPage extends Component {
 
@@ -53,7 +55,7 @@ export default class DayPage extends Component {
 
         super(props)
         this.state = {
-            title: "McD",
+            title: "",
             dataSource: [],
             checkData: [],
             progress: 0,
@@ -71,7 +73,8 @@ export default class DayPage extends Component {
             filter_type: 'day',
             netSales: ' ',
             netSale: '',
-            kpidataSource: []
+            kpidataSource: [],
+            adsSale: ''
         }
         props.navigation.setParams({
             onTabFocus: this.tabClick
@@ -168,6 +171,20 @@ export default class DayPage extends Component {
             }
         })
     };
+
+    getTitle = () => {
+        AsyncStorage.getItem("title_key").then((value) => {
+            console.log(" Title of page is : " + value);
+            if (value == null || value == '') {
+                var title = 'Tacobell'
+               
+                this.setState({ title });
+                AsyncStorage.setItem("title_key", title);
+            } else {
+                this.setState({ title: value });
+            }
+        })
+    };
     openDialog = () => {
         // Works on both iOS and Android
         Alert.alert(
@@ -193,20 +210,15 @@ export default class DayPage extends Component {
                                 value = "true";
                             }
                             console.log(" Is_Geo_key : " + value);
-                            if (value != "true") {
+                            if (value == "true") {
+                                AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
+                                this.setState({ isGeo: true })
+
+                            } else {
                                 AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
                                 this.setState({ isGeo: false })
 
                             }
-                            // if (value == "true") {
-                            //     AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "false");
-                            //     this.setState({ isGeo: true })
-
-                            // } else {
-                            //     AsyncStorage.setItem(GLOBAL.IS_GEO_KEY, "true");
-                            //     this.setState({ isGeo: false })
-
-                            // }
                             console.log("State value Is_Geo_key : " + this.state.isGeo);
 
                             this.setState({ parent: 0 })
@@ -227,6 +239,10 @@ export default class DayPage extends Component {
         var id = obj.id;
         var name = obj.name
         var netSalesVal = obj.netSales;
+        console.log("setExpandableData id : " + obj.id);
+        console.log("setExpandableData name : " + obj.name);
+        console.log("setExpandableData netSalesVal : " + obj.netSales);
+
         this.setState({ indeterminate: true });
         this.getDate();
         var urlPanDate = ''
@@ -261,11 +277,11 @@ export default class DayPage extends Component {
                 }
                 urlPanDate = value;
                 AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value1) => {
-                    console.log("1st Is_Geo_key : " + value1);
+                    // console.log("1st Is_Geo_key : " + value1);
                     if (value1 === null) {
                         value1 = "true";
                     }
-                    console.log(" Is_Geo_key : " + value1);
+                    // console.log(" Is_Geo_key : " + value1);
                     var urlValue = ''
                     var bodyJson = JSON.stringify({
                         date: urlPanDate,
@@ -274,39 +290,39 @@ export default class DayPage extends Component {
                     })
                     if (value1 == "true") {
                         this.setState({ isGeo: true })
-                        console.log(" value1==true");
+                        // console.log(" value1==true");
                         switch (parent) {
                             case 0:
                             case '0':
-                                console.log(" value1==true  case 0");
-                                console.log(" region_id= " + id);
-                                // urlValue='http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0';
-                                urlValue = 'get_all_region_sale?filter_type=day&date=2018-12-30&region_id=WEST';
-                                // urlValue = 'get_all_region_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + id;
-                                // var cityId=id
+                                // console.log(" value1==true  case 0");
+                                // console.log(" region_id= " + id);
+                                // console.log(" parent for case 0 : "+parent);
+                                urlValue = 'v2/get_all_region_sale?filter_type='+ filter_type +'&date='+ urlPanDate +'&region_id='+ id;
 
-                                // bodyJson = JSON.stringify({
-                                //     date: urlPanDate,
-                                //     filter_type: filter_type,
-                                // })
+                            // urlValue='http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0';
+                            
+
+                            //     // bodyJson = JSON.stringify({
+                            //     //     date: urlPanDate,
+                            //     //     filter_type: filter_type,
+                            //     // })
                                 break;
                             case 1:
                             case '1':
-                                console.log(" value1==true  case 1");
+                                // console.log(" value1==true  case 1");
 
-                                console.log(" region_id= " + id);
-                                console.log("city_name= " + name);
-                                                                urlValue='http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0';
+                                // console.log(" city_id= " + id);
+                                // console.log("city_name= " + name);
+                                // console.log(" parent for case 1 :"+parent);
+                                // urlValue='http://bkliveapp.bklive.in:3600/v2/get_pan_level_sale?filter_type=day&date=2018-10-13&is_delivery=0';
+                                urlValue = 'v2/get_all_city_sale?filter_type='+ filter_type +'&date='+ urlPanDate +'&region_id='+regionId+'&city_name='+name;
 
-                                urlValue = 'get_all_region_sale?filter_type=day&date=2018-12-30&region_id=WEST';
-
-                                // urlValue = 'get_all_city_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&region_id=' + regionId + '&city_name=' + name;
 
                                 break;
                             case 2:
                             case '2':
-                                console.log(" value1==true  case 2");
-                                urlValue = 'get_all_store_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&city_name=' + cityId + '&store_code=' + id;
+                                // console.log(" value1==true  case 2");
+                                urlValue = 'v2/get_all_store_sale?filter_type='+ filter_type +'&date='+ urlPanDate +'&store_code='+ id;
                                 break;
                             // case 3:
                             // case '3':
@@ -315,42 +331,45 @@ export default class DayPage extends Component {
                             //     break;
 
                         }
-                    } else {
+                    }  else {
                         this.setState({ isGeo: false })
                         console.log("else value1==true");
                         switch (parent) {
                             case 0:
                             case '0':
-                                console.log("else value1==true case  0");
-                                console.log(" region_id= " + id);
-                                console.log(" region_id---= " + regionId);
-                                console.log("city_name= " + name);
-                                urlValue = 'get_all_deputy_manager_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&deputy_name=' + name;
+                                // console.log("else value1==true case  0");
+                                // console.log(" region_id= " + id);
+                                // console.log(" region_id---= " + regionId);
+                                // console.log("city_name= " + name);
+                                urlValue = 'v2/get_all_area_manager_sale?filter_type='+ filter_type +'&date='+ urlPanDate +'&am_id='+ id;
+                                // urlValue = 'get_all_deputy_manager_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&deputy_name=' + name;
 
                                 break;
                             case 1:
                             case '1':
-                                console.log("else value1==true case  1");
-                                urlValue = 'get_all_petch_manager_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
+                                // console.log("else value1==true case  1");
+                                // urlValue = 'get_all_petch_manager_sale?filter_type=' + filter_type + '&date=' + urlPanDate + '&deputy_name=' + regionId + '&petch_name=' + id;
 
                                 break;
                             case 2:
                             case '2':
-                                console.log("else value1==true case  2");
+                                // console.log("else value1==true case  2");
                                 return
 
                         }
                     }
                     if (name != "National") {
-                        urlPan = 'http://115.112.224.200:3000/v2/' + urlValue;
+                        urlPan =  urlValue;
 
                     } else {
-                        // urlPan = 'http://115.112.224.200:3000/v2/get_pan_level_sale?filter_type=' + filter_type + '&date=' + urlPanDate;
+                        urlPan = 'v2/get_pan_level_sale?filter_type=' + filter_type + '&date=' + urlPanDate+'&region_id=1';
 
 
                     }
-                    console.log("  url " + urlPan)
-                    return fetch(urlPan)
+                    const urlForKpi = baseUrl+urlPan;
+                    // const urlForKpi = 'http://192.168.1.11:3001/'+urlPan;
+                    console.log("  url " + urlForKpi)
+                    return fetch(urlForKpi)
                         .then((response) => response.json())
                         .then((responseJson) => {
                             var dataSourceTemp = [];
@@ -361,6 +380,7 @@ export default class DayPage extends Component {
                                 dataSourceTemp.push({
                                     id: value.id, name: value.name,
                                     current_sale: value.current_sale,
+                                    ads: value.ads,
                                     last_sale: value.last_sale, sale_data: []
                                 })
                             }),
@@ -377,8 +397,11 @@ export default class DayPage extends Component {
                                             } else {
                                                 var sale_data = []
                                                 sale_data.push({
-                                                    name: 'Net Sales', total: dataa.current_sale,
+                                                    name: 'Net Sale', total: dataa.current_sale,
                                                 })
+                                                // sale_data.push({
+                                                //     name: 'ADS', total: dataa.ads,
+                                                // })
                                                 dataa.hasSaleData = false
                                                 dataa.sale_data = sale_data
                                             }
@@ -387,9 +410,7 @@ export default class DayPage extends Component {
                                 })
                             console.log("dataSourceTemp -> " + JSON.stringify(dataSourceTemp));
 
-                            // const myObjStr = JSON.stringify(dataSourceTemp);
-
-                            // console.log("dataSource : " + myObjStr);
+                          
 
                             this.setState({
 
@@ -420,9 +441,7 @@ export default class DayPage extends Component {
         AsyncStorage.getItem(GLOBAL.IS_GEO_KEY).then((value) => {
             isGeoVal = value
         }).done()
-
-        //TODO for only show region and store level
-        if ((isGeoVal == "true" && this.state.parent >= 1) || (isGeoVal == "false" && this.state.parent >= 1)) {
+        if ((isGeoVal == "true" && this.state.parent >= 3) || (isGeoVal == "false" && this.state.parent >= 1)) {
             console.log('Already in store ')
             return;
         }
@@ -444,19 +463,19 @@ export default class DayPage extends Component {
                 break;
             case 1:
             case '1':
-            // AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
-            // AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
                 AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id)
+
                 break;
             case 2:
             case '2':
-                AsyncStorage.setItem(GLOBAL.SUB_REGION_ID_KEY, "" + id)
-
+                // AsyncStorage.setItem(GLOBAL.SUB_REGION_ID_KEY, "" + id)
+                AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+                AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
                 break;
             case 3:
             case '3':
-                AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
-                AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
+                // AsyncStorage.setItem(GLOBAL.CITY_ID_KEY, "" + id)
+                // AsyncStorage.setItem(GLOBAL.CITY_NAME_KEY, "" + name)
                 console.log("GLOBAL.CITY_NAME_KEY : " + name);
 
                 break;
@@ -505,13 +524,13 @@ export default class DayPage extends Component {
     }
     totalSaleFormatWithPercentage = (val) => {
         try {
-            if (val != 0) {
+            if (val != 0 && val != null) {
 
                 op = val.toFixed(2);
                 return (op + "%");
             } else {
 
-                return (val + "%");
+                return (0 + "%");
             }
         } catch (error) {
             return (0 + "%");
@@ -529,6 +548,10 @@ export default class DayPage extends Component {
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
+            } else if (val == null) {
+                // op = val.toFixed(2);
+                // op = getTwoDecimalFormat(val);
+                return (0 + " K");
             } else {
                 op = val.toFixed(2);
                 // op = getTwoDecimalFormat(val);
@@ -547,10 +570,9 @@ export default class DayPage extends Component {
             }
         );
     }
-    // Rerender data in row on click Expandable button
+
     renderItemSaleData = ({ item }) => {
         var val = item.total;
-        var val1 = "0";
         console.log(' renderItemSaleData' + item.name)
         return (
 
@@ -558,7 +580,7 @@ export default class DayPage extends Component {
             <View>
                 <View style={{
                     marginLeft: -30,
-                    backgroundColor: '#000000',
+                    backgroundColor: '#F4F5F5',
                     height: 0.8,
 
                 }} />
@@ -621,321 +643,80 @@ export default class DayPage extends Component {
 
                 {/* </View> */}
                 {/* {(!(item.name == "Net Sale")) && */}
+                {     item.name != "Total Tickets" &&
+
                 <View style={styless.cardViewRow}>
                     <View style={{
                         flexDirection: 'row',
 
                     }}>
 
-                      {(item.name == "Total Tickets") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > ADS
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                       {(item.name == "Avg. Sale") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > SSSG
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                      {(item.name == "Comp Sale %") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > SSTG
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                      {(item.name == "Comp GC  %") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > ADT
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                       {(item.name == "Avg.GC per Day") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > APC
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                       {(item.name == "Avg. per Check") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > WOW
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                       {(item.name == "MOM Comp. Sale %") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > MOM
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                       {(item.name == "MDS") &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > Delivery %
-                            {/* {
-
-                                    "" + item.name
-                                } */}
-
-                            </Text>
-
-                        </View>
-                      }
-                      {
-                          item.name == "Net Sale" &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > 
-                            {
-
-                                    "" + item.name
-                                }
-
-                            </Text>
-
-                        </View>
-                      }
-                       {
-                           item.name == "Net Sales"  &&
-                        <View style={styless.shapeyellow}>
-
-
-                            <Text style={{
-                                fontSize: 12,
-                                //width: 150,
-                                color: '#FFFFFF',
-                                marginLeft: 30,
-
-
-                                justifyContent: 'center',
-                                //textAlignVertical: "center",
-                                alignItems: 'center',
-
-                            }}
-                            > 
-                            {
-
-                                    "" + item.name
-                                }
-
-                            </Text>
-
-                        </View>
-                      }
-
-
-
-                        {/* {((item.name == "Comp Sale %") || (item.name == "Comp GC  %") || (item.name == "MOM Comp. Sale %")) &&
-                            <View style={styless.shapeinnerwhite}>
+                        
+                            <View style={styless.shapeyellow}>
 
 
                                 <Text style={{
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     //width: 150,
-                                    color: '#000000',
-                                    marginLeft: 70,
+                                    color: '#FFFFFF',
+                                    marginLeft: 30,
 
 
                                     justifyContent: 'center',
                                     //textAlignVertical: "center",
                                     alignItems: 'center',
 
-                                }}> {
-                                        // "" +item.total.toFixed(2)+'%'
-                                        this.totalSaleFormatWithPercentage(val)
+                                }}
+                                > {
+
+                                        "" + item.name
                                     }
+
                                 </Text>
 
                             </View>
 
-                        } */}
-                        {
+                       
 
-                            item.name == "Net Sales" && item.name != "Net Sale" &&
-                            <View style={styless.shapeinnerwhite}>
+                            {/* <View style={styless.shapeinnerwhite}>
 
 
                                 <Text style={{
                                     fontSize: 12,
                                     //width: 150,
                                     color: '#000000',
-                                    marginLeft: 50,
-                                    marginRight: 20,
-
+                                    marginLeft: 60,
                                     justifyContent: 'center',
                                     //textAlignVertical: "center",
-                                    alignItems: 'center',
+                                    alignItems: 'center'
 
                                 }}> {
                                         //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val)
+                                        "" + this.totalSaleFormat(item.total)
+                                    }
+                                </Text>
+
+                            </View> */}
+
+                         {
+                             ((item.name == "SSTG %") || (item.name == "SSSG %") || (item.name == "MOM SSSG %")|| (item.name == "WOW SSSG %")||(item.name == "Delivery %")) &&
+                            <View style={styless.shapeinnerwhite}>
+
+
+                                <Text style={{
+                                    fontSize: 11,
+                                    color: '#000000',
+                                    marginLeft: 55,
+                                    justifyContent: 'center',
+                                    //textAlignVertical: "center",
+                                    alignItems: 'center'
+
+                                }}>
+                                    {
+                                    
+                                       
+                                        " " + this.totalSaleFormatWithPercentage(item.total)
+                                      
                                     }
                                 </Text>
 
@@ -943,76 +724,508 @@ export default class DayPage extends Component {
 
                         }
                         {
-
-                            item.name == "Net Sale" && item.name != "Net Sales" &&
-                            <View style={styless.shapeinnerwhite}>
+                             !((item.name == "SSTG %") || (item.name == "SSSG %") || (item.name == "MOM SSSG %")|| (item.name == "WOW SSSG %")||(item.name == "Delivery %")) &&
+                             <View style={styless.shapeinnerwhite}>
 
 
                                 <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
+                                    fontSize: 11,
                                     color: '#000000',
-                                    marginLeft: 50,
-
-                                    marginRight: 20,
+                                    marginLeft: 55,
                                     justifyContent: 'center',
                                     //textAlignVertical: "center",
-                                    alignItems: 'center',
+                                    alignItems: 'center'
 
                                 }}> {
-                                        //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val)
+                                                      
+                                        "" + this.totalSaleFormat(item.total)
                                     }
                                 </Text>
 
                             </View>
 
                         }
-                        {
-                         item.name != "Net Sale" && item.name != "Net Sales" &&
-
-                            <View style={styless.shapeinnerwhite}>
 
 
-                                <Text style={{
-                                    fontSize: 12,
-                                    //width: 150,
-                                    color: '#000000',
-                                    marginRight: 20,
-                                    marginLeft: 50,
 
-
-                                    justifyContent: 'center',
-                                    //textAlignVertical: "center",
-                                    alignItems: 'center',
-
-                                }}> {
-                                        //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val1)
-                                    }
-                                </Text>
-
-                            </View>
-
-                        }
-                        <View style={{
-                           width:20,
-
-                        }}>
-
-
-                            
-                        </View>
                     </View>
 
                 </View>
 
-                {/* } */}
+                                }
 
             </View>
         )
 
     }
+    // Rerender data in row on click Expandable button
+    // renderItemSaleData = ({ item }) => {
+    //     var val = item.total;
+
+    //     var val1 = "0";
+    //     console.log(' renderItemSaleData' + item.name)
+    //     return (
+
+
+    //         <View>
+    //             <View style={{
+    //                 marginLeft: -30,
+    //                 backgroundColor: '#000000',
+    //                 height: 0.8,
+
+    //             }} />
+    //             {/* <View style={styless.cardViewRow}>
+    //                 <View style={{
+    //                     flexDirection: 'row',
+
+    //                 }}> */}
+
+
+    //             {/* <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#000000',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > Net Sale
+
+
+    //                         </Text>
+
+    //                     </View> */}
+
+
+
+
+    //             {/* <View style={styless.shapeinnerwhite}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#000000',
+    //                             marginLeft: 70,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}> {
+    //                                 //item.current_sale.toFixed(2)
+    //                                 "" + this.state.netSales
+    //                             }
+    //                         </Text>
+
+    //                     </View>
+    //                  */}
+
+    //             {/* </View> */}
+
+    //             {/* </View> */}
+    //             {/* {(!(item.name == "Net Sale")) && */}
+    //             <View style={styless.cardViewRow}>
+    //                 <View style={{
+    //                     flexDirection: 'row',
+
+    //                 }}>
+
+
+    //                   {(item.name == "Total Tickets") &&
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > ADS
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                    {(item.name == "Total Tickets") &&
+
+
+    //                          <View style={styless.shapeinnerwhite}>
+
+
+    //                          <Text style={{
+    //                              fontSize: 12,
+    //                              //width: 150,
+    //                              color: '#000000',
+    //                              marginLeft: 50,
+
+    //                              marginRight: 20,
+    //                              justifyContent: 'center',
+    //                              //textAlignVertical: "center",
+    //                              alignItems: 'center',
+
+    //                          }}> {
+    //                                  //item.current_sale.toFixed(2)
+    //                                  "" + this.state.adsSale
+    //                              }
+    //                          </Text>
+
+    //                      </View>
+
+    //                   }
+    //                    {(item.name == "Avg. Sale") &&
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > SSSG
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                   {(item.name == "Comp Sale %") &&  
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > SSTG
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                   {(item.name == "Comp GC  %") &&     
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > ADT
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                    {(item.name == "Avg.GC per Day") &&    
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > APC
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                    {(item.name == "Avg. per Check") &&    
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > WOW
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                    {(item.name == "MOM Comp. Sale %") &&     
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > MOM
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                    {(item.name == "MDS") &&     
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > Delivery %
+    //                         {/* {
+
+    //                                 "" + item.name
+    //                             } */}
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+    //                   {
+    //                       item.name == "Net Sale" &&
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > 
+    //                         {
+
+    //                                 "" + item.name
+    //                             }
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+
+
+
+
+    //                     {((item.name == "Avg. Sale") || (item.name == "Comp Sale %") || (item.name == "Comp GC  %")|| (item.name == "Avg.GC per Day")|| (item.name == "Avg. per Check")|| (item.name == "MOM Comp. Sale %")|| (item.name == "Comp GC  %") || (item.name == "MDS")) &&
+    //                          <View style={styless.shapeinnerwhite}>
+
+
+    //                          <Text style={{
+    //                              fontSize: 12,
+    //                              //width: 150,
+    //                              color: '#000000',
+    //                              marginLeft: 50,
+
+    //                              marginRight: 20,
+    //                              justifyContent: 'center',
+    //                              //textAlignVertical: "center",
+    //                              alignItems: 'center',
+
+    //                          }}> {
+    //                                  //item.current_sale.toFixed(2)
+    //                                  "" + this.totalSaleFormat(val1)
+    //                              }
+    //                          </Text>
+
+    //                      </View>
+
+    //                     }
+
+    //                     {
+
+    //                         item.name == "Net Sale" &&
+    //                         <View style={styless.shapeinnerwhite}>
+
+
+    //                             <Text style={{
+    //                                 fontSize: 12,
+    //                                 //width: 150,
+    //                                 color: '#000000',
+    //                                 marginLeft: 50,
+
+    //                                 marginRight: 20,
+    //                                 justifyContent: 'center',
+    //                                 //textAlignVertical: "center",
+    //                                 alignItems: 'center',
+
+    //                             }}> {
+    //                                     //item.current_sale.toFixed(2)
+    //                                     "" + this.totalSaleFormat(val)
+    //                                 }
+    //                             </Text>
+
+    //                         </View>
+
+    //                     }
+    //                      {
+    //                       item.name == "ADS" &&
+    //                     <View style={styless.shapeyellow}>
+
+
+    //                         <Text style={{
+    //                             fontSize: 12,
+    //                             //width: 150,
+    //                             color: '#FFFFFF',
+    //                             marginLeft: 30,
+
+
+    //                             justifyContent: 'center',
+    //                             //textAlignVertical: "center",
+    //                             alignItems: 'center',
+
+    //                         }}
+    //                         > 
+    //                         {
+
+    //                                 "" + item.name
+    //                             }
+
+    //                         </Text>
+
+    //                     </View>
+    //                   }
+
+
+    //                     {(item.name == "ADS") &&
+    //                      <View style={styless.shapeinnerwhite}>
+
+
+    //                      <Text style={{
+    //                          fontSize: 12,
+    //                          //width: 150,
+    //                          color: '#000000',
+    //                          marginLeft: 50,
+
+    //                          marginRight: 20,
+    //                          justifyContent: 'center',
+    //                          //textAlignVertical: "center",
+    //                          alignItems: 'center',
+
+    //                      }}> {
+    //                              //item.current_sale.toFixed(2)
+    //                              "" + this.totalSaleFormat(val)
+    //                          }
+    //                      </Text>
+
+    //                  </View>
+    //                   }
+    //                     <View style={{
+    //                        width:20,
+
+    //                     }}>
+
+
+
+    //                     </View>
+    //                 </View>
+
+    //             </View>
+
+    //             {/* } */}
+
+    //         </View>
+    //     )
+
+    // }
     // Flatlist UI
     renderItem11 = ({ item }) => {
         var val = item.current_sale;
@@ -1076,19 +1289,19 @@ export default class DayPage extends Component {
                                 width: '25%',
                             }}>
                                 {
-                                    !((this.state.parent == 3 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    !((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
                                     <TouchableOpacity
                                         onPress={() => {
                                             /* 1. Navigate to the Details route with params */
-                                            // this.props.navigation.navigate('DetailPage', {
-                                            //     itemName: this.toTitleCase(str),
-                                            //     itemId: item.id,
-                                            //     sales: this.totalSaleFormat(item.current_sale),
-                                            //     parent: this.state.parent,
-                                            //     date: this.state.date,
-                                            //     isGeo: this.state.isGeo,
-                                            //     filter_type: this.state.filter_type
-                                            // });
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: item.name,
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
                                         }} >
                                         <Image
                                             source={require('../images/list.png')}
@@ -1105,7 +1318,7 @@ export default class DayPage extends Component {
                                     </TouchableOpacity>
                                 }
                                 {
-                                    ((this.state.parent == 3 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
+                                    ((this.state.parent == 2 && this.state.isGeo) || (this.state.parent == 1 && !this.state.isGeo)) &&
 
                                     <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
                                         <Text
@@ -1153,29 +1366,29 @@ export default class DayPage extends Component {
                                         console.log("this.state.netSales" + this.state.netSales);
 
 
-                                        if (this.state.parent == 3 && this.state.isGeo) {
+                                        if (this.state.parent == 2 && this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
-                                            // this.props.navigation.navigate('DetailPage', {
-                                            //     itemName: this.toTitleCase(str),
-                                            //     itemId: item.id,
-                                            //     sales: this.totalSaleFormat(item.current_sale),
-                                            //     parent: this.state.parent,
-                                            //     date: this.state.date,
-                                            //     isGeo: this.state.isGeo,
-                                            //     filter_type: this.state.filter_type
-                                            // });
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
                                         }
                                         else if (this.state.parent == 1 && !this.state.isGeo) {
                                             /* 1. Navigate to the Details route with params */
-                                            // this.props.navigation.navigate('DetailPage', {
-                                            //     itemName: this.toTitleCase(str),
-                                            //     itemId: item.id,
-                                            //     sales: this.totalSaleFormat(item.current_sale),
-                                            //     parent: this.state.parent,
-                                            //     date: this.state.date,
-                                            //     isGeo: this.state.isGeo,
-                                            //     filter_type: this.state.filter_type
-                                            // });
+                                            this.props.navigation.navigate('DetailPage', {
+                                                itemName: this.toTitleCase(str),
+                                                itemId: item.id,
+                                                sales: this.totalSaleFormat(item.current_sale),
+                                                parent: this.state.parent,
+                                                date: this.state.date,
+                                                isGeo: this.state.isGeo,
+                                                filter_type: this.state.filter_type
+                                            });
                                         }
                                         else if (!(item.name == "National")) {
                                             this.setCurrentScreen(item.id, item.name);
@@ -1196,7 +1409,7 @@ export default class DayPage extends Component {
 
                                     }}>
                                         {
-                                            "" + this.toTitleCase(str)
+                                            "" + item.name
                                         }
                                     </Text>
                                 </TouchableOpacity>
@@ -1292,6 +1505,7 @@ export default class DayPage extends Component {
 
                                     onPress={() => {
                                         console.log("  item.hasSaleData && : ");
+                                        console.log("sale_data in dataSource===== : " + JSON.stringify(this.state.dataSource));
 
 
                                         var dataSourceTemp = []
@@ -1300,6 +1514,7 @@ export default class DayPage extends Component {
                                             dataSourceTemp.push({
                                                 id: value.id, name: value.name,
                                                 current_sale: value.current_sale,
+                                                ads: value.ads,
                                                 last_sale: value.last_sale,
                                                 sale_data: value.sale_data
                                             })
@@ -1310,8 +1525,11 @@ export default class DayPage extends Component {
                                             if (item.id == data.id) {
                                                 var sale_data = []
                                                 sale_data.push({
-                                                    name: 'Net Sales', total: data.current_sale,
+                                                    name: 'Net Sale', total: data.current_sale,
                                                 })
+                                                // sale_data.push({
+                                                //     name: 'ADS', total: data.ads,
+                                                // })
                                                 data.hasSaleData = false
                                                 data.sale_data = sale_data
                                                 this.setState({ indeterminate: false });
@@ -1321,7 +1539,7 @@ export default class DayPage extends Component {
                                         })
                                         this.setState({ dataSource: dataSourceTemp });
                                         // const myObjStr = JSON.stringify(dataSourceTemp);
-                                        // console.log("sale_data in dataSourceTemp : " + myObjStr); 
+                                        console.log("sale_data in dataSourceTemp===== : " + JSON.stringify(dataSourceTemp));
 
 
                                     }}  >
@@ -1470,7 +1688,7 @@ export default class DayPage extends Component {
         AsyncStorage.getItem("date_key").then((value) => {
             console.log(" Getter date" + value);
             urlPanDate = value;
-            const urlPan = 'http://115.112.224.200:3000/api/getRegionSales'
+            const urlPan = baseUrl+'api/getRegionSales'
             console.log("  url " + urlPan)
             fetch(urlPan, {
                 method: 'POST',
@@ -1492,10 +1710,15 @@ export default class DayPage extends Component {
 
                     // this.setState.dataSource.push( responseJson.sale_info );
                     responseJson.data.map((dataa) => {
+                        var adsSale;
+                        adsSale = this.totalSaleFormat(dataa.ads)
                         var sale_data = []
                         sale_data.push({
-                            name: 'Net Sales', total: dataa.current_sale,
+                            name: 'Net Sale', total: dataa.current_sale,
                         })
+                        // sale_data.push({
+                        //     name: 'ADS', total: dataa.ads,
+                        // })
                         dataa.hasSaleData = false
                         dataa.sale_data = sale_data
                     })
@@ -1504,7 +1727,7 @@ export default class DayPage extends Component {
                     })
 
                     if (responseJson != null) {
-
+                        this.setState({ adsSale: adsSale });
                     }
 
                 })
@@ -1525,28 +1748,51 @@ export default class DayPage extends Component {
         console.log("DAY customComponentDidMount ");
         this.setState({ indeterminate: true });
         this.getDate();
+        this.getTitle();
         var urlPanDate = ''
         var regionId = ''
         var subregionId = ''
         var cityId = '';
         // this.getDate();
-
+       
         AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
             regionId = regionIdVal
         }).done()
-        AsyncStorage.getItem(GLOBAL.SUB_REGION_ID_KEY).then((subregionIdVal) => {
-            subregionId = subregionIdVal
-        }).done()
+        // AsyncStorage.getItem(GLOBAL.SUB_REGION_ID_KEY).then((subregionIdVal) => {
+        //     subregionId = subregionIdVal
+        // }).done()
         AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
             cityId = cityIdVal
         }).done()
-
+       
         AsyncStorage.getItem(GLOBAL.PARENT_KEY).then((parent) => {
             console.log(" parent_key : " + parent);
             if (parent == null) {
                 parent = 0
-            }
+            }  
 
+            // AsyncStorage.getItem(GLOBAL.TITLE_KEY).then((titleValue) => {
+                
+            //     if(this.state.parent=='0'){
+            //         var title = 'Tacobell';
+            //         AsyncStorage.setItem(GLOBAL.TITLE_KEY, title);
+            //         titleValue = title;
+            //     }
+            //     else if(this.state.parent=='1'){
+            //         var title = 'City';
+            //         AsyncStorage.setItem(GLOBAL.TITLE_KEY, title);
+            //         titleValue = title;
+            //         console.log(" parent=='1'GLOBAL.TITLE_KEY : " + titleValue);
+            //     }else if(this.state.parent=='2'){
+            //         var title = 'Store';
+            //         AsyncStorage.setItem(GLOBAL.TITLE_KEY, title);
+            //         titleValue = title;
+            //         console.log(" parent=='2'GLOBAL.TITLE_KEY : " + titleValue);
+            //     }
+               
+            //     console.log(" GLOBAL.TITLE_KEY : " + titleValue);
+            //     EventRegister.emit('myCustomEvent', 'it works!!!')
+            // }).done();
             AsyncStorage.getItem(GLOBAL.DATE_KEY).then((value) => {
                 console.log(" date_key : " + value);
                 if (value == null || value == '') {
@@ -1583,7 +1829,7 @@ export default class DayPage extends Component {
                                 console.log(" value1==true  case 0");
                                 // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 // urlValue = 'http://104.211.49.150:3200/api/getPanSales'
-                                urlValue = 'http://104.211.49.150:3001/api/getRegionSales'
+                                urlValue = 'api/getRegionSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1592,25 +1838,29 @@ export default class DayPage extends Component {
                             case 1:
                             case '1':
                                 console.log(" value1==true  case 1");
+                             
                                 // urlValue = 'http://115.112.224.200:3000/api/getSubRegionSales'
-                                // urlValue = 'http://104.211.49.150:6060/api/getSubRegionSales'
-                                urlValue = 'http://104.211.49.150:3001/api/getStoreSales'
+                                urlValue = 'api/getCitySales'
+                                // urlValue = 'http://104.211.49.150:3001/api/getStoreSales'
 
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
-                                    city_id: "1",
+                                    region_id: regionId,
                                 })
                                 break;
                             case 2:
                             case '2':
+                                console.log(" cityId=="+cityId);
                                 console.log(" value1==true  case 1");
+                                urlValue = 'api/getStoreSales'
+
                                 // urlValue = 'http://104.211.49.150:6060/api/getCitySales'
-                                // bodyJson = JSON.stringify({
-                                //     date: urlPanDate,
-                                //     filter_type: filter_type,
-                                //     sub_region_id: "Chattisgarh",
-                                // })
+                                bodyJson = JSON.stringify({
+                                    date: urlPanDate,
+                                    filter_type: filter_type,
+                                    city_id: cityId,
+                                })
                                 break;
                             case 3:
                             case '3':
@@ -1625,7 +1875,7 @@ export default class DayPage extends Component {
                             case 4:
                             case '4':
                                 console.log(" value1==true  case ");
-                                urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
+                                // urlValue = 'http://115.112.224.200:3000/api/getRegionSales'
                                 break;
 
                         }
@@ -1637,7 +1887,8 @@ export default class DayPage extends Component {
                             case 0:
                             case '0':
                                 console.log("else value1==true case  0");
-                                urlValue = 'http://115.112.224.200:3000/api/getDeputyMgnSales'
+                                urlValue ='api/getAreaMgnSales'
+                                // urlValue = 'http://115.112.224.200:3000/api/getDeputyMgnSales'
                                 bodyJson = JSON.stringify({
                                     date: urlPanDate,
                                     filter_type: filter_type,
@@ -1646,12 +1897,12 @@ export default class DayPage extends Component {
                             case 1:
                             case '1':
                                 console.log("else value1==true case  1");
-                                urlValue = 'http://115.112.224.200:3000/api/getPetchMgnSales'
-                                bodyJson = JSON.stringify({
-                                    date: urlPanDate,
-                                    filter_type: filter_type,
-                                    deputy_id: regionId,
-                                })
+                                // urlValue = 'http://115.112.224.200:3000/api/getPetchMgnSales'
+                                // bodyJson = JSON.stringify({
+                                //     date: urlPanDate,
+                                //     filter_type: filter_type,
+                                //     deputy_id: regionId,
+                                // })
                                 break;
                             case 2:
                             case '2':
@@ -1661,70 +1912,77 @@ export default class DayPage extends Component {
                         }
                     }
                     console.log(" Body Request : " + bodyJson)
-                    const urlPan = urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
+                    const urlPan = baseUrl+urlValue//'http://115.112.181.53:3000/api/getRegionSales':'http://115.112.181.53:3000/api/getDeputyMgnSales'
                     console.log("  url " + urlPan)
                     console.log(" body===" + JSON.stringify(bodyJson));
 
                     // if (this.state.parent == 0) {
-                        fetch(urlPan, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: bodyJson
-                        })
-                            .then((response) => response.json())
-                            .then((responseJson) => {
+                    fetch(urlPan, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: bodyJson
+                    })
+                        .then((response) => response.json())
+                        .then((responseJson) => {
 
-                                var nets;
-                                responseJson.data.map((info) => {
-                                    nets = info.current_sale
+                            var nets, adsSale;
+                            responseJson.data.map((info) => {
+                                nets = info.current_sale
+                            })
+
+
+                            // responseJson.data.push({
+                            //     id: 1,
+                            //     name: "North",
+                            //     current_sale: nets,
+                            //     last_sale: 0,
+                            //     sale_data: []
+                            // })
+
+                            responseJson.data.map((dataa) => {
+                                nets = dataa.current_sale
+                                adsSale = this.totalSaleFormat(dataa.ads)
+                                AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
+                                var sale_data = []
+                                sale_data.push({
+                                    name: 'Net Sale', total: dataa.current_sale,
                                 })
-
-
-                                // responseJson.data.push({
-                                //     id: 1,
-                                //     name: "North",
-                                //     current_sale: nets,
-                                //     last_sale: 0,
-                                //     sale_data: []
+                                // sale_data.push({
+                                //     name: 'ADS', total: dataa.ads,
                                 // })
+                                dataa.hasSaleData = false
+                                dataa.sale_data = sale_data
 
-                                responseJson.data.map((dataa) => {
-                                    nets = dataa.current_sale
-                                    AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
-                                    var sale_data = []
-                                    sale_data.push({
-                                        name: 'Net Sales', total: dataa.current_sale,
-                                    })
-                                    dataa.hasSaleData = false
-                                    dataa.sale_data = sale_data
+                            })
 
+
+                            // this.setState.dataSource.push( responseJson.sale_info );
+                            this.setState({ indeterminate: false });
+                            // this.setState({ netSales: responseJson.data[0].current_sale });
+                            if (responseJson != null) {
+                                var netSaless = this.totalSaleFormat(responseJson.total_sale);
+                                this.setState({ netSale: netSaless });
+                                this.setState({ adsSale: adsSale });
+                                this.setState({
+                                    dataSource: responseJson.data
                                 })
+                                console.log("this.CustomComponentDid(response)  responseJson.data : " + JSON.stringify(responseJson.data));
+
+                            }
 
 
-                                // this.setState.dataSource.push( responseJson.sale_info );
-                                this.setState({ indeterminate: false });
-                                // this.setState({ netSales: responseJson.data[0].current_sale });
-                                if (responseJson != null) {
-                                    var netSaless = this.totalSaleFormat(responseJson.total_sale);
-                                    this.setState({ netSale: netSaless });
-                                    this.setState({
-                                        dataSource: responseJson.data
-                                    })
-                                }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
 
 
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                            })
-
-
-                            .catch((error) => {
-                                console.log(error)
-                            })
+                        .catch((error) => {
+                            console.log(error)
+                        })
 
                     // } 
                     // else {
@@ -1794,16 +2052,17 @@ export default class DayPage extends Component {
                 }).done();
 
             }).done();
-
-        }).done();
+          
+       
+        }).done()
 
     }
     //last contral+z...
     //for page refersh
 
     pageStackComponentDidMount(id, parent) {
-        this.setState({ indeterminate: true });
-        console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
+      
+        // console.log(" pageStackComponentDidMount clickId : " + id + "  parent : " + parent)
         var bodyData = "", url = "";
         var isGeo = this.state.isGeo
 
@@ -1819,58 +2078,51 @@ export default class DayPage extends Component {
                             date: this.state.date,
                             filter_type: filter_type,
                         }),
-                            // url = 'http://104.211.49.150:3200/api/getPanSales'
-                            url = 'http://104.211.49.150:3001/api/getRegionSales'
+                            url = 'api/getRegionSales'
 
                         break;
-                    case 1:
+                        case 1:
                         this.state.regionId = id;
 
-                        // SubRegion level
-
-                        // bodyData = JSON.stringify({
-                        //     date: this.state.date,
-                        //     filter_type: filter_type,
-                        //     region_id: id,
-                        // }),
-                        //     url = 'http://104.211.49.150:6060/api/getSubRegionSales'
-
-
+                        // city level
 
                         bodyData = JSON.stringify({
                             date: this.state.date,
                             filter_type: filter_type,
-                            city_id: 1,
-                            // region_id: regionId,
+                            region_id: id,
                         }),
-                            url = 'http://104.211.49.150:3001/api/getStoreSales'
+                            url = 'api/getCitySales'
+
+
 
                         break;
                     case 2:
                         this.state.subregionId = id;
 
-                        // Cities level
+                       // Store level
+                       this.state.cityId = id;
+                       // this.state.storeId=id;
+                       bodyData = JSON.stringify({
+                           date: this.state.date,
+                           filter_type: filter_type,
+                           city_id: id,
+                       }),
+                           url = 'api/getStoreSales'
 
-                        // bodyData = JSON.stringify({
-                        //     date: this.state.date,
-                        //     filter_type: filter_type,
-                        //     sub_region_id: "Chattisgarh",
-                        // }),
-                        //     url = 'http://104.211.49.150:6060/api/getCitySales'
 
 
 
                         break;
                     case 3:
                         // Store level
-                        // this.state.cityId = id;
-                        // // this.state.storeId=id;
+                        this.state.cityId = id;
+                        // this.state.storeId=id;
                         // bodyData = JSON.stringify({
                         //     date: this.state.date,
                         //     filter_type: filter_type,
                         //     city_id: id,
                         // }),
-                        //     url = 'http://104.211.49.150:6060/api/getStoreSales'
+                        //     url = 'getStoreSales'
 
                         break;
                 }
@@ -1883,20 +2135,20 @@ export default class DayPage extends Component {
                             date: this.state.date,
                             filter_type: filter_type,
                         }),
-                            url = 'getDeputyMgnSales'
+                            url = 'api/getAreaMgnSales'
 
                         break;
                     case 1:
 
                         // Cities level
-                        this.state.regionId = id;
-                        bodyData = JSON.stringify({
-                            date: this.state.date,
-                            filter_type: filter_type,
-                            deputy_id: id,
-                        }),
-                            url = 'getPetchMgnSales'
-                        AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id);
+                        // this.state.regionId = id;
+                        // bodyData = JSON.stringify({
+                        //     date: this.state.date,
+                        //     filter_type: filter_type,
+                        //     deputy_id: id,
+                        // }),
+                        //     url = 'getPetchMgnSales'
+                        // AsyncStorage.setItem(GLOBAL.REGION_ID_KEY, "" + id);
                         break;
                     case 2:
                         break;
@@ -1927,7 +2179,7 @@ export default class DayPage extends Component {
     callApi = (url, bodyData) => {
 
         // const urlPan = 'http://115.112.224.200:3000/api/' + url;
-        const urlPan = url;
+        const urlPan = baseUrl+url;
         console.log("  url " + urlPan)
         if (this.state.parent == 0) {
             fetch(urlPan, {
@@ -1961,8 +2213,11 @@ export default class DayPage extends Component {
                         AsyncStorage.setItem(GLOBAL.NET_SALES, "" + dataa.current_sale)
                         var sale_data = []
                         sale_data.push({
-                            name: 'Net Sales', total: dataa.current_sale,
+                            name: 'Net Sale', total: dataa.current_sale,
                         })
+                        // sale_data.push({
+                        //     name: 'ADS', total: dataa.ads,
+                        // })
                         dataa.hasSaleData = false
                         dataa.sale_data = sale_data
 
@@ -2024,8 +2279,11 @@ export default class DayPage extends Component {
 
                         var sale_data = []
                         sale_data.push({
-                            name: 'Net Sales', total: dataa.current_sale,
+                            name: 'Net Sale', total: dataa.current_sale,
                         })
+                        // sale_data.push({
+                        //     name: 'ADS', total: dataa.ads,
+                        // })
                         dataa.hasSaleData = false
                         dataa.sale_data = sale_data
 
@@ -2445,6 +2703,8 @@ const styless = StyleSheet.create({
     shapeinnerwhite: {
         backgroundColor: '#FFFFFF',
         width: '55%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
         height: 19.9,
 
     },

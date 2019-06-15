@@ -7,10 +7,14 @@ import {
     View,
     Image,
     FlatList,
+    Button,
+    ActivityIndicator,
     AsyncStorage,
     TouchableOpacity,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import { EventRegister } from 'react-native-event-listeners'
+
 import CardView from 'react-native-cardview';
 import styles from '../styles';
 import * as Progress from 'react-native-progress'
@@ -24,11 +28,11 @@ export default class Hour extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            headerTitle: navigation.state.params.itemName + '',
-            headerTitleStyle: { alignSelf: 'center' }
+            // headerTitle: navigation.state.params.itemName + '',
+            headerTitle: <CustomHeader title={navigation.state.params.itemName + ''} subtitle={navigation.state.params.date}/>,
+            headerTitleStyle: { alignSelf: 'center', upperCaseLabel: false, justifyContent: (Platform.OS === 'ios') ? 'center' : 'flex-start' }
         }
     }
-
 
     constructor(props) {
         super(props)
@@ -36,41 +40,94 @@ export default class Hour extends Component {
             dataSource: [],
             progress: 0,
             indeterminate: true,
-
+            refreshing: true,
             date: '',
-            netSales: ' ',
             itemName: '',
+            parent: '',
+            isGeo: true,
+            filter_type: '',
+            itemId: '',
+            sales: '',
+            showIndicator: true,
+            isResponse: false,
 
 
 
         }
 
     }
+
+
     animate() {
         let progress = 0;
         this.setState({ progress });
         setTimeout(() => {
             this.setState({ indeterminate: false });
             setInterval(() => {
-                progress += Math.random() / 5;
-                if (progress > 1) {
-                    progress = 1;
-                }
+                progress = 0
+                // progress += Math.random() / 5;
+                // if (progress > 1) {
+                //     progress = 1;
+                // }
                 this.setState({ progress });
             }, 50);
         }, 9100);
     }
 
+    closeActivityIndicator() {
+        console.log("closeActivityIndicator isResponse"+this.state.isResponse)
+        if (this.state.isResponse) {
+            setTimeout(() => this.setState({
+                showIndicator: false
+            }), 1500);
+        } 
+        // else {
+        //     setTimeout(() => this.setState({
+        //         showIndicator: false
+        //     }), 6000);
+        // }
+    }
+
     componentDidMount() {
         /* 2. Get the param, provide a fallback value if not available */
+        // const { navigation } = this.props;
+        // var date = new Date().toDateString();
+        // date = dateFormat(date, "yyyy-mm-dd");
+        // const title = navigation.getParam('itemName', "McDLiv")
+        // this.setState({ itemName: title });
+        /* 2. Get the param, provide a fallback value if not available */
+
         const { navigation } = this.props;
         var date = new Date().toDateString();
         date = dateFormat(date, "yyyy-mm-dd");
+        const itemId = navigation.getParam('itemId', 'Undefined');
+        const parent = navigation.getParam('parent', '0');
+        const isGeo = navigation.getParam('isGeo', false);
+        const date11 = navigation.getParam('date', date);
+        const filter_type = navigation.getParam('filter_type', date);
         const title = navigation.getParam('itemName', "McDLiv")
+        const sales = navigation.getParam('sales', '0 K')
+
+        this.setState({ itemId: itemId });
+        this.setState({ parent: parent });
+        this.setState({ isGeo: isGeo });
+        this.setState({ date: date11 });
+        this.setState({ filter_type: filter_type });
         this.setState({ itemName: title });
+        this.setState({ sales: sales });
+        console.log(" Hour=================================page");
+        console.log(" itemId --" + itemId);
+        console.log(" parent --" + parent);
+        console.log(" isGeo --" + isGeo);
+        console.log(" date --" + date11);
+        console.log(" filter_type --" + filter_type);
+        console.log(" Total Net sales --" + sales);
+        this.customComponentDidMount(itemId, parent, isGeo, date11, filter_type);
+        EventRegister.emit('myCustomEvent', 'it works!!!');
+        //  this.animate();
+        // this.closeActivityIndicator();
 
-
-        this.customComponentDidMount()
+        // this.customComponentDidMount()
     }
 
     totalSaleFormat = (val) => {
@@ -119,15 +176,109 @@ export default class Hour extends Component {
 
 
     //for date
-    customComponentDidMount = () => {
-        console.log(" customComponentDidMount start ")
-        const urlPan = 'http://bkliveapp.bklive.in:4500/v2/get_hourly_sale?filter_type=day&date=2018-12-24&region_id=1';
+    customComponentDidMount = (itemId, parent, isGeo, date, filter_type) => {
+        // console.log(" customComponentDidMount start ")
+        var urlPanDate = ""
+        urlPanDate = date;
+        console.log(" Is_Geo_key : " + isGeo);
+        var baseUrl = ''
+        var urlValue = ''
+
+        // var bodyJson = JSON.stringify({
+        //     date: urlPanDate,
+        //     filter_type: filter_type,
+        // })
+        // urlValue = 'http://115.112.224.200:3000/api/getBmSales'
+        baseUrl='http://104.211.49.150:3001/v2/get_hourly_sale?filter_type=';
+        // baseUrl = 'http://115.112.224.200:3000/v2/get_hourly_sale?filter_type='
+        if ("" + isGeo == "true") {
+            console.log(" value1==true");
+
+
+            switch (parent) {
+                case 0:
+                case '0':
+                    console.log(" value1==true  case 0");
+
+                    if (itemId == 'National') {
+                       
+                        urlValue = baseUrl + filter_type + '&date=' + urlPanDate
+
+                    } else {
+                        urlValue = baseUrl + filter_type + '&date=' + urlPanDate + '&region_id=' + itemId
+                    }
+                    break;
+                case 1:
+                case '1':
+                    console.log(" value1==true  case 1");
+                    urlValue = baseUrl + filter_type + '&date=' + urlPanDate + '&city_id=' + itemId
+
+                    break;
+                case 2:
+                case '2':
+                    console.log(" value1==true  case 2");
+                    urlValue = baseUrl + filter_type + '&date=' + urlPanDate + '&store_id=' + itemId
+
+
+
+                    break;
+                case 3:
+                case '3':
+                    // console.log(" value1==true  case 3");
+
+
+                    break;
+
+            }
+        } else {
+            console.log("else value1==true")
+            // bodyJson = JSON.stringify({
+            //     date: urlPanDate,
+            //     filter_type: filter_type,
+            //     // city_id: itemId,
+            // })
+            // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
+            switch (parent) {
+                case 0:
+                case '0':
+                    console.log("else value1==true case  0")
+
+                    urlValue = baseUrl + filter_type + '&date=' + urlPanDate + '&am_id=' + itemId
+
+                    break;
+                case 1:
+                case '1':
+                    // console.log("else value1==true case  1");
+
+
+                    // urlValue = baseUrl + filter_type + '&date=' + urlPanDate + '&petch_id=' + itemId
+
+                    break;
+                case 2:
+                case '2':
+                    // console.log("else value1==true case  2");
+                    // // bodyJson = JSON.stringify({
+                    // //     date: urlPanDate,
+                    // //     filter_type: filter_type,
+                    // //     store_id: itemId,
+                    // // })
+                    // // break;
+                    return
+
+            }
+        }
+
+        const urlPan = urlValue;
         console.log("  url " + urlPan)
+        this.setState({ indeterminate: true });
+        this.setState({ refreshing: true });
         return fetch(urlPan)
             .then((response) => response.json())
             .then((responseJson) => {
-               
-                this.setState({ indeterminate: false });
+                this.setState({ isResponse: true });
+                // this.setState({ indeterminate: false });
+                console.log("Response data isResponse"+this.state.isResponse)
+
                 console.log("Response data responseJson -> " + responseJson);
                 console.log("data----responseJson  Total Sale -> " + responseJson.sale_info.total_sales);
                 // responseJson.sale_info.hourly_sales.map((data) => {
@@ -136,11 +287,12 @@ export default class Hour extends Component {
                 //     //    data
                 //     // })
                 // })
-                var netsale= this.totalSaleFormat(responseJson.sale_info.total_sales)
-                this.setState({ netSales:netsale });
+                var netsale = this.totalSaleFormat(responseJson.sale_info.total_sales)
+                this.setState({ netSales: netsale });
                 this.setState({
                     dataSource: responseJson.sale_info.hourly_sales
-                }) 
+                })
+                 this.closeActivityIndicator();
             })
             .catch((error) => {
                 console.log(error)
@@ -148,17 +300,19 @@ export default class Hour extends Component {
             .catch((error) => {
                 console.log(error)
             })
-       }
+    }
+
+
 
     renderItem = ({ item }) => {
         var time = item.hour_slot;
-      
+
 
         return (
             // responseJson.map((data) => { 
 
             <View style={styless.MainContainer}>
-            
+
 
                 <View style={{
                     flexDirection: 'row',
@@ -179,7 +333,7 @@ export default class Hour extends Component {
                                     <Text style={{
                                         fontSize: 10,
                                         //width: 150,
-                                        color: '#FFFFFF',
+                                        color: '#FFF',
                                         marginLeft: -40,
                                         textAlign: 'left',
 
@@ -189,7 +343,7 @@ export default class Hour extends Component {
                                         alignItems: 'center',
 
                                     }}>
-                                    {
+                                        {
 
                                             this.getTimeIn12HrFormat(time)
                                         }
@@ -216,7 +370,7 @@ export default class Hour extends Component {
 
                                 }}>
                                     {
-
+                                        
                                         //item.current_sale.toFixed(2)
                                         this.parseFloat2Decimals(item.percentage) + '%'
                                     }
@@ -225,33 +379,33 @@ export default class Hour extends Component {
                             </View>
 
 
-                                <View style={styless.shapewhite}>
-                            <TouchableOpacity
+                            <View style={styless.shapewhite}>
+                                <TouchableOpacity
 
-                                onPress={() => {
+                                    onPress={() => {
 
-                                    // if ((item.key == "Total Net Sales")) {
-
-
-                                    // this.props.navigation.navigate('SaleDetails', {
-                                    //     itemName: this.state.itemName,
-                                    //     itemId: this.state.itemId,
-                                    //     parent: this.state.parent,
-                                    //     date: this.state.date,
-                                    //     isGeo: this.state.isGeo,
-                                    //     filter_type: this.state.filter_type
-                                    // });
+                                        // if ((item.key == "Total Net Sales")) {
 
 
-                                    // }
-                                }}  >
+                                        // this.props.navigation.navigate('SaleDetails', {
+                                        //     itemName: this.state.itemName,
+                                        //     itemId: this.state.itemId,
+                                        //     parent: this.state.parent,
+                                        //     date: this.state.date,
+                                        //     isGeo: this.state.isGeo,
+                                        //     filter_type: this.state.filter_type
+                                        // });
+
+
+                                        // }
+                                    }}  >
 
 
 
                                     <View style={{
                                         flexDirection: 'row',
                                         marginLeft: 20,
-                                        marginRight:-20,
+                                        marginRight: -20,
                                         justifyContent: 'flex-end',
                                         // alignItems: 'center',
 
@@ -293,7 +447,7 @@ export default class Hour extends Component {
 
 
 
-                            </TouchableOpacity>
+                                </TouchableOpacity>
                             </View>
 
 
@@ -310,147 +464,318 @@ export default class Hour extends Component {
     }
 
 
+    // render() {
+    //     //Check if showIndicator state is true the show indicator if not show button
+    //     if (this.state.showIndicator) {
+    //       return (
+    //         <View >
+    //           {/*Code to show Activity Indicator*/}
+    //           <ActivityIndicator size="large" color="#0000ff" />
+    //           {/*Size can be large/ small*/}
+    //         </View>
+    //       );
+    //     } else {
+    //       return (
+    //         <View >
+    //           {/*On CLick of a button onButtonPress will bw called will change the state*/}
+    //           <Button onPress={this.onButtonPress} title="Click to see Indicator" />
+    //         </View>
+    //       );
+    //     }
+    //   }
+
     render() {
 
+        if (!this.state.showIndicator) {
+            if (this.state.dataSource != null && this.state.dataSource.length > 0) {
 
-        if (this.state.dataSource != null && this.state.dataSource.length > 0) {
+                return (
 
-            return (
-                <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', width: '100%', height: '100%' }}>
+                    <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
 
-                    {
-                        this.state.indeterminate &&
-                        <Progress.Bar
-                            style={styles.progress}
-                            progress={this.state.progress}
-                            indeterminate={this.state.indeterminate}
-                            width={380}
-                            borderColor={'#FAC209'}
-                            borderRadius={0}
-                            color={'rgb(250, 194, 9)'}
-                            marginTop={1}
-                        />
-                    }
+                        <View
+                            style={{
+                                marginTop: 20,
+
+                            }} >
+                            <View style={{
+
+                                flexDirection: 'row',
+
+                                alignItems: 'center',
+                            }}>
+                                <Text style={{
+                                    fontSize: 10,
+                                    marginLeft: 23,
+                                    color: '#000000',
+                                }}>Hourly Sales</Text>
+                                <Text style={styless.instructions}>{this.state.netSales}</Text>
+
+                            </View>
+                            <View style={{
+                                width: '90%',
+                                marginTop: 20,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}>
+                                <View style={{
+                                    width: '30%',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                    <Text style={{
+                                        fontSize: 10,
+                                        marginLeft: -60,
+                                        color: '#000000',
+                                    }}>Time</Text>
+                                </View>
+                                <View style={{
+                                    justifyContent: 'center',
+                                    width: '30%',
+                                    alignItems: 'center',
+                                }}>
+                                    <Text style={{
+                                        fontSize: 10,
+                                        marginLeft: 30,
+                                        color: '#000000',
+                                    }}>%</Text>
+                                </View>
+                                <View style={{
+                                    justifyContent: 'center',
+                                    width: '30%',
+
+                                    alignItems: 'center',
+                                }}>
+                                    <Text style={{
+                                        fontSize: 10,
+
+                                        color: '#000000',
+                                    }}>NetSales</Text>
+                                </View>
+                            </View>
+
+                            <FlatList
+
+                                data={this.state.dataSource}
+                                renderItem={
+                                    this.renderItem
+                                }
+                            />
+                        </View >
 
 
 
-                    <View
-                        style={{
-                            marginTop: 20,
-
-                        }} >
-                         <View style={{
-                    
-                    flexDirection: 'row',
-
-                   alignItems: 'center',  
-                }}>
-                <Text  style={{
-                     fontSize: 10,
-                     marginLeft:23,
-                     color: '#000000',
-                }}>Hourly Sales</Text>
-              <Text style={styless.instructions}>{this.state.netSales}</Text>
-
-                </View>
-             <View style={{
-                     width:'90%',
-                     marginTop: 20,
-                    flexDirection: 'row',
-                   justifyContent: 'center',
-                   alignItems: 'center',  
-                }}>
-                <View style={{
-                    width:'30%',
-                   justifyContent: 'center',
-                   alignItems: 'center',  
-                }}>
-                <Text  style={{
-                     fontSize: 10,
-                     marginLeft:-60,
-                     color: '#000000',
-                }}>Time</Text>
-                </View>
-                <View style={{
-                   justifyContent: 'center',
-                    width:'30%',
-                   alignItems: 'center',  
-                }}>
-                <Text  style={{
-                     fontSize: 10,
-                     marginLeft:30,
-                     color: '#000000',
-                }}>%</Text>
-                </View>
-                <View style={{
-                   justifyContent: 'center',
-                   width:'30%',
-                 
-                   alignItems: 'center',  
-                }}>
-                <Text  style={{
-                     fontSize: 10,
-                     
-                     color: '#000000',
-                }}>NetSales</Text>
-                </View>
-                </View>
-
-                        <FlatList
-
-                            data={this.state.dataSource}
-                            renderItem={
-                                this.renderItem
-                            }
-                        />
                     </View >
+                );
+            }
+            else {
+                return (
+                    <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                        {/* {
+                        this.state.indeterminate &&
+                       
+                         <Progress.Bar progress={0.3} width={200}
+                         style={{
+                            alignItems:'center',
+                            justifyContent: 'center',}}
+                         progress={this.state.progress}
+                         indeterminate={this.state.indeterminate}
+                         alignItems={'center'}
+                         justifyContent={'center'}
+                         // width={380}
+                        //  unfilledColor={'#EBEBEB'}
+                         thickness={2}
+                         borderColor={'#FAC209'}
+                         borderRadius={0}
+                         color={'rgb(250, 194, 9)'}
+                         marginTop={1}
+                     />
+                   
+                    } */}
+                        <Image
 
-                </View >
+                            source={require('../images/error.png')}
+                        />
+                        <Text style={{
+                            fontWeight: 'bold',
+                            color: '#ff0000',
+                            marginTop: 5,
+                        }} >OOOPS!</Text>
+                        <Text>Sorry, Data not found.</Text>
 
 
 
+                    </View>
+                )
+            }
+        } else {
+            return (
+                <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                    {/*Code to show Activity Indicator*/}
+                    <ActivityIndicator size="large" color="#fac209" />
+                    {/*Size can be large/ small*/}
+                </View>
             );
-        }
-        else {
-            return (
-                <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', width: '100%', height: '100%' }}>
-                    {
-                        this.state.indeterminate &&
-                        <Progress.Bar
-                            style={styles.progress}
-                            progress={this.state.progress}
-                            indeterminate={this.state.indeterminate}
-                            width={380}
-                            borderColor={'#FAC209'}
-                            borderRadius={0}
-                            color={'rgb(250, 194, 9)'}
-                            marginTop={1}
-                        />
-                    }
-
-
-
-                    <View
-                        style={{
-                            marginTop: 30,
-
-                        }} >
-                        {/* <Text>Data not found </Text> */}
-                        {/* <FlatList
-                        data={this.state.dataSource}
-                        renderItem={
-                            this.renderItem
-                        }
-                    /> */}
-                    </View >
-                </View>
-            )
         }
     }
 
+
+    //     render() {
+
+
+    //         if (this.state.dataSource != null && this.state.dataSource.length > 0) {
+
+    //             return (
+
+    //                 <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+    //                 {
+    //                      this.state.indeterminate &&
+
+
+    //                     <Progress.Bar progress={0.3} width={200}
+    //                     style={{
+    //                         alignItems:'center',
+    //                         justifyContent: 'center',}}
+    //                     progress={this.state.progress}
+    //                     indeterminate={this.state.indeterminate}
+    //                     // width={380}
+
+    //                     thickness={2}
+    //                     // unfilledColor={'#EBEBEB'}
+    //                     borderColor={'#FAC209'}
+    //                     borderRadius={0}
+    //                     color={'rgb(250, 194, 9)'}
+    //                     marginTop={1}
+    //                 />
+
+
+    //                 }
+
+    // {
+    //     !this.state.indeterminate &&
+
+
+
+
+    //                     <View
+    //                         style={{
+    //                             marginTop: 20,
+
+    //                         }} >
+    //                          <View style={{
+
+    //                     flexDirection: 'row',
+
+    //                    alignItems: 'center',  
+    //                 }}>
+    //                 <Text  style={{
+    //                      fontSize: 10,
+    //                      marginLeft:23,
+    //                      color: '#000000',
+    //                 }}>Hourly Sales</Text>
+    //               <Text style={styless.instructions}>{this.state.netSales}</Text>
+
+    //                 </View>
+    //              <View style={{
+    //                      width:'90%',
+    //                      marginTop: 20,
+    //                     flexDirection: 'row',
+    //                    justifyContent: 'center',
+    //                    alignItems: 'center',  
+    //                 }}>
+    //                 <View style={{
+    //                     width:'30%',
+    //                    justifyContent: 'center',
+    //                    alignItems: 'center',  
+    //                 }}>
+    //                 <Text  style={{
+    //                      fontSize: 10,
+    //                      marginLeft:-60,
+    //                      color: '#000000',
+    //                 }}>Time</Text>
+    //                 </View>
+    //                 <View style={{
+    //                    justifyContent: 'center',
+    //                     width:'30%',
+    //                    alignItems: 'center',  
+    //                 }}>
+    //                 <Text  style={{
+    //                      fontSize: 10,
+    //                      marginLeft:30,
+    //                      color: '#000000',
+    //                 }}>TC</Text>
+    //                 </View>
+    //                 <View style={{
+    //                    justifyContent: 'center',
+    //                    width:'30%',
+
+    //                    alignItems: 'center',  
+    //                 }}>
+    //                 <Text  style={{
+    //                      fontSize: 10,
+
+    //                      color: '#000000',
+    //                 }}>NetSales</Text>
+    //                 </View>
+    //                 </View>
+
+    //                         <FlatList
+
+    //                             data={this.state.dataSource}
+    //                             renderItem={
+    //                                 this.renderItem
+    //                             }
+    //                         />
+    //                     </View >
+
+
+    //     }
+    // </View >
+    //             );
+    //         }
+    //         else {
+    //             return (
+    //                 <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+    //                     {
+    //                         this.state.indeterminate &&
+
+    //                          <Progress.Bar progress={0.3} width={200}
+    //                          style={{
+    //                             alignItems:'center',
+    //                             justifyContent: 'center',}}
+    //                          progress={this.state.progress}
+    //                          indeterminate={this.state.indeterminate}
+    //                          alignItems={'center'}
+    //                          justifyContent={'center'}
+    //                          // width={380}
+    //                         //  unfilledColor={'#EBEBEB'}
+    //                          thickness={2}
+    //                          borderColor={'#FAC209'}
+    //                          borderRadius={0}
+    //                          color={'rgb(250, 194, 9)'}
+    //                          marginTop={1}
+    //                      />
+
+    //                     }
+
+
+
+
+
+    //                 </View>
+    //             )
+    //         }
+    //     }
+
 }
 
-
+const CustomHeader = ({ title, subtitle }) => (
+    <View >
+      <Text style={{ fontSize: 16, color: '#FFFFFF',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{title}</Text>
+      <Text style={{ fontSize: 10, color: '#FFFFFF',alignSelf: (Platform.OS === 'ios') ? 'center' : 'flex-start',}}>{subtitle}</Text>
+    </View>
+  );
 const styless = StyleSheet.create({
 
     MainContainer: {
@@ -509,7 +834,7 @@ const styless = StyleSheet.create({
         // borderRadius: 1,
         borderColor: '#000000',
         backgroundColor: '#FFFFFF',
-        marginTop: 5,
+        marginTop: 8,
         // marginBottom: 5,
         borderWidth: 0.5,
         borderRadius: 1,
@@ -517,7 +842,7 @@ const styless = StyleSheet.create({
         //     marginLeft: 10,
         //     marginRight: 10
     },
-    cardViewRowHeader: {
+     cardViewRowHeader: {
         flexDirection: 'column',
         height: 40,
 
@@ -574,7 +899,7 @@ const styless = StyleSheet.create({
     },
     shapeyellow: {
         backgroundColor: '#1e2b51',
-        width: '50%',
+        width: '55%',
         marginLeft: -30,
 
         height: 30,
@@ -589,9 +914,9 @@ const styless = StyleSheet.create({
     shapewhite: {
         backgroundColor: '#FFFFFF',
         width: '25%',
-        marginTop: 7,
+        marginTop: 4,
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
 
 
     },
@@ -622,12 +947,15 @@ const styless = StyleSheet.create({
     },
     progress: {
         margin: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+
     },
     instructions: {
         //justifyContent: 'center',
         textAlignVertical: "center",
         fontSize: 10,
-        marginLeft:10,
+        marginLeft: 10,
         textAlign: 'center',
         color: '#000',
     },

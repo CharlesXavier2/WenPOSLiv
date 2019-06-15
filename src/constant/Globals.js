@@ -10,6 +10,7 @@ module.exports = {
     TIME_KEY:"time_key",
     FILTER_TYPE:'filter_type',
     NET_SALES: 'net_sales',
+    TITLE_KEY: 'title_key',
     
     BASE_URL: 'http://115.112.181.53:3000/api/',
     COLOR: {

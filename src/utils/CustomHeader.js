@@ -23,7 +23,7 @@ export default class CustomHeader extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            title: "TacoBell",
+            title: '',
             date: '',
             time:''
         }
@@ -42,7 +42,7 @@ export default class CustomHeader extends Component {
 
     getDate = () => {
         AsyncStorage.getItem("time_key").then((value) => {
-            console.log(" Getter date" + value);
+            console.log(" On Custom-Getter date" + value);
             if (value == null || value == '') {
                 var date = new Date().toDateString();
                 date = dateFormat(date, "yyyy-mm-dd");
@@ -53,12 +53,25 @@ export default class CustomHeader extends Component {
             }
         })
     };
-  
+    getTitle = () => {
+        AsyncStorage.getItem("title_key").then((value) => {
+            console.log(" On Custom-Title of page is : " + value);
+            if (value == null || value == '') {
+                var title = 'Tacobell'
+               
+                this.setState({ title });
+                AsyncStorage.setItem("title_key", title);
+            } else {
+                this.setState({ title: value });
+            }
+        })
+    };
     componentWillMount() {
 
         this.listener = EventRegister.addEventListener('myCustomEvent', (data) => {
             console.log(" EventRegister.addEventListener('myCustomEvent' in CustomHeader :  "+data),
             this.getDate()
+            this.getTitle()
         }),
 
         this.listener = EventRegister.addEventListener('onTitleChange', (data) => {

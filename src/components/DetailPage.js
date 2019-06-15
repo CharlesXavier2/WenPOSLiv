@@ -19,7 +19,7 @@ import DatePicker from '../utils/datepicker.js';
 
 var dataSource1 = []
 var dateFormat = require('dateformat');
-
+const baseUrl= 'http://104.211.49.150:3001/v2/get_sale_details?filter_type=';
 export default class DetailPage extends Component {
 
 
@@ -97,6 +97,7 @@ export default class DetailPage extends Component {
 
     totalSaleFormat = (val) => {
         try {
+      if(val!="NA"){
             if (val > 999999) {
                 val = val / 1000000;
                 op = val.toFixed(2);
@@ -107,6 +108,10 @@ export default class DetailPage extends Component {
                 // op = getTwoDecimalFormat(val);
                 return (op + " K");
             }
+        }else{
+            return (0.00 + " K");
+        }
+
         } catch (error) {
             return (0 + " K");
         }
@@ -126,100 +131,85 @@ export default class DetailPage extends Component {
         })
     };
 
-    //for date
     customComponentDidMount = (itemId, parent, isGeo, date, filter_type) => {
-        console.log(" customComponentDidMount start ")
-        // const {params} = this.props.navigation.state
-        // this.getDate();
+        // console.log(" customComponentDidMount start ")
         var urlPanDate = ""
-        // var regionId = ''
-        // var cityId = '';
-        // AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
-        //     regionId = regionIdVal
-        // }).done()
-        // AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
-        //     cityId = cityIdVal
-        // }).done()
-
         urlPanDate = date;
         console.log(" Is_Geo_key : " + isGeo);
         var urlValue = ''
-        var bodyJson = JSON.stringify({
-            date: urlPanDate,
-            filter_type: filter_type,
-        })
-        urlValue = 'http://115.112.224.200:3000/api/getBmSales'
+        // var bodyJson = JSON.stringify({
+        //     date: urlPanDate,
+        //     filter_type: filter_type,
+        // })
+        // urlValue = 'http://115.112.224.200:3000/api/getBmSales'
 
-        console.log(" customComponentDidMount start =>  http://115.112.224.200:3000/api/getBmSales ");
         if ("" + isGeo == "true") {
             console.log(" value1==true");
 
-            bodyJson = JSON.stringify({
-                date: urlPanDate,
-                filter_type: filter_type,
-            })
-            switch (parent) {
+           
+           switch (parent) {
                 case 0:
                 case '0':
                     console.log(" value1==true  case 0");
-                    bodyJson = JSON.stringify({
-                        date: urlPanDate,
-                        filter_type: filter_type,
-                        region_id: itemId,
-                    })
+                   
+                    if(itemId=='National'){
+                        urlValue = filter_type+'&date='+urlPanDate
+
+                    }else{
+                        urlValue = filter_type+'&date='+urlPanDate+'&region_id='+itemId;
+
+                    // urlValue = 'http://115.112.224.200:3000/v2/get_sale_details?filter_type='+filter_type+'&date='+urlPanDate+'&region_id='+itemId
+                }
                     break;
                 case 1:
                 case '1':
                     console.log(" value1==true  case 1");
+                    urlValue = filter_type+'&date='+urlPanDate+'&city_id='+itemId;
 
-                    bodyJson = JSON.stringify({
-                        date: urlPanDate,
-                        filter_type: filter_type,
-                        city_id: itemId,
-                    })
+                    // urlValue = 'http://115.112.224.200:3000/v2/get_sale_details?filter_type='+filter_type+'&date='+urlPanDate+'&sub_region_id='+itemId
+
                     break;
                 case 2:
                 case '2':
                     console.log(" value1==true  case 2");
 
-                    bodyJson = JSON.stringify({
-                        date: urlPanDate,
-                        filter_type: filter_type,
-                        storeid: itemId,
-                    })
+                    urlValue = filter_type+'&date='+urlPanDate+'&store_id='+itemId;
+
+
                     break;
                 case 3:
                 case '3':
+                // console.log(" value1==true  case 3");
+               
+                // urlValue = 'http://115.112.224.200:3000/v2/get_sale_details?filter_type='+filter_type+'&date='+urlPanDate+'&store_id='+itemId
 
+                break;
 
             }
         } else {
             console.log("else value1==true")
-            bodyJson = JSON.stringify({
-                date: urlPanDate,
-                filter_type: filter_type,
-                city_id: itemId,
-            })
+            // bodyJson = JSON.stringify({
+            //     date: urlPanDate,
+            //     filter_type: filter_type,
+            //     // city_id: itemId,
+            // })
             // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
             switch (parent) {
                 case 0:
                 case '0':
-                    console.log("else value1==true case  0")
-                    bodyJson = JSON.stringify({
-                        date: urlPanDate,
-                        filter_type: filter_type,
-                        deputy_id: itemId,
-                    })
+                    // console.log("else value1==true case  0")
+                    
+                    urlValue =  urlValue = filter_type+'&date='+urlPanDate+'&am_id='+itemId;
+                    // 'http://115.112.224.200:3000/v2/get_sale_details?filter_type='+filter_type+'&date='+urlPanDate+'&deputy_id='+itemId
+
                     break;
                 case 1:
                 case '1':
                     console.log("else value1==true case  1");
 
-                    bodyJson = JSON.stringify({
-                        date: urlPanDate,
-                        filter_type: filter_type,
-                        petch_id: itemId,
-                    })
+                    
+                    // urlValue = 'http://115.112.224.200:3000/v2/get_sale_details?filter_type='+filter_type+'&date='+urlPanDate+'&petch_id='+itemId
+
                     break;
                 case 2:
                 case '2':
@@ -235,41 +225,182 @@ export default class DetailPage extends Component {
             }
         }
 
-        console.log(" Body Request : " + bodyJson)
-        const urlPan = urlValue
-        console.log("  url " + urlPan)
-        this.setState({ indeterminate: true });
-        this.setState({ refreshing: true });
-        fetch(urlPan, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: bodyJson
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({ indeterminate: false });
-                this.setState({ refreshing: false });
-                // this.setState.dataSource.push( responseJson.sale_info );
-                if (responseJson != null) {
-                    this.setState({
-                        dataSource: responseJson.data
-                    })
-                }
+            const urlPan = baseUrl + urlValue;
+            console.log("  url " + urlPan)
+            this.setState({ indeterminate: true });
+            this.setState({ refreshing: true });
+            return fetch(urlPan)
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            // console.log(" Body Response of get_sale_detailsAPI : " + responseJson);
+                            // console.log(" Body Response of get_sale_detailsAPI-sale info : " + responseJson.sale_info);
 
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+                    this.setState({ indeterminate: false });
+                    this.setState({ refreshing: false });
+                    // this.setState.dataSource.push( responseJson.sale_info );
+                    if (responseJson != null) {
+                        this.setState({
+                            dataSource: responseJson.sale_info
+                        })
+                    }
+                    // console.log(" Body Response of get_sale_detailsAPI-dataSource : " + this.state.dataSource);
 
-
-            .catch((error) => {
-                console.log(error)
-            })
-        console.log(" customComponentDidMount End ");
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+    
+    
+                .catch((error) => {
+                    console.log(error)
+                })
+            // console.log(" customComponentDidMount End ");
     }
+
+    //for date
+    // customComponentDidMount = (itemId, parent, isGeo, date, filter_type) => {
+    //     console.log(" customComponentDidMount start ")
+    //     // const {params} = this.props.navigation.state
+    //     // this.getDate();
+    //     var urlPanDate = ""
+    //     // var regionId = ''
+    //     // var cityId = '';
+    //     // AsyncStorage.getItem(GLOBAL.REGION_ID_KEY).then((regionIdVal) => {
+    //     //     regionId = regionIdVal
+    //     // }).done()
+    //     // AsyncStorage.getItem(GLOBAL.CITY_ID_KEY).then((cityIdVal) => {
+    //     //     cityId = cityIdVal
+    //     // }).done()
+
+    //     urlPanDate = date;
+    //     console.log(" Is_Geo_key : " + isGeo);
+    //     var urlValue = ''
+    //     var bodyJson = JSON.stringify({
+    //         date: urlPanDate,
+    //         filter_type: filter_type,
+    //     })
+    //     urlValue = 'http://115.112.224.200:3000/api/getBmSales'
+
+    //     console.log(" customComponentDidMount start =>  http://115.112.224.200:3000/api/getBmSales ");
+    //     if ("" + isGeo == "true") {
+    //         console.log(" value1==true");
+
+    //         bodyJson = JSON.stringify({
+    //             date: urlPanDate,
+    //             filter_type: filter_type,
+    //         })
+    //         switch (parent) {
+    //             case 0:
+    //             case '0':
+    //                 console.log(" value1==true  case 0");
+    //                 bodyJson = JSON.stringify({
+    //                     date: urlPanDate,
+    //                     filter_type: filter_type,
+    //                     region_id: itemId,
+    //                 })
+    //                 break;
+    //             case 1:
+    //             case '1':
+    //                 console.log(" value1==true  case 1");
+
+    //                 bodyJson = JSON.stringify({
+    //                     date: urlPanDate,
+    //                     filter_type: filter_type,
+    //                     city_id: itemId,
+    //                 })
+    //                 break;
+    //             case 2:
+    //             case '2':
+    //                 console.log(" value1==true  case 2");
+
+    //                 bodyJson = JSON.stringify({
+    //                     date: urlPanDate,
+    //                     filter_type: filter_type,
+    //                     storeid: itemId,
+    //                 })
+    //                 break;
+    //             case 3:
+    //             case '3':
+
+
+    //         }
+    //     } else {
+    //         console.log("else value1==true")
+    //         bodyJson = JSON.stringify({
+    //             date: urlPanDate,
+    //             filter_type: filter_type,
+    //             city_id: itemId,
+    //         })
+    //         // urlValue='http://115.112.224.200:3000/api/getDeputyMgnSales' 
+    //         switch (parent) {
+    //             case 0:
+    //             case '0':
+    //                 console.log("else value1==true case  0")
+    //                 bodyJson = JSON.stringify({
+    //                     date: urlPanDate,
+    //                     filter_type: filter_type,
+    //                     deputy_id: itemId,
+    //                 })
+    //                 break;
+    //             case 1:
+    //             case '1':
+    //                 console.log("else value1==true case  1");
+
+    //                 bodyJson = JSON.stringify({
+    //                     date: urlPanDate,
+    //                     filter_type: filter_type,
+    //                     petch_id: itemId,
+    //                 })
+    //                 break;
+    //             case 2:
+    //             case '2':
+    //                 console.log("else value1==true case  2");
+    //                 // bodyJson = JSON.stringify({
+    //                 //     date: urlPanDate,
+    //                 //     filter_type: filter_type,
+    //                 //     store_id: itemId,
+    //                 // })
+    //                 // break;
+    //                 return
+
+    //         }
+    //     }
+
+    //     console.log(" Body Request : " + bodyJson)
+    //     const urlPan = urlValue
+    //     console.log("  url " + urlPan)
+    //     this.setState({ indeterminate: true });
+    //     this.setState({ refreshing: true });
+    //     fetch(urlPan, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: bodyJson
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             this.setState({ indeterminate: false });
+    //             this.setState({ refreshing: false });
+    //             // this.setState.dataSource.push( responseJson.sale_info );
+    //             if (responseJson != null) {
+    //                 this.setState({
+    //                     dataSource: responseJson.data
+    //                 })
+    //             }
+
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+
+
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    //     console.log(" customComponentDidMount End ");
+    // }
 
 
     renderItem = ({ item }) => {
@@ -354,7 +485,7 @@ export default class DetailPage extends Component {
                                     <Text style={{
                                         fontSize: 12,
                                         //width: 150,
-                                        color: '#FFFFFF',
+                                        color: '#000000',
                                         marginLeft: -20,
                                         textAlign: 'left',
 
@@ -363,16 +494,15 @@ export default class DetailPage extends Component {
                                         //textAlignVertical: "center",
                                         alignItems: 'center',
 
-                                    }}>{
-                                            item.key
-                                        }
+                                    }}>
+                                        hi
 
                                     </Text>
                                 </TouchableOpacity>
 
                             </View>
                             {
-                                item.key == "Total Net Sales" &&
+                                
                                 <View style={styless.shapeinnerwhite}>
 
 
@@ -389,48 +519,24 @@ export default class DetailPage extends Component {
 
                                     }}>
                                         {
-                                            this.state.sales
+                                            
+                                            // this.state.sales
                                             //item.current_sale.toFixed(2)
-                                            // "" + this.totalSaleFormat(val)
+                                            "" + this.totalSaleFormat(item.comps)
                                         }
                                     </Text>
 
                                 </View>
                             }
-                            {
-                                item.key != "Total Net Sales" &&
-                                <View style={styless.shapeinnerwhite}>
-
-
-                                    <Text style={{
-                                        fontSize: 12,
-                                        //width: 150,
-                                        color: '#000000',
-                                        marginLeft: 40,
-
-                                        // fontWeight: 'bold',
-                                        justifyContent: 'flex-end',
-                                        //textAlignVertical: "center",
-                                        alignItems: 'center',
-
-                                    }}>0 K
-                                    {/* {
-                                        this.state.sales
-                                        //item.current_sale.toFixed(2)
-                                        "" + this.totalSaleFormat(val)
-                                    } */}
-                                    </Text>
-
-                                </View>
-                            }
+                           
 
                             {
-                                item.key == "Total Net Sales" &&
+                                // item.key == "Total Net Sales" &&
                                 <TouchableOpacity
 
                                 onPress={() => {
-                                     // if ((item.key == "Total Net Sales")) {
-                                            this.props.navigation.navigate('SaleDetails', {
+                                     if ((item.key == "Total Net Sales")) {
+                                            this.props.navigation.navigate('VoidDetails', {
                                             itemName: this.state.itemName,
                                             itemId: this.state.itemId,
                                             parent: this.state.parent,
@@ -440,7 +546,7 @@ export default class DetailPage extends Component {
                                         });
 
 
-                                    // }
+                                    }
                                 }}  >
                                 <View style={styless.shapewhite}>
                                    
@@ -493,7 +599,7 @@ export default class DetailPage extends Component {
         // const { params } = this.props.navigation.state;
         //const itemId = params ? params.itemId : null;
         // const filterType = params ? params.filterType : null;
-        if (this.state.dataSource != null && this.state.dataSource.length > 0) {
+        if (this.state.dataSource != null ) {
 
             return (
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', width: '100%', height: '100%' }}>
@@ -512,80 +618,605 @@ export default class DetailPage extends Component {
                         />
                     }
 
+                   
+                   <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                        Net Sales
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                         {
+                                              "" + this.totalSaleFormat(this.state.dataSource.net_sale)
+                                             
+                                             }
+                                    </Text>
+
+                                </View>
+                            }
+                           
+
+                           {
+                                this.state.dataSource.net_sale >0 &&
+                                <TouchableOpacity
+
+                                onPress={() => {
+                                     
+                                            this.props.navigation.navigate('Hour', {
+                                            itemName: this.state.itemName,
+                                            itemId: this.state.itemId,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: this.state.filter_type
+                                        });
+
+
+                                    
+                                }}  >
+                                <View style={styless.shapewhite}>
+                                   
+
+                                        <View >
+                                            <Image
+                                                source={require('../images/nxt.png')}
+                                                style={{
+                                                    width: 12,
+                                                    height: 12,
+                                                    margin: 5,
+                                                    marginLeft: 70,
+                                                    justifyContent: 'center',
+
+                                                    resizeMode: 'stretch',
+
+                                                }} />
+
+                                        </View>
+
+
+                                      </View>
+                                    </TouchableOpacity>
+                                
+                            }
+                           
+                            {
+                                !this.state.dataSource.net_sale >0 &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+                    <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                        Guest Check
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                     {
+                                              "" + this.totalSaleFormat(this.state.dataSource.guest_check)
+                                             
+                                             }
+                                       
+                                    </Text>
+
+                                </View>
+                            }
+                           
+
+                           
+                            {
+                                // item.key != "Total Net Sales" &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+                    <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                        Comps
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                    {
+                                              "" + this.totalSaleFormat(this.state.dataSource.comps)
+                                             
+                                             }
+                                        
+                                    </Text>
+
+                                </View>
+                            }
+                           
+                            {
+                                // item.key != "Total Net Sales" &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+                    <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                        Payments
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                    {
+                                              "" + this.totalSaleFormat(this.state.dataSource.payments)
+                                             
+                                             }
+                                    </Text>
+
+                                </View>
+                            }
+                           
+                           {
+                                this.state.dataSource.payments >0 &&
+                                <TouchableOpacity
+
+                                onPress={() => {
+                                     
+                                            this.props.navigation.navigate('PaymentDetails', {
+                                            itemName: this.state.itemName,
+                                            itemId: this.state.itemId,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: this.state.filter_type
+                                        });
+
+
+                                    
+                                }}  >
+                                <View style={styless.shapewhite}>
+                                   
+
+                                        <View >
+                                            <Image
+                                                source={require('../images/nxt.png')}
+                                                style={{
+                                                    width: 12,
+                                                    height: 12,
+                                                    margin: 5,
+                                                    marginLeft: 70,
+                                                    justifyContent: 'center',
+
+                                                    resizeMode: 'stretch',
+
+                                                }} />
+
+                                        </View>
+
+
+                                      </View>
+                                    </TouchableOpacity>
+                                
+                            }
+                           
+                            {
+                                !this.state.dataSource.payments >0 &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+                    <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                        Promps
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                     {
+                                              "" + this.totalSaleFormat(this.state.dataSource.promps)
+                                             
+                                             }
+                                       
+                                    </Text>
+
+                                </View>
+                            }
+                           
+                            {
+                                // item.key != "Total Net Sales" &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+                    <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                        Voids
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                     {
+                                              "" + this.totalSaleFormat(this.state.dataSource.voids)
+                                             
+                                             }
+                                       
+                                       
+                                    </Text>
+
+                                </View>
+                            }
+
+                            {
+                                this.state.dataSource.voids >0 &&
+                                <TouchableOpacity
+
+                                onPress={() => {
+                                     
+                                            this.props.navigation.navigate('VoidDetails', {
+                                            itemName: this.state.itemName,
+                                            itemId: this.state.itemId,
+                                            parent: this.state.parent,
+                                            date: this.state.date,
+                                            isGeo: this.state.isGeo,
+                                            filter_type: this.state.filter_type
+                                        });
+
+
+                                    
+                                }}  >
+                                <View style={styless.shapewhite}>
+                                   
+
+                                        <View >
+                                            <Image
+                                                source={require('../images/nxt.png')}
+                                                style={{
+                                                    width: 12,
+                                                    height: 12,
+                                                    margin: 5,
+                                                    marginLeft: 70,
+                                                    justifyContent: 'center',
+
+                                                    resizeMode: 'stretch',
+
+                                                }} />
+
+                                        </View>
+
+
+                                      </View>
+                                    </TouchableOpacity>
+                                
+                            } 
+                           
+                            {
+                                // !this.state.dataSource.voids >0 &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+                    <View style={styless.cardViewStyle}>
+                        {/* <View style={styless.hairline} /> */}
+                        <View style={{
+                            flexDirection: 'row', width: '100%',
+
+                        }}>
+                            <View style={styless.shapeyellow}>
+                                <TouchableOpacity >
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#FFFFFF',
+                                        marginLeft: -20,
+                                        textAlign: 'left',
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-start',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}> 
+                                       Refunds
+
+                                    </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                            {
+                                
+                                <View style={styless.shapeinnerwhite}>
+
+
+                                    <Text style={{
+                                        fontSize: 12,
+                                        //width: 150,
+                                        color: '#000000',
+                                        marginLeft: 40,
+
+                                        // fontWeight: 'bold',
+                                        justifyContent: 'flex-end',
+                                        //textAlignVertical: "center",
+                                        alignItems: 'center',
+
+                                    }}>
+                                            {
+                                              "" + this.totalSaleFormat(this.state.dataSource.refunds)
+                                             
+                                             }
+                                        
+                                    </Text>
+
+                                </View>
+                            }
+                           
+                            {
+                             // item.key != "Total Net Sales" &&
+                                <View style={styless.shapewhite} />
+
+                            }
+                        </View>
+                    </View>
+
+
+
+
+
+
+
+
                     {/* <View
-                    // cardElevation={2}
-                    // cardMaxElevation={2}
-                    // cornerRadius={1}
-                    // borderRadius={5}
-                    // borderColor={'#CE000A'}
-
-                    //shadowRadius={'#CE000A'}
-                    style={styless.cardViewStyle}
-                > */}
-                    {/* <View style={styless.cardViewRowHeader}>
-
-<View style={{
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    // textAlignVertical: "center",
-    alignItems: 'center',
-    flexDirection: 'row',
-}}>
-
-    <Text numberOfLines={1} style={{
-        fontSize: 20,
-
-        color: '#0000FF',
-
-       
-        
-        justifyContent: 'center',
-        // textAlignVertical: "center",
-        alignItems: 'center',
-
-    }}>
-     {this.state.itemName} 
-        
-    </Text>
-</View>
-
-</View> */}
-
-                    {/* <View style={styless.hairline} /> */}
-
-
-
-
-
-
-
-
-
-                    <View
                         style={{
                             marginTop: 30,
 
                         }} >
                         <FlatList
 
-                            data={[
-                                { key: 'Total Net Sales' },
-                                { key: 'APC' },
-                                { key: 'Total Collections' },
-                                { key: 'Promotions' },
-                                { key: 'Discounts' },
-                                { key: 'Voids' },
-                                { key: 'Refunds' },
+                            // data={[
+                            //     { key: 'Total Net Sales' },
+                            //     { key: 'APC' },
+                            //     { key: 'Total Collections' },
+                            //     { key: 'Promotions' },
+                            //     { key: 'Discounts' },
+                            //     { key: 'Voids' },
+                            //     { key: 'Refunds' },
 
 
-                            ]}
-                            //   const dataSet={this.state.dataSource}
+                            // ]}
+                            data={this.state.dataSource}
 
                             renderItem={
                                 this.renderItem
                             }
                         />
-                    </View >
+                    </View > */}
                     {/* </View>    */}
                 </View >
 
@@ -595,6 +1226,7 @@ export default class DetailPage extends Component {
         }
         else {
             return (
+               
                 <View style={{ backgroundColor: '#FFFFFF', flex: 1, alignItems: 'center', width: '100%', height: '100%' }}>
                     {
                         this.state.indeterminate &&
@@ -609,74 +1241,35 @@ export default class DetailPage extends Component {
                             marginTop={1}
                         />
                     }
-
-
-                    {/* <View
-                    // cardElevation={2}
-                    // cardMaxElevation={2}
-                    // cornerRadius={1}
-                    // borderRadius={5}
-                    // borderColor={'#CE000A'}
-
-                    //shadowRadius={'#CE000A'}
-                    style={styless.cardViewStyle}
-                >
-                  <View style={styless.cardViewRowHeader}> */}
-
-                    {/* <View style={{
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    // textAlignVertical: "center",
-    alignItems: 'center',
-    flexDirection: 'row',
-}}>
-
-    <Text numberOfLines={1} style={{
-        fontSize: 20,
-
-        color: '#0000FF',
-
-       
-        
-        justifyContent: 'center',
-        // textAlignVertical: "center",
-        alignItems: 'center',
-
-    }}> {this.state.itemName} 
-        
-    </Text>
-</View> */}
-                    {/* <View style={styless.hairline} /> */}
-                    {/* </View> */}
-                    {/* </View> */}
-
-
+                  
+                  
                  
-                 <View
+                 {/* <View
                         style={{
                             marginTop: 30,
 
                         }} >
                         <FlatList
 
-                            data={[
-                                { key: 'Total Net Sales' },
-                                { key: 'APC' },
-                                { key: 'Total Collections' },
-                                { key: 'Promotions' },
-                                { key: 'Discounts' },
-                                { key: 'Voids' },
-                                { key: 'Refunds' },
+                            // data={[
+                            //     { key: 'Total Net Sales' },
+                            //     { key: 'APC' },
+                            //     { key: 'Total Collections' },
+                            //     { key: 'Promotions' },
+                            //     { key: 'Discounts' },
+                            //     { key: 'Voids' },
+                            //     { key: 'Refunds' },
 
 
-                            ]}
-                            //   const dataSet={this.state.dataSource}
+                            // ]}
+                            data={this.state.dataSource}
 
                             renderItem={
                                 this.renderItem
                             }
                         />
                     </View >
+                </View> */}
                 </View>
             )
         }
